@@ -17,8 +17,6 @@ namespace Victoria_3_Modding_Tool
 
     exit save bug
 
-    not saving doesnt change main
-
     Help  (Main-PopNeeds-PathForm Needs)
 
     CodeEditor ->make spellcheck, end custom colors, make autocomplete
@@ -330,7 +328,7 @@ namespace Victoria_3_Modding_Tool
                 }
                 else
                 {
-
+                    SaveStatus = 0;
                 }
 
             }

@@ -83,6 +83,11 @@ namespace Victoria_3_Modding_Tool
    
         private void SaveBT_Click(object sender, EventArgs e)
         {
+            SaveVerification();
+        }
+
+        private bool SaveVerification()
+        {
             int number;
             Match m = Regex.Match(EraTB.Texts, "^[0-9]+$");
             Match n = Regex.Match(EraCostTB.Texts, "^[0-9]+$");
@@ -92,11 +97,11 @@ namespace Victoria_3_Modding_Tool
             {
                 EraTB.BorderColor = Color.FromArgb(255, 39, 58);
                 EraTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                return;
+                return false;
             }
             else
             {
-                
+
                 if (int.TryParse(EraTB.Texts, out number) && number > 0 && number < 2147483647)
                 {
                     EraTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -106,7 +111,7 @@ namespace Victoria_3_Modding_Tool
                 {
                     EraTB.BorderColor = Color.FromArgb(255, 39, 58);
                     EraTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                    return;
+                    return false;
                 }
 
             }
@@ -116,7 +121,7 @@ namespace Victoria_3_Modding_Tool
             {
                 EraCostTB.BorderColor = Color.FromArgb(255, 39, 58);
                 EraCostTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                return;
+                return false;
             }
             else
             {
@@ -128,14 +133,14 @@ namespace Victoria_3_Modding_Tool
                 else
                 {
                     EraCostTB.BorderColor = Color.FromArgb(255, 39, 58);
-                    EraCostTB.BorderFocusColor = Color.FromArgb(255,94,108);
-                    return;
+                    EraCostTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                    return false;
                 }
             }
 
             SaveStatus = 1;
             SaveEra();
-
+            return true;
         }
 
         private void SaveEra()
@@ -155,7 +160,10 @@ namespace Victoria_3_Modding_Tool
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    SaveEra();
+                    if (!SaveVerification())
+                    {
+                        e.Cancel = true;
+                    }
                 }
                 else if (result == DialogResult.Cancel)
                 {

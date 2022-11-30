@@ -194,7 +194,15 @@ namespace Victoria_3_Modding_Tool
 
         private void SaveBT_Click(object sender, EventArgs e)
         {
+            SaveVerification();
+        }
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Load/Save Information
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        private bool SaveVerification()
+        {
             if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassTech().hasName(TechList.GetRange(sizeOfVicky, TechList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
@@ -209,15 +217,6 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[4] = false; }
 
-
-
-            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && !verifName && canSave[4] == true)
-            {
-                Save_Technology();
-                
-                SaveStatus = 1;
-            }
-
             if (canSave[0] == false || verifName)
             {
                 NameTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -225,11 +224,11 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-                NameTB.BorderColor = Color.FromArgb(66,66,66);
+                NameTB.BorderColor = Color.FromArgb(66, 66, 66);
                 NameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-            
+
 
             if (canSave[1] == false)
             {
@@ -271,12 +270,16 @@ namespace Victoria_3_Modding_Tool
                 DescriptionTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
+            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && !verifName && canSave[4] == true)
+            {
+                Save_Technology();
 
+                SaveStatus = 1;
+                return true;
+            }
+            return false;
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Load/Save Information
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
 
@@ -378,7 +381,7 @@ namespace Victoria_3_Modding_Tool
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    Save_Technology();
+                    if (!SaveVerification()){e.Cancel = true;}
                 }
                 else if (result == DialogResult.Cancel)
                 {

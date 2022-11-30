@@ -266,22 +266,25 @@ namespace Victoria_3_Modding_Tool
 
         private void SaveBT_Click(object sender, EventArgs e)
         {
+            SaveVerification();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Load/Save Information
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        private bool SaveVerification()
+        {
             if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassPopNeeds().hasName(PopNeedsList.GetRange(sizeOfVicky, PopNeedsList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (localEntry.Count == 0) { canSave[2] = false; } 
-            else {
+            if (localEntry.Count == 0) { canSave[2] = false; }
+            else
+            {
                 if (new ClassPopNeedsEntry().hasGood(localEntry, DefaultCB.SelectedItem.ToString())) { canSave[2] = true; }
                 else { canSave[2] = false; }
-            }
-
-            if (canSave[0] == true && canSave[1] == true && canSave[2]== true)
-            {
-                SaveForm();
-                SaveStatus = 1;
             }
 
             if (canSave[0] == false)
@@ -291,7 +294,7 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-                NameTB.BorderColor = Color.FromArgb(66,66,66);
+                NameTB.BorderColor = Color.FromArgb(66, 66, 66);
                 NameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
@@ -313,11 +316,16 @@ namespace Victoria_3_Modding_Tool
                 EntryCB.BorderColor = Color.FromArgb(66, 66, 66);
             }
 
+            if (canSave[0] == true && canSave[1] == true && canSave[2] == true)
+            {
+                SaveForm();
+                SaveStatus = 1;
+                return true;
+            }
+            return false;
+
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Load/Save Information
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
             localEntry = new List<ClassPopNeedsEntry>();
@@ -359,7 +367,7 @@ namespace Victoria_3_Modding_Tool
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    SaveForm();
+                    if (!SaveVerification()){e.Cancel = true;}
                 }
                 else if (result == DialogResult.Cancel)
                 {
