@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Victoria_3_Modding_Tool.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ProjName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Not Set</Value>
+    </Setting>
+    <Setting Name="ProjPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Not Set</Value>
+    </Setting>
+    <Setting Name="Victoria3Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Not Set</Value>
+    </Setting>
+    <Setting Name="ModPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Not Set</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Not Set</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

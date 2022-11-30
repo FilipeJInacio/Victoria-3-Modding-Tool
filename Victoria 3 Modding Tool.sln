@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Victoria 3 Modding Tool", "Victoria 3 Modding Tool\Victoria 3 Modding Tool.csproj", "{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {646D4CD5-7D9A-45AD-A5F7-C2F43C14CD96}
+	EndGlobalSection
+EndGlobal
