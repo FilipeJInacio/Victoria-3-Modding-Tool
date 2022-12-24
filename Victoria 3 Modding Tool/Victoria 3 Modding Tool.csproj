@@ -51,9 +51,6 @@
     <ApplicationIcon>Resources\V3.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -122,6 +119,7 @@
     <Compile Include="Forms\Home\PathFormHelp.Designer.cs">
       <DependentUpon>PathFormHelp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Modifiers NOT FINISHED\ClassModifiers.cs" />
     <Compile Include="Forms\Pop_Needs\ClassPopNeeds.cs" />
     <Compile Include="Forms\Pop_Needs\PopNeedsForm.cs">
       <SubType>Form</SubType>
@@ -134,6 +132,21 @@
     </Compile>
     <Compile Include="Forms\Pop_Needs\PopNeedsHelp.Designer.cs">
       <DependentUpon>PopNeedsHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Pop_Types NOT FINISHED\ClassPopNeeds.cs" />
+    <Compile Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.Designer.cs">
+      <DependentUpon>PopTypesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Production_Methods NOT FINISHED\ClassProductMethodsTypes.cs" />
+    <Compile Include="Forms\Religions\ClassReligions.cs" />
+    <Compile Include="Forms\Religions\ReligionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Religions\ReligionForm.Designer.cs">
+      <DependentUpon>ReligionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Tech\ClassTech.cs" />
     <Compile Include="Forms\Tech\TechHelp.cs">
@@ -222,6 +235,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Pop_Needs\PopNeedsHelp.resx">
       <DependentUpon>PopNeedsHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.resx">
+      <DependentUpon>PopTypesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Religions\ReligionForm.resx">
+      <DependentUpon>ReligionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Tech\TechHelp.resx">
       <DependentUpon>TechHelp.cs</DependentUpon>

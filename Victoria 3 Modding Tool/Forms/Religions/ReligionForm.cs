@@ -6,34 +6,30 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Era;
 using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
-    public partial class TechForm : Form
+    public partial class ReligionForm : Form
     {
-        public List<ClassTech> TechList; // Needed   (Victoria 3 + Project)
+        public List<ClassGoods> GoodsData; // Needed
+        public List<ClassReligions> ReligionData; // Needed
+        public List<string> Traits; // Not Needed
 
-        public List<ClassEra> EraList; // Needed   (Victoria 3 + Project)
+        public ClassReligions local;  // null if new   information if to change
 
-        public ClassTech local;  // null if new   information if to change
-
-        public bool[] canSave = { false, false, false, false, false, false }; // Name - Era - Category - Texture - Desc - True Name  false -> cant save
+        public bool[] canSave = { false, false, false, false, false, false }; // Name - TrueName - Texture - Red - Green - Blue    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved   2 -> is not
+        public int sizeOfVicky;
 
-        public int sizeOfVicky; // Needed
-
-
-        public TechForm()
+        public ReligionForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width/4, 0);
-
         }
 
-        public ClassTech ReturnValue()
+        public ClassReligions ReturnValue()
         {
             if (SaveStatus == 1) // saved
             {
@@ -58,8 +54,8 @@ namespace Victoria_3_Modding_Tool
             using (Pen penBorder = new Pen(Color.FromArgb(66, 66, 66), 2))
             {
                 penBorder.Alignment = PenAlignment.Inset;
-                graph.DrawRectangle(penBorder, NeededTechLB.Location.X - 2, NeededTechLB.Location.Y - 2, NeededTechLB.Width + 4F, NeededTechLB.Height + 4F);
-                graph.DrawRectangle(penBorder, ModifiersLB.Location.X - 2, ModifiersLB.Location.Y - 2, ModifiersLB.Width + 4F, ModifiersLB.Height + 4F);
+                graph.DrawRectangle(penBorder, TraitsLB.Location.X - 2, TraitsLB.Location.Y - 2, TraitsLB.Width + 4F, TraitsLB.Height + 4F);
+                graph.DrawRectangle(penBorder, TaboosLB.Location.X - 2, TaboosLB.Location.Y - 2, TaboosLB.Width + 4F, TaboosLB.Height + 4F);
             }
         }
 
@@ -85,12 +81,12 @@ namespace Victoria_3_Modding_Tool
 
         private void NeededTechLB_DrawItem_1(object sender, DrawItemEventArgs e)
         {
-            LB_DrawItem(sender, e, NeededTechLB);
+            LB_DrawItem(sender, e, TraitsLB);
         }
 
         private void ModifiersLB_DrawItem(object sender, DrawItemEventArgs e)
         {
-            LB_DrawItem(sender, e, ModifiersLB);
+            LB_DrawItem(sender, e, TaboosLB);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,10 +105,7 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
-            using (TechHelp form = new TechHelp())
-            {
-                form.ShowDialog();
-            }
+           
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,19 +127,23 @@ namespace Victoria_3_Modding_Tool
         // ListBox Events
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void NeededTechLB_DoubleClick(object sender, EventArgs e)
+        private void TraitsLB_DoubleClick(object sender, EventArgs e)
         {
-            if (NeededTechLB.SelectedIndex != 0)
+            if (TraitsLB.SelectedIndex != -1)
             {
-                NeededTechLB.Items.RemoveAt(NeededTechLB.SelectedIndex);
+                Traits.Remove(TraitsLB.SelectedItem.ToString());
+                TraitsLB.Items.RemoveAt(TraitsLB.SelectedIndex);
                 SaveStatus = 2;
             }
-
         }
 
-        private void ModifiersLB_DoubleClick(object sender, EventArgs e)
+        private void TaboosLB_DoubleClick(object sender, EventArgs e)
         {
-            // To do
+            if (TaboosLB.SelectedIndex != -1)
+            {
+                TaboosLB.Items.RemoveAt(TaboosLB.SelectedIndex);
+                SaveStatus = 2;
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,22 +172,27 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-        private void AddTechBT_Click(object sender, EventArgs e)
+        private void TraitAddBT_Click(object sender, EventArgs e)
         {
-            if (NeededCB.SelectedIndex != -1)
+            if (TraitsCB.SelectedIndex != -1)
             {
-                if (!NeededTechLB.Items.Contains(NeededCB.SelectedItem))
+                if (!TraitsLB.Items.Contains(TraitsCB.SelectedItem))
                 {
-                    NeededTechLB.Items.Add(NeededCB.SelectedItem);
+                    TraitsLB.Items.Add(TraitsCB.SelectedItem);
                 }
             }
-
         }
 
-        private void ModifiersBT_Click(object sender, EventArgs e)
+        private void TabooAddBT_Click(object sender, EventArgs e)
         {
-
-        } // To Do
+            if (TaboosCB.SelectedIndex != -1)
+            {
+                if (!TaboosLB.Items.Contains(TaboosCB.SelectedItem))
+                {
+                    TaboosLB.Items.Add(TaboosCB.SelectedItem);
+                }
+            }
+        }
 
         private void SaveBT_Click(object sender, EventArgs e)
         {
@@ -203,30 +205,23 @@ namespace Victoria_3_Modding_Tool
         
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassTech().hasName(TechList.GetRange(sizeOfVicky, TechList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassReligions().hasName(ReligionData.GetRange(sizeOfVicky, ReligionData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (Regex.Match(DescriptionTB.Texts, "^[\\u0000-\\u007E]+$").Success)
-            {
-                canSave[4] = true;
-            }
-            else { canSave[4] = false; }
-
             if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success)
             {
-                canSave[5] = true;
+                canSave[1] = true;
             }
-            else { canSave[5] = false; }
-
+            else { canSave[1] = false; }
 
             if (!string.IsNullOrEmpty(TextureTB.Texts) && TextureTB.Texts.EndsWith(".dds"))
             {
-                canSave[3] = true;
+                canSave[2] = true;
             }
-            else { canSave[3] = false; }
+            else { canSave[2] = false; }
 
 
             if (canSave[0] == false)
@@ -240,27 +235,18 @@ namespace Victoria_3_Modding_Tool
                 NameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-
-
             if (canSave[1] == false)
             {
-                EraCB.BorderColor = Color.FromArgb(255, 39, 58);
+                NameGameTB.BorderColor = Color.FromArgb(255, 39, 58);
+                NameGameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
             }
             else
             {
-                EraCB.BorderColor = Color.FromArgb(66, 66, 66);
+                NameGameTB.BorderColor = Color.FromArgb(66, 66, 66);
+                NameGameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
             if (canSave[2] == false)
-            {
-                CategoryCB.BorderColor = Color.FromArgb(255, 39, 58);
-            }
-            else
-            {
-                CategoryCB.BorderColor = Color.FromArgb(66, 66, 66);
-            }
-
-            if (canSave[3] == false)
             {
                 TextureTB.BorderColor = Color.FromArgb(255, 39, 58);
                 TextureTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -271,26 +257,37 @@ namespace Victoria_3_Modding_Tool
                 TextureTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-            if (canSave[4] == false)
+            if (canSave[3] == false)
             {
-                DescriptionTB.BorderColor = Color.FromArgb(255, 39, 58);
-                DescriptionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                RedTB.BorderColor = Color.FromArgb(255, 39, 58);
+                RedTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
             }
             else
             {
-                DescriptionTB.BorderColor = Color.FromArgb(66, 66, 66);
-                DescriptionTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+                RedTB.BorderColor = Color.FromArgb(66, 66, 66);
+                RedTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+            }
+
+            if (canSave[4] == false)
+            {
+                GreenTB.BorderColor = Color.FromArgb(255, 39, 58);
+                GreenTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+            }
+            else
+            {
+                GreenTB.BorderColor = Color.FromArgb(66, 66, 66);
+                GreenTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
             if (canSave[5] == false)
             {
-                NameGameTB.BorderColor = Color.FromArgb(255, 39, 58);
-                NameGameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                BlueTB.BorderColor = Color.FromArgb(255, 39, 58);
+                BlueTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
             }
             else
             {
-                NameGameTB.BorderColor = Color.FromArgb(66, 66, 66);
-                NameGameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+                BlueTB.BorderColor = Color.FromArgb(66, 66, 66);
+                BlueTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
             if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && canSave[4] == true && canSave[5] == true)
@@ -308,138 +305,72 @@ namespace Victoria_3_Modding_Tool
 
             NameTB.Texts = local.name;
 
-            NameGameTB.Texts = local.TrueName;
-
-            EraCB.SelectedIndex = local.era - 1;
+            NameGameTB.Texts = local.Truename;
 
             TextureTB.Texts = local.texture;
-            DescriptionTB.Texts = local.Desc;
 
-            switch (local.category)
+            RedTB.Texts = local.red.ToString();
+            GreenTB.Texts = local.green.ToString();
+            BlueTB.Texts = local.blue.ToString();
+
+            foreach(string entry in local.traits)
             {
-                case "production":
-                    CategoryCB.SelectedIndex = 0;
-                    break;
-                case "military":
-                    CategoryCB.SelectedIndex = 1;
-                    break;
-                case "society":
-                    CategoryCB.SelectedIndex = 2;
-                    break;
+                TraitsLB.Items.Add(entry);
             }
 
-            if (local.canResearch == false)
+            foreach (string entry in local.taboos)
             {
-                CanResearchCB.Checked = false;
+                TaboosLB.Items.Add(entry);
             }
 
-            int i = 0;
-
-            NeededCB.Items.Clear();
-            NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
-            foreach (ClassTech TechEntry in TechList)
-            {
-                if (TechEntry.category == CategoryCB.SelectedItem.ToString().ToLower())
-                {
-                    NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.name, TechEntry.era, TechEntry.category.ToUpper()[0] + TechEntry.category.Substring(1)));
-                }
-            }
-
-
-            foreach (string needTech in local.restrictions)
-            {
-                foreach (ClassTech techsingular in TechList)
-                {
-                    if (techsingular.name == needTech)
-                    {
-                        break;
-                    }
-                    i++;
-                }
-
-                NeededTechLB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechList[i].name, TechList[i].era.ToString(), TechList[i].category.ToUpper()[0] + TechList[i].category.Substring(1)));
-                i = 0;
-            }
-
-
-            ////
-            ////
-            //// Modifiers
-            ////
-            ////
-           
             SaveStatus = 0;
 
         }
 
         private void Save_Technology()
         {
+            local = new ClassReligions(NameTB.Texts,NameGameTB.Texts, TextureTB.Texts,Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+            local.traits = TraitsLB.Items.Cast<String>().ToList();
+            local.taboos = TaboosLB.Items.Cast<String>().ToList();
 
-            local = new ClassTech(NameTB.Texts, NameGameTB.Texts, (int)EraCB.SelectedItem, TextureTB.Texts, DescriptionTB.Texts, CategoryCB.SelectedItem.ToString().ToLower(), CanResearchCB.Checked? true:false);
-
-            List<string> words = NeededTechLB.Items.Cast<String>().ToList();
-
-            words.RemoveAt(0);
-
-            for (int i = 0; i < words.Count; i++)
-            {
-                words[i] = words[i].ToString().Substring(0, 65).Trim(' ');
-            }
-
-            local.restrictions = words.Cast<string>().ToList();
-
-
-            // Modifiers to add
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Form Events
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void ReligionForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
+
             }
         }
 
-        private void TechForm_Load(object sender, EventArgs e)
+        private void ReligionForm_Load(object sender, EventArgs e)
         {
 
-
-            foreach (ClassEra Era in EraList)
+            foreach (string entry in Traits)
             {
-                EraCB.Items.Add(Era.Era);
+                TraitsCB.Items.Add(entry);
             }
 
-            CategoryCB.Items.Add("Production");
-            CategoryCB.Items.Add("Military");
-            CategoryCB.Items.Add("Society");
+            foreach (ClassGoods entry in GoodsData)
+            {
+                if(entry.category== "luxury")
+                TaboosCB.Items.Add(entry.name);
+            }
 
-
-            NeededTechLB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
-            NeededCB.Items.Add("Choose a category.");
-            
-
-
-            ModifiersLB.Items.Add("Work In Progress");
-            // TO DO
-
-
-
-
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -460,40 +391,7 @@ namespace Victoria_3_Modding_Tool
             SaveStatus = 2;
         }
 
-        private void EraCB_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            SaveStatus = 2;
-            if (EraCB.SelectedIndex != -1)
-            {
-                canSave[1] = true;
-            }
-            else { canSave[1] = false; }
-            EraCostTB.Texts = EraList[Int32.Parse(EraCB.SelectedItem.ToString()) - 1].Cost.ToString();
-        }
-
-        private void CategoryCB_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            SaveStatus = 2;
-            if (CategoryCB.SelectedIndex != -1)
-            {
-                canSave[2] = true;
-                NeededCB.Items.Clear();
-                NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
-                foreach (ClassTech TechEntry in TechList)
-                {
-                    if (TechEntry.category == CategoryCB.SelectedItem.ToString().ToLower())
-                    {
-                        NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.name, TechEntry.era, TechEntry.category.ToUpper()[0] + TechEntry.category.Substring(1)));
-                    }
-                }
-
-
-
-            }
-            else { canSave[2] = false; }
-        }
-
-        private void CanResearchCB_CheckedChanged(object sender, EventArgs e)
+        private void NameGameTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveStatus = 2;
         }
@@ -503,16 +401,91 @@ namespace Victoria_3_Modding_Tool
             SaveStatus = 2;
         }
 
-        private void DescriptionTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        private void RedTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveStatus = 2;
+            int i;
+            if (!Regex.Match(RedTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(RedTB.Texts))
+            {
+                canSave[3] = false;
+            }
+            else
+            {
+
+                if (int.TryParse(RedTB.Texts, out i) && i >= 0 && i <= 255)
+                {
+                    canSave[3] = true;
+                }
+                else
+                {
+                    canSave[3] = false;
+                }
+
+            }
+
+            if (canSave[3]==true && canSave[4] == true && canSave[5] == true)
+            {
+                ColorP.BackColor= Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+            }
+
         }
 
-        private void NameGameTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        private void GreenTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveStatus = 2;
+            int i;
+            if (!Regex.Match(GreenTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(GreenTB.Texts))
+            {
+                canSave[4] = false;
+            }
+            else
+            {
+
+                if (int.TryParse(GreenTB.Texts, out i) && i >= 0 && i <= 255)
+                {
+                    canSave[4] = true;
+                }
+                else
+                {
+                    canSave[4] = false;
+                }
+
+            }
+
+            if (canSave[3] == true && canSave[4] == true && canSave[5] == true)
+            {
+                ColorP.BackColor = Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+            }
         }
 
-        
+        private void BlueTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SaveStatus = 2;
+            int i;
+            if (!Regex.Match(BlueTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(BlueTB.Texts))
+            {
+                canSave[5] = false;
+            }
+            else
+            {
+
+                if (int.TryParse(RedTB.Texts, out i) && i >= 0 && i <= 255)
+                {
+                    canSave[5] = true;
+                }
+                else
+                {
+                    canSave[5] = false;
+                }
+
+            }
+
+            if (canSave[3] == true && canSave[4] == true && canSave[5] == true)
+            {
+                ColorP.BackColor = Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+            }
+        }
+
+       
     }
 }

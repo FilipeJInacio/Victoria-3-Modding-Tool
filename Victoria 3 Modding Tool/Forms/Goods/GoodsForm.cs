@@ -15,7 +15,7 @@ namespace Victoria_3_Modding_Tool
 
         public ClassGoods local;
 
-        public bool[] canSave = { false, false, false, false, false, false, false, false, false }; // Name - Cost - Category - Texture - Obsession - Prestige - Convoy - Quantity - Tax    false -> cant save
+        public bool[] canSave = { false, false, false, false, false, false, false, false, false, false }; // Name - Cost - Category - Texture - Obsession - Prestige - Convoy - Quantity - Tax - True Name    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
         public int sizeOfVicky; // Needed
 
@@ -190,6 +190,17 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[0] = false; }
 
+            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success)
+            {
+                canSave[9] = true;
+            }
+            else { canSave[9] = false; }
+
+            if (!string.IsNullOrEmpty(TextureTB.Texts) && TextureTB.Texts.EndsWith(".dds"))
+            {
+                canSave[3] = true;
+            }
+            else { canSave[3] = false; }
 
             if (!Regex.Match(CostTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(CostTB.Texts))
             {
@@ -399,7 +410,18 @@ namespace Victoria_3_Modding_Tool
                 TextureTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && canSave[4] == true && canSave[5] == true && canSave[6] == true && canSave[7] == true && canSave[8] == true)
+            if (canSave[9] == false)
+            {
+                NameGameTB.BorderColor = Color.FromArgb(255, 39, 58);
+                NameGameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+            }
+            else
+            {
+                NameGameTB.BorderColor = Color.FromArgb(66, 66, 66);
+                NameGameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+            }
+
+            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && canSave[4] == true && canSave[5] == true && canSave[6] == true && canSave[7] == true && canSave[8] == true && canSave[9] == true)
             {
                 Save_Goods();
                 SaveStatus = 1;
@@ -481,11 +503,6 @@ namespace Victoria_3_Modding_Tool
         private void TextureTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveStatus = 2;
-            if (!string.IsNullOrEmpty(TextureTB.Texts) && TextureTB.Texts.EndsWith(".dds"))
-            {
-                canSave[3] = true;
-            }
-            else { canSave[3] = false; }
         }
 
         private void CB_CheckedChanged(object sender, EventArgs e)
