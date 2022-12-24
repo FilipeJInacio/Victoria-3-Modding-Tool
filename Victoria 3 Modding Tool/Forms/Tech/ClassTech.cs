@@ -72,7 +72,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                     case "category":
                         this.category = element.Value.ToString(); continue;
                     case "can_research":
-                        if (element.Value.ToString() == "no") { this.canResearch = false; continue; } else { this.canResearch = true; }continue;
+                        if (element.Value.ToString() == "no") { this.canResearch = false; } else { this.canResearch = true; }continue;
                     case "modifier":
                         foreach (KeyValuePair<string, object> modifiersEntry in (List<KeyValuePair<string, object>>)element.Value)
                         {

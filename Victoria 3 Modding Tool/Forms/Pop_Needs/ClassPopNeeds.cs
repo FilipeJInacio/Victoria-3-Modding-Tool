@@ -11,8 +11,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public float minWeight { get; set; }
         public float maxWeight { get; set; }
 
-        public ClassPopNeedsEntry()
-        { }
+        public ClassPopNeedsEntry(){ }
 
         public ClassPopNeedsEntry(List<KeyValuePair<string, object>> element)
         {

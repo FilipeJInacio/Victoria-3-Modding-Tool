@@ -55,6 +55,11 @@ namespace Victoria_3_Modding_Tool
         public List<ClassPopNeeds> PopNeedsDataV;
         public List<ClassPopNeeds> PopNeedsDataM;
 
+        public List<ClassReligions> ReligionsDataP;
+        public List<ClassReligions> ReligionsDataV;
+        public List<ClassReligions> ReligionsDataM;
+        public List<string> TraitsData;
+
         public List<ClassTech> TechDataP;
         public List<ClassTech> TechDataV;
         public List<ClassTech> TechDataM;
@@ -275,15 +280,22 @@ namespace Victoria_3_Modding_Tool
                     case "Goods":
 
                         GoodsDataM = new List<ClassGoods>();
-                        goods(ProjPath, GoodsDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
+                        goods(ModPath, GoodsDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
                         foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.name); }
 
                         break;
                     case "Pop Needs":
 
                         PopNeedsDataM = new List<ClassPopNeeds>();
-                        popneeds(ProjPath, PopNeedsDataM);
+                        popneeds(ModPath, PopNeedsDataM);
                         foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.name); }
+
+                        break;
+                    case "Religions":
+
+                        ReligionsDataM = new List<ClassReligions>();
+                        religions(ModPath, ReligionsDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
+                        foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.name); }
 
                         break;
                     case "Technology":
@@ -403,7 +415,29 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
 
+                    GoodsDataP = new List<ClassGoods>();
+                    GoodsDataV = new List<ClassGoods>();
+
+                    goods(VickyPath + "\\game", GoodsDataV, "\\goods_l_" + language + ".yml");
+                    goods(ProjPath, GoodsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
+
+                    ReligionsDataP = new List<ClassReligions>();
+                    ReligionsDataV = new List<ClassReligions>();
+
+                    religions(VickyPath + "\\game", ReligionsDataV, "\\religion_l_" + language + ".yml");
+                    religions(ProjPath, ReligionsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
+
+
+                    foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.name); }
+                    foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.name); }
+
+                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+                    Mod();
+
+                    break;
 
                 case "Technology":
 
@@ -576,6 +610,52 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    if (VickyLB.Items.Count == 0) { return; }
+
+                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
+
+
+                    using (ReligionForm form = new ReligionForm())
+                    {
+                        int i;
+                        i = new ClassReligions().hasNameIndex(ReligionsDataV, VickyLB.Items[vickySelectedIndex].ToString());
+                        form.sizeOfVicky = ReligionsDataV.Count;
+                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
+                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
+                        form.local = new ClassReligions(ReligionsDataV[i]);
+                        form.Traits = TraitsData;
+                        form.ShowDialog();
+                        ClassReligions j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ReligionsDataP.Add(new ClassReligions(j));
+                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ReligionsDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+                    }
+
+                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+                    break;
 
                 case "Technology":
 
@@ -782,6 +862,54 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    if (ProjectLB.Items.Count == 0) { return; }
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+
+                    using (ReligionForm form = new ReligionForm())
+                    {
+                        int i;
+                        i = new ClassReligions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        form.sizeOfVicky = ReligionsDataV.Count;
+                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
+                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
+                        form.local = new ClassReligions(ReligionsDataP[i]);
+                        form.Traits = TraitsData;
+                        form.ShowDialog();
+                        ClassReligions j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ReligionsDataP.Add(new ClassReligions(j));
+                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ReligionsDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+                    }
+
+                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Technology":
 
                     if (ProjectLB.Items.Count == 0) { return; }
@@ -828,12 +956,6 @@ namespace Victoria_3_Modding_Tool
 
 
                     break;
-
-                case "Decisions":
-
-
-                    break;
-
 
 
 
@@ -994,6 +1116,54 @@ namespace Victoria_3_Modding_Tool
 
                         break;
 
+                    case "Religions":
+
+                        if (ModLB.Items.Count == 0) { return; }
+
+                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+
+
+                        using (ReligionForm form = new ReligionForm())
+                        {
+                            int i;
+                            i = new ClassReligions().hasNameIndex(ReligionsDataM, ModLB.Items[modSelectedIndex].ToString());
+                            form.sizeOfVicky = ReligionsDataV.Count;
+                            form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
+                            form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
+                            form.local = new ClassReligions(ReligionsDataM[i]);
+                            form.Traits = TraitsData;
+                            form.ShowDialog();
+                            ClassReligions j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                                if (i == -1)
+                                {
+                                    ReligionsDataP.Add(new ClassReligions(j));
+                                    ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                    {
+                                        return (t1.name.CompareTo(t2.name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                }
+                                else
+                                {
+                                    ReligionsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                }
+
+                            }
+
+                        }
+
+                        if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+
+                        break;
+
                     case "Technology":
 
                         if (ModLB.Items.Count == 0) { return; }
@@ -1040,13 +1210,6 @@ namespace Victoria_3_Modding_Tool
 
 
                         break;
-
-                    case "Decisions":
-
-
-                        break;
-
-
 
 
                     default:
@@ -1210,6 +1373,46 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    using (ReligionForm form = new ReligionForm())
+                    {
+                        int i;
+                        form.sizeOfVicky = ReligionsDataV.Count;
+                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
+                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
+                        form.Traits = TraitsData;
+                        form.local = null;
+                        form.ShowDialog();
+                        ClassReligions j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ReligionsDataP.Add(new ClassReligions(j));
+                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ReligionsDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+                    }
+
+                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+                    break;
 
                 case "Technology":
 
@@ -1333,6 +1536,21 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    i = new ClassReligions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    ReligionsDataP.RemoveAt(i);
+                    ProjectLB.Items.Clear();
+                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+
+                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Technology":
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
@@ -1347,8 +1565,6 @@ namespace Victoria_3_Modding_Tool
 
 
                     break;
-
-                case "Decisions":
 
 
 
@@ -1369,14 +1585,15 @@ namespace Victoria_3_Modding_Tool
             MainData.Add("Era");
             MainData.Add("Goods");
             MainData.Add("Pop Needs");
+            MainData.Add("Religions");
             MainData.Add("Technology");
 
 
             MainLB.Items.Add("Era");
             MainLB.Items.Add("Goods");
             MainLB.Items.Add("Pop Needs");
+            MainLB.Items.Add("Religions");
             MainLB.Items.Add("Technology");
-
         }
 
         private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
@@ -1499,6 +1716,32 @@ namespace Victoria_3_Modding_Tool
                     break;
 
 
+                case "Religions":
+
+                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
+                    {
+                        VickyLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataV)
+                        {
+                            if (str.name.StartsWith(VickySearchBarTB.Texts))
+                            {
+                                VickyLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (VickySearchBarTB.Texts == "")
+                    {
+                        VickyLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataV)
+                        {
+                            VickyLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
+
                 case "Technology":
 
                     if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
@@ -1524,13 +1767,6 @@ namespace Victoria_3_Modding_Tool
                     }
 
                     break;
-
-                case "Decisions":
-
-
-                    break;
-
-
 
                 default:
                     MainLB.Items.Add("Error");
@@ -1630,6 +1866,31 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
+                    {
+                        ProjectLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataP)
+                        {
+                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
+                            {
+                                ProjectLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (ProjSearchBarTB.Texts == "")
+                    {
+                        ProjectLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataP)
+                        {
+                            ProjectLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
 
                 case "Technology":
 
@@ -1656,13 +1917,6 @@ namespace Victoria_3_Modding_Tool
                     }
 
                     break;
-
-                case "Decisions":
-
-
-                    break;
-
-
 
                 default:
                     MainLB.Items.Add("Error");
@@ -1761,6 +2015,32 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Religions":
+
+                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
+                    {
+                        ModLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataM)
+                        {
+                            if (str.name.StartsWith(ModSearchBarTB.Texts))
+                            {
+                                ModLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (ModSearchBarTB.Texts == "")
+                    {
+                        ModLB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsDataM)
+                        {
+                            ModLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
+
 
                 case "Technology":
 
@@ -1785,11 +2065,6 @@ namespace Victoria_3_Modding_Tool
                             ModLB.Items.Add(str.name);
                         }
                     }
-
-                    break;
-
-                case "Decisions":
-
 
                     break;
 
@@ -2051,6 +2326,127 @@ namespace Victoria_3_Modding_Tool
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Religion
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public void traitsAdder()
+        {
+            TraitsData = new List<string>();
+
+            foreach (ClassReligions entry in ReligionsDataV)
+            {
+                foreach(string trait in entry.traits)
+                {
+                    if (!TraitsData.Contains(trait))
+                    {
+                        TraitsData.Add(trait);
+                    }
+                }
+            }
+
+            foreach (ClassReligions entry in ReligionsDataP)
+            {
+                foreach (string trait in entry.traits)
+                {
+                    if (!TraitsData.Contains(trait))
+                    {
+                        TraitsData.Add(trait);
+                    }
+                }
+            }
+
+        }
+
+        private void OpenPathDescripReligion(string path, List<ClassReligions> ReligionData)
+        {
+            Dictionary<string, int> dic = new Dictionary<string, int>();
+            int i = 0;
+
+            foreach (ClassReligions entry in ReligionData)
+            {
+                dic.Add(entry.name, i);
+                i++;
+            }
+
+            if (File.Exists(path))
+            {
+                using (StreamReader sr = File.OpenText(path))
+                {
+
+                    string ln;
+                    string[] words;
+                    void NextLine() { ln = sr.ReadLine(); }
+                    NextLine();
+                    NextLine();
+
+                    while (ln != null)
+                    {
+
+                        if ((i = ln.IndexOf("#")) == -1)
+                        {
+                        }
+                        else if (i < 7)
+                        {
+                            NextLine();
+                            continue;
+                        }
+                        else { ln = ln.Substring(0, i); }
+
+
+                        if (ln.Contains(":"))
+                        {
+                            words = ln.Split(':');
+                            words[0] = words[0].Trim(' ');
+
+                            if (dic.ContainsKey(words[0]))
+                            {
+                                i = dic[words[0]];
+                                ReligionData[i].Truename = words[1].Substring(3, words[1].Length - 4);
+                                NextLine();
+                            }
+                            else
+                            {
+                                NextLine();
+                            }
+
+                        }
+                        else { NextLine(); }
+
+                    }
+                }
+            }
+        }
+
+        private void religions(string path, List<ClassReligions> ReligionData, string localization_name)
+        {
+            if (Directory.Exists(path + "\\common\\religions"))
+            {
+
+                foreach (List<KeyValuePair<string, object>> religion in new Parser2().ParseFiles(path + "\\common\\religions")) // Files
+                {
+                    foreach (KeyValuePair<string, object> religionEntry in religion) // Individual Tech  Pair (Name,Dic)
+                    {
+                        ReligionData.Add(new ClassReligions(religionEntry));
+                    }
+                }
+            }
+
+            ReligionData.Sort(delegate (ClassReligions t1, ClassReligions t2)
+            {   // 0.5 s Make more efi
+                return (t1.name.CompareTo(t2.name));
+            });
+
+            OpenPathDescripReligion(path + "\\localization\\" + language + localization_name, ReligionData);
+
+            traitsAdder();
+
+            return;
+
+        }
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Make Project *
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2081,8 +2477,9 @@ namespace Victoria_3_Modding_Tool
                         Directory.CreateDirectory(ProjPath + "\\common\\technology\\technologies");
                     }
 
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\technologies\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create)))
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\technologies\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         foreach (ClassTech techEntry in TechDataP)
                         {
                             sw.WriteLine();
@@ -2135,8 +2532,9 @@ namespace Victoria_3_Modding_Tool
                         Directory.CreateDirectory(ProjPath + "\\common\\technology\\eras");
                     }
 
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\eras\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create)))
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\eras\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         foreach (ClassEra eraEntry in EraDataP)
                         {
                             sw.WriteLine();
@@ -2163,8 +2561,9 @@ namespace Victoria_3_Modding_Tool
                         Directory.CreateDirectory(ProjPath + "\\common\\goods");
                     }
 
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\goods\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create)))
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\goods\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         foreach (ClassGoods Entry in GoodsDataP)
                         {
                             sw.WriteLine();
@@ -2211,8 +2610,9 @@ namespace Victoria_3_Modding_Tool
                         Directory.CreateDirectory(ProjPath + "\\common\\pop_needs");
                     }
 
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\pop_needs\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create)))
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\pop_needs\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         foreach (ClassPopNeeds Entry in PopNeedsDataP)
                         {
                             sw.WriteLine();
@@ -2241,7 +2641,57 @@ namespace Victoria_3_Modding_Tool
 
                 }
             }
-            
+
+            // 2nd
+            // Makes religions
+            if (ReligionsDataP != null)
+            {
+                if (ReligionsDataP.Count != 0)
+                {
+
+                    if (!Directory.Exists(ProjPath + "\\common\\religions"))
+                    {
+                        Directory.CreateDirectory(ProjPath + "\\common\\religions");
+                    }
+
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\religions\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                    {
+                        sw.NewLine = "\n";
+                        foreach (ClassReligions Entry in ReligionsDataP)
+                        {
+                            sw.WriteLine();
+                            sw.WriteLine(Entry.name + " = {");
+                            sw.WriteLine("\ttexture = \"" + Entry.texture + "\"");
+
+                            if (Entry.traits.Count != 0)
+                            {
+                                sw.WriteLine("\ttraits = {");
+                                foreach (string traits in Entry.traits)
+                                {
+                                    sw.WriteLine("\t\t" + traits);
+                                }
+                                sw.WriteLine("\t}");
+                            }
+                            sw.WriteLine("\tcolor = { " + Math.Round((double)Entry.red/255, 2).ToString().Replace(",",".") + " " + Math.Round((double)Entry.green / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)Entry.blue / 255, 2).ToString().Replace(",", ".") + " }");
+                            if (Entry.taboos.Count != 0)
+                            {
+                                sw.WriteLine("\ttaboos = {");
+                                foreach (string taboos in Entry.taboos)
+                                {
+                                    sw.WriteLine("\t\t" + taboos);
+                                }
+                                sw.WriteLine("\t}");
+                            }
+                            sw.WriteLine("}");
+                            sw.WriteLine();
+
+                        }
+                    }
+
+
+                }
+            }
+
 
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
@@ -2269,6 +2719,7 @@ namespace Victoria_3_Modding_Tool
 
                     using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         sw.WriteLine("l_english:");
 
                         foreach (ClassTech techEntry in TechDataP)
@@ -2293,6 +2744,7 @@ namespace Victoria_3_Modding_Tool
 
                     using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                     {
+                        sw.NewLine = "\n";
                         sw.WriteLine("l_english:");
 
                         foreach (ClassGoods Entry in GoodsDataP)
@@ -2305,7 +2757,29 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            if (ReligionsDataP != null)
+            {
+                if (ReligionsDataP.Count != 0)
+                {
+                    if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                    {
+                        Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                    }
 
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_religions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                    {
+                        sw.NewLine = "\n";
+                        sw.WriteLine("l_english:");
+
+                        foreach (ClassReligions Entry in ReligionsDataP)
+                        {
+
+                            sw.WriteLine(" " + Entry.name + ":0 \"" + Entry.Truename + "\"");
+
+                        }
+                    }
+                }
+            }
 
         }
 

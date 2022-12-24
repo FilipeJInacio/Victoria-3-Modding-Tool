@@ -53,11 +53,11 @@ namespace Victoria_3_Modding_Tool
             this.DeleteBT = new System.Windows.Forms.Button();
             this.SaveBT = new System.Windows.Forms.Button();
             this.AddBT = new System.Windows.Forms.Button();
+            this.XL = new System.Windows.Forms.Label();
             this.ModSearchBarTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.ProjSearchBarTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.VickySearchBarTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.MainSearchBarTB = new Victoria_3_Modding_Tool.CustomTextBox();
-            this.XL = new System.Windows.Forms.Label();
             this.HotBarP.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -393,6 +393,17 @@ namespace Victoria_3_Modding_Tool
             this.AddBT.UseVisualStyleBackColor = false;
             this.AddBT.Click += new System.EventHandler(this.AddBT_Click);
             // 
+            // XL
+            // 
+            this.XL.AutoSize = true;
+            this.XL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(44)))), ((int)(((byte)(63)))));
+            this.XL.Location = new System.Drawing.Point(1318, 175);
+            this.XL.Name = "XL";
+            this.XL.Size = new System.Drawing.Size(19, 21);
+            this.XL.TabIndex = 79;
+            this.XL.Text = "X";
+            this.XL.Visible = false;
+            // 
             // ModSearchBarTB
             // 
             this.ModSearchBarTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
@@ -468,17 +479,6 @@ namespace Victoria_3_Modding_Tool
             this.MainSearchBarTB.Texts = "";
             this.MainSearchBarTB.UnderlinedStyle = false;
             this.MainSearchBarTB.CustomTextBox_TextChanged += new System.EventHandler(this.MainSearchBarTB_CustomTextBox_TextChanged);
-            // 
-            // XL
-            // 
-            this.XL.AutoSize = true;
-            this.XL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(44)))), ((int)(((byte)(63)))));
-            this.XL.Location = new System.Drawing.Point(1318, 175);
-            this.XL.Name = "XL";
-            this.XL.Size = new System.Drawing.Size(19, 21);
-            this.XL.TabIndex = 79;
-            this.XL.Text = "X";
-            this.XL.Visible = false;
             // 
             // Main
             // 
