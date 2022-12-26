@@ -119,7 +119,13 @@
     <Compile Include="Forms\Home\PathFormHelp.Designer.cs">
       <DependentUpon>PathFormHelp.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Modifiers NOT FINISHED\ClassModifiers.cs" />
+    <Compile Include="Forms\ModifierTypes\ClassModifiers.cs" />
+    <Compile Include="Forms\ModifierTypes\ModifiersTypesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ModifierTypes\ModifiersTypesForm.Designer.cs">
+      <DependentUpon>ModifiersTypesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Pop_Needs\ClassPopNeeds.cs" />
     <Compile Include="Forms\Pop_Needs\PopNeedsForm.cs">
       <SubType>Form</SubType>
@@ -229,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Home\PathFormHelp.resx">
       <DependentUpon>PathFormHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ModifierTypes\ModifiersTypesForm.resx">
+      <DependentUpon>ModifiersTypesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Pop_Needs\PopNeedsForm.resx">
       <DependentUpon>PopNeedsForm.cs</DependentUpon>

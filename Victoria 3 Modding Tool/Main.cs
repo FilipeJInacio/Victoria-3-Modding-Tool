@@ -21,6 +21,8 @@ namespace Victoria_3_Modding_Tool
 
     CodeEditor ->make spellcheck, end custom colors, make autocomplete
 
+    -0
+
     */
 
 
@@ -64,6 +66,9 @@ namespace Victoria_3_Modding_Tool
         public List<ClassTech> TechDataV;
         public List<ClassTech> TechDataM;
 
+        public List<ClassModifiersType> ModifierTypeDataP;
+        public List<ClassModifiersType> ModifierTypeDataV;
+        public List<ClassModifiersType> ModifierTypeDataM;
 
         public Main()
         {
@@ -284,6 +289,13 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.name); }
 
                         break;
+                    case "Modifiers Types":
+
+                        ModifierTypeDataM = new List<ClassModifiersType>();
+                        modifierTypes(ModPath, ModifierTypeDataM);
+                        foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.name); }
+
+                        break;
                     case "Pop Needs":
 
                         PopNeedsDataM = new List<ClassPopNeeds>();
@@ -390,6 +402,23 @@ namespace Victoria_3_Modding_Tool
                     Mod();
 
                     break;
+
+                case "Modifier Types":
+                    ModifierTypeDataP = new List<ClassModifiersType>();
+                    ModifierTypeDataV = new List<ClassModifiersType>();
+
+                    modifierTypes(VickyPath + "\\game",ModifierTypeDataV);
+                    modifierTypes(ProjPath, ModifierTypeDataP);
+
+                    foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.name); }
+                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+
+                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+                    Mod();
+
+                    break;
+
 
 
                 case "Pop Needs":
@@ -563,6 +592,54 @@ namespace Victoria_3_Modding_Tool
                     else { DeleteBT.Enabled = true; }
 
                     break;
+
+                case "Modifier Types":
+
+                    if (VickyLB.Items.Count == 0) { return; }
+
+                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
+
+                    using (ModifiersTypesForm form = new ModifiersTypesForm())
+                    {
+                        int i;
+                        i = new ClassModifiersType().hasNameIndex(ModifierTypeDataV, VickyLB.Items[vickySelectedIndex].ToString());
+
+
+                        form.sizeOfVicky = ModifierTypeDataV.Count;
+                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
+                        form.local = new ClassModifiersType(ModifierTypeDataV[i]);
+                        form.ShowDialog();
+
+                        ClassModifiersType j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ModifierTypeDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+                    }
+
+                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+                    break;
+
 
                 case "Pop Needs":
 
@@ -811,6 +888,53 @@ namespace Victoria_3_Modding_Tool
                     }
 
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+                    break;
+
+                case "Modifier Types":
+
+                    if (ProjectLB.Items.Count == 0) { return; }
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    using (ModifiersTypesForm form = new ModifiersTypesForm())
+                    {
+                        int i;
+                        i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
+
+
+                        form.sizeOfVicky = GoodsDataV.Count;
+                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
+                        form.local = new ClassModifiersType(ModifierTypeDataP[i]);
+                        form.ShowDialog();
+
+                        ClassModifiersType j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ModifierTypeDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+                    }
+
+                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
                     break;
@@ -1065,6 +1189,53 @@ namespace Victoria_3_Modding_Tool
                         }
 
                         if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+
+                    case "Modifier Types":
+
+                        if (ModLB.Items.Count == 0) { return; }
+
+                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+
+                        using (ModifiersTypesForm form = new ModifiersTypesForm())
+                        {
+                            int i;
+                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataM, ModLB.Items[modSelectedIndex].ToString());
+
+
+                            form.sizeOfVicky = ModifierTypeDataV.Count;
+                            form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
+                            form.local = new ClassModifiersType(ModifierTypeDataM[i]);
+                            form.ShowDialog();
+
+                            ClassModifiersType j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                                if (i == -1)
+                                {
+                                    ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                    ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                    {
+                                        return (t1.name.CompareTo(t2.name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                }
+                                else
+                                {
+                                    ModifierTypeDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                }
+
+                            }
+
+                        }
+
+                        if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
 
                         break;
@@ -1333,6 +1504,51 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Modifier Types":
+
+                    using (ModifiersTypesForm form = new ModifiersTypesForm())
+                    {
+                        int i;
+
+                        form.sizeOfVicky = ModifierTypeDataV.Count;
+                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
+                        form.local = null;
+                        form.ShowDialog();
+
+                        ClassModifiersType j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                            if (i == -1)
+                            {
+                                ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                {
+                                    return (t1.name.CompareTo(t2.name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+                            else
+                            {
+                                ModifierTypeDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                            }
+
+                        }
+
+
+
+
+                    }
+
+                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Pop Needs":
 
                     using (PopNeedsForm form = new PopNeedsForm())
@@ -1521,6 +1737,21 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Modifier Types":
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    ModifierTypeDataP.RemoveAt(i);
+                    ProjectLB.Items.Clear();
+                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+
+                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Pop Needs":
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
@@ -1584,6 +1815,7 @@ namespace Victoria_3_Modding_Tool
         {
             MainData.Add("Era");
             MainData.Add("Goods");
+            MainData.Add("Modifier Types");
             MainData.Add("Pop Needs");
             MainData.Add("Religions");
             MainData.Add("Technology");
@@ -1591,6 +1823,7 @@ namespace Victoria_3_Modding_Tool
 
             MainLB.Items.Add("Era");
             MainLB.Items.Add("Goods");
+            MainLB.Items.Add("Modifier Types");
             MainLB.Items.Add("Pop Needs");
             MainLB.Items.Add("Religions");
             MainLB.Items.Add("Technology");
@@ -1682,6 +1915,32 @@ namespace Victoria_3_Modding_Tool
                     {
                         VickyLB.Items.Clear();
                         foreach (ClassGoods str in GoodsDataV)
+                        {
+                            VickyLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
+
+                case "Modifiers Types":
+
+                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
+                    {
+                        VickyLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataV)
+                        {
+                            if (str.name.StartsWith(VickySearchBarTB.Texts))
+                            {
+                                VickyLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (VickySearchBarTB.Texts == "")
+                    {
+                        VickyLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataV)
                         {
                             VickyLB.Items.Add(str.name);
                         }
@@ -1840,6 +2099,32 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Modifiers Types":
+
+                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
+                    {
+                        ProjectLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataP)
+                        {
+                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
+                            {
+                                ProjectLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (ProjSearchBarTB.Texts == "")
+                    {
+                        ProjectLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataP)
+                        {
+                            ProjectLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
+
                 case "Pop Needs":
 
                     if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
@@ -1982,6 +2267,32 @@ namespace Victoria_3_Modding_Tool
                     {
                         ModLB.Items.Clear();
                         foreach (ClassGoods str in GoodsDataM)
+                        {
+                            ModLB.Items.Add(str.name);
+                        }
+                    }
+
+                    break;
+
+                case "Modifiers Types":
+
+                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
+                    {
+                        ModLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataM)
+                        {
+                            if (str.name.StartsWith(ModSearchBarTB.Texts))
+                            {
+                                ModLB.Items.Add(str.name);
+                            }
+
+                        }
+
+                    }
+                    else if (ModSearchBarTB.Texts == "")
+                    {
+                        ModLB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeDataM)
                         {
                             ModLB.Items.Add(str.name);
                         }
@@ -2445,6 +2756,33 @@ namespace Victoria_3_Modding_Tool
         }
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Religion
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private void modifierTypes(string path, List<ClassModifiersType> ModifierData)
+        {
+            if (Directory.Exists(path + "\\common\\modifier_types"))
+            {
+
+                foreach (List<KeyValuePair<string, object>> entry in new Parser().ParseFiles(path + "\\common\\modifier_types")) // Files
+                {
+                    foreach (KeyValuePair<string, object> entry2 in entry)
+                    {
+                        ModifierData.Add(new ClassModifiersType(entry2));
+                    }
+                }
+            }
+
+            ModifierData.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+            {   // 0.5 s Make more efi
+                return (t1.name.CompareTo(t2.name));
+            });
+
+            return;
+
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Make Project *
@@ -2692,6 +3030,116 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            // 2nd
+            // Makes modifier types
+            if (ModifierTypeDataP != null)
+            {
+                if (ModifierTypeDataP.Count != 0)
+                {
+
+                    if (!Directory.Exists(ProjPath + "\\common\\modifier_types"))
+                    {
+                        Directory.CreateDirectory(ProjPath + "\\common\\modifier_types");
+                    }
+
+                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\modifier_types\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                    {
+                        sw.NewLine = "\n";
+                        foreach (ClassModifiersType Entry in ModifierTypeDataP)
+                        {
+                            sw.WriteLine();
+                            sw.WriteLine(Entry.name + " = {");
+
+                            if (Entry.neutral != -1)
+                            {
+                                if (Entry.neutral == 1)
+                                {
+                                    sw.WriteLine("\tneutral = yes");
+                                }
+                                else
+                                {
+                                    sw.WriteLine("\tneutral = no");
+                                }
+                            }
+
+                            if (Entry.good != -1)
+                            {
+                                if(Entry.good == 1)
+                                {
+                                    sw.WriteLine("\tgood = yes");
+                                }
+                                else
+                                {
+                                    sw.WriteLine("\tgood = no");
+                                }
+                            }
+
+                            if (Entry.boolean != -1)
+                            {
+                                if (Entry.boolean == 1)
+                                {
+                                    sw.WriteLine("\tboolean = yes");
+                                }
+                                else
+                                {
+                                    sw.WriteLine("\tboolean = no");
+                                }
+                            }
+
+                            if (Entry.percent != -1)
+                            {
+                                if (Entry.percent == 1)
+                                {
+                                    sw.WriteLine("\tpercent = yes");
+                                }
+                                else
+                                {
+                                    sw.WriteLine("\tpercent = no");
+                                }
+                            }
+
+                            if(Entry.invert != -1)
+                            {
+                                if (Entry.invert == 1)
+                                {
+                                    sw.WriteLine("\tinvert = yes");
+                                }
+                                else
+                                {
+                                    sw.WriteLine("\tinvert = no");
+                                }
+                            }
+
+                            if (Entry.num_decimals != -1)
+                            {
+                                sw.WriteLine("\tnum_decimals = " + Entry.num_decimals);
+                            }
+
+                            if (Entry.translate != null)
+                            {
+                                sw.WriteLine("\ttranslate = " + Entry.translate);
+                            }
+
+
+                            if (Entry.postfix != null)
+                            {
+                                sw.WriteLine("\tpostfix = \"" + Entry.postfix + "\"");
+                            }
+
+                            if (Entry.ai_value != -1)
+                            {
+                                sw.WriteLine("\tai_value = " + Entry.ai_value);
+                            }
+
+                            sw.WriteLine("}");
+                            sw.WriteLine();
+
+                        }
+                    }
+
+
+                }
+            }
 
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////

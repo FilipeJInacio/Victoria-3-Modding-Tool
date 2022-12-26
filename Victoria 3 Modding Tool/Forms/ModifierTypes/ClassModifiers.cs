@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Web;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-    public class ClassModifiers
+    public class ClassModifiersType
     {
         public string name { get; set; }
         public int good { get; set; }
@@ -18,9 +16,9 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public string translate { get; set; }
         public int ai_value { get; set; }
 
-        public ClassModifiers() { }
+        public ClassModifiersType() { }
 
-        public ClassModifiers(KeyValuePair<string, object> ParserData)
+        public ClassModifiersType(KeyValuePair<string, object> ParserData)
         {
             this.name = ParserData.Key;
             this.good = -1;
@@ -30,7 +28,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.neutral = -1;
             this.boolean = -1;
             this.ai_value = -1;
-
+            this.translate = null;
+            this.postfix = null;
 
             foreach (KeyValuePair<string, object> entry in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
@@ -43,7 +42,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                         if (entry.Value.ToString() == "yes") { this.percent = 1; } else { this.percent = 0; }
                         continue;
                     case "num_decimals":
-                        if (entry.Value.ToString() == "yes") { this.num_decimals = 1; } else { this.num_decimals = 0; }
+                        this.num_decimals = Int32.Parse(entry.Value.ToString());
                         continue;
                     case "invert":
                         if (entry.Value.ToString() == "yes") { this.invert = 1; } else { this.invert = 0; }
@@ -54,6 +53,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                     case "boolean":
                         if (entry.Value.ToString() == "yes") { this.boolean = 1; } else { this.boolean = 0; }
                         continue;
+                    case "postfix":
+                        this.postfix = entry.Value.ToString().Trim('"'); continue;
+                    case "translate":
+                        this.translate = entry.Value.ToString(); continue;
                     case "ai_value":
                         this.ai_value = Int32.Parse(entry.Value.ToString());
                         continue;
@@ -64,7 +67,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             }
         }
 
-        public ClassModifiers(ClassModifiers modifierstypes)
+        public ClassModifiersType(ClassModifiersType modifierstypes)
         {
             this.name = modifierstypes.name;
             this.good = modifierstypes.good;
@@ -78,7 +81,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.ai_value = modifierstypes.ai_value;
         }
 
-        public ClassModifiers(string name, int good, int percent, int num_decimals, int invert, int neutral, int boolean, string postfix, string translate, int ai_value)
+        public ClassModifiersType(string name, int good, int percent, int num_decimals, int invert, int neutral, int boolean, string postfix, string translate, int ai_value)
         {
             this.name = name;
             this.good = good;
@@ -92,9 +95,9 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.ai_value = ai_value;
         }
 
-        public bool hasModifier(List<ClassModifiers> modifierType, string name)
+        public bool hasModifier(List<ClassModifiersType> modifierType, string name)
         {
-            foreach (ClassModifiers entry in modifierType)
+            foreach (ClassModifiersType entry in modifierType)
             {
                 if (entry.name == name)
                 {
@@ -110,9 +113,9 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Has name in list
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public bool hasName(List<ClassPopNeeds> popNeeds, string name)
+        public bool hasName(List<ClassModifiersType> modifier, string name)
         {
-            foreach (ClassPopNeeds entry in popNeeds)
+            foreach (ClassModifiersType entry in modifier)
             {
                 if (entry.name == name)
                 {
@@ -123,10 +126,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             return false;
         }
 
-        public int hasNameIndex(List<ClassPopNeeds> popNeeds, string name)
+        public int hasNameIndex(List<ClassModifiersType> modifier, string name)
         {
             int i = 0;
-            foreach (ClassPopNeeds entry in popNeeds)
+            foreach (ClassModifiersType entry in modifier)
             {
                 if (entry.name == name)
                 {
@@ -143,18 +146,18 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         // Merge TechClass list
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public List<ClassPopNeeds> Merge(List<ClassPopNeeds> Pri, List<ClassPopNeeds> Sec)
+        public List<ClassModifiersType> Merge(List<ClassModifiersType> Pri, List<ClassModifiersType> Sec)
         {
-            List<ClassPopNeeds> result = new List<ClassPopNeeds>();
+            List<ClassModifiersType> result = new List<ClassModifiersType>();
 
-            foreach (ClassPopNeeds Entry in Pri)
+            foreach (ClassModifiersType Entry in Pri)
             {
                 result.Add(Entry);
             }
 
-            foreach (ClassPopNeeds Entry in Sec)
+            foreach (ClassModifiersType Entry in Sec)
             {
-                if (!new ClassPopNeeds().hasName(result, Entry.name))
+                if (!new ClassModifiersType().hasName(result, Entry.name))
                 {
                     result.Add(Entry);
                 }
