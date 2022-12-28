@@ -330,8 +330,8 @@ namespace Victoria_3_Modding_Tool
         private void Save_Technology()
         {
             local = new ClassReligions(NameTB.Texts,NameGameTB.Texts, TextureTB.Texts,Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
-            local.traits = TraitsLB.Items.Cast<String>().ToList();
-            local.taboos = TaboosLB.Items.Cast<String>().ToList();
+            local.traits = TraitsLB.Items.Cast<string>().ToList();
+            local.taboos = TaboosLB.Items.Cast<string>().ToList();
 
         }
 

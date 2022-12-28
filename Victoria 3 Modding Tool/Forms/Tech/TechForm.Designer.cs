@@ -52,6 +52,9 @@ namespace Victoria_3_Modding_Tool
             this.NeededTechL = new System.Windows.Forms.Label();
             this.NeededTechLB = new System.Windows.Forms.ListBox();
             this.ModifiersLB = new System.Windows.Forms.ListBox();
+            this.NameGameL = new System.Windows.Forms.Label();
+            this.NumberTB = new Victoria_3_Modding_Tool.CustomTextBox();
+            this.NameGameTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.ModifiersCB = new Victoria_3_Modding_Tool.CustomComboBox();
             this.NeededCB = new Victoria_3_Modding_Tool.CustomComboBox();
             this.DescriptionTB = new Victoria_3_Modding_Tool.CustomTextBox();
@@ -61,8 +64,6 @@ namespace Victoria_3_Modding_Tool
             this.EraCostTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.NameTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.TextureTB = new Victoria_3_Modding_Tool.CustomTextBox();
-            this.NameGameTB = new Victoria_3_Modding_Tool.CustomTextBox();
-            this.NameGameL = new System.Windows.Forms.Label();
             this.HotBarP.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -107,6 +108,7 @@ namespace Victoria_3_Modding_Tool
             this.ModifiersAddBT.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ModifiersAddBT.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.ModifiersAddBT.UseVisualStyleBackColor = false;
+            this.ModifiersAddBT.Click += new System.EventHandler(this.ModifiersAddBT_Click);
             // 
             // HotBarP
             // 
@@ -378,12 +380,59 @@ namespace Victoria_3_Modding_Tool
             this.ModifiersLB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ModifiersLB.FormattingEnabled = true;
             this.ModifiersLB.ItemHeight = 24;
-            this.ModifiersLB.Location = new System.Drawing.Point(17, 588);
+            this.ModifiersLB.Location = new System.Drawing.Point(16, 583);
             this.ModifiersLB.Name = "ModifiersLB";
-            this.ModifiersLB.Size = new System.Drawing.Size(897, 120);
+            this.ModifiersLB.Size = new System.Drawing.Size(907, 120);
             this.ModifiersLB.TabIndex = 60;
             this.ModifiersLB.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ModifiersLB_DrawItem);
             this.ModifiersLB.DoubleClick += new System.EventHandler(this.ModifiersLB_DoubleClick);
+            // 
+            // NameGameL
+            // 
+            this.NameGameL.AutoSize = true;
+            this.NameGameL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NameGameL.Location = new System.Drawing.Point(12, 105);
+            this.NameGameL.Name = "NameGameL";
+            this.NameGameL.Size = new System.Drawing.Size(127, 21);
+            this.NameGameL.TabIndex = 62;
+            this.NameGameL.Text = "Name in game:";
+            // 
+            // NumberTB
+            // 
+            this.NumberTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            this.NumberTB.BackgroundColorFocus = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
+            this.NumberTB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.NumberTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NumberTB.BorderSize = 1;
+            this.NumberTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
+            this.NumberTB.Location = new System.Drawing.Point(827, 545);
+            this.NumberTB.Multiline = false;
+            this.NumberTB.Name = "NumberTB";
+            this.NumberTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+            this.NumberTB.ReadOnly = false;
+            this.NumberTB.Size = new System.Drawing.Size(96, 32);
+            this.NumberTB.TabIndex = 64;
+            this.NumberTB.Texts = "";
+            this.NumberTB.UnderlinedStyle = false;
+            // 
+            // NameGameTB
+            // 
+            this.NameGameTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            this.NameGameTB.BackgroundColorFocus = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
+            this.NameGameTB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.NameGameTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NameGameTB.BorderSize = 1;
+            this.NameGameTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
+            this.NameGameTB.Location = new System.Drawing.Point(16, 129);
+            this.NameGameTB.Multiline = false;
+            this.NameGameTB.Name = "NameGameTB";
+            this.NameGameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+            this.NameGameTB.ReadOnly = false;
+            this.NameGameTB.Size = new System.Drawing.Size(742, 32);
+            this.NameGameTB.TabIndex = 61;
+            this.NameGameTB.Texts = "";
+            this.NameGameTB.UnderlinedStyle = false;
+            this.NameGameTB.CustomTextBox_TextChanged += new System.EventHandler(this.NameGameTB_CustomTextBox_TextChanged);
             // 
             // ModifiersCB
             // 
@@ -397,11 +446,11 @@ namespace Victoria_3_Modding_Tool
             this.ModifiersCB.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(73)))), ((int)(((byte)(150)))));
             this.ModifiersCB.ListBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ModifiersCB.ListTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.ModifiersCB.Location = new System.Drawing.Point(16, 545);
+            this.ModifiersCB.Location = new System.Drawing.Point(17, 545);
             this.ModifiersCB.MinimumSize = new System.Drawing.Size(200, 30);
             this.ModifiersCB.Name = "ModifiersCB";
             this.ModifiersCB.Padding = new System.Windows.Forms.Padding(1);
-            this.ModifiersCB.Size = new System.Drawing.Size(906, 32);
+            this.ModifiersCB.Size = new System.Drawing.Size(804, 32);
             this.ModifiersCB.TabIndex = 56;
             this.ModifiersCB.Texts = "";
             // 
@@ -516,7 +565,7 @@ namespace Victoria_3_Modding_Tool
             this.EraCostTB.Name = "EraCostTB";
             this.EraCostTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.EraCostTB.ReadOnly = true;
-            this.EraCostTB.Size = new System.Drawing.Size(120, 24);
+            this.EraCostTB.Size = new System.Drawing.Size(120, 32);
             this.EraCostTB.TabIndex = 42;
             this.EraCostTB.Texts = "";
             this.EraCostTB.UnderlinedStyle = false;
@@ -534,7 +583,7 @@ namespace Victoria_3_Modding_Tool
             this.NameTB.Name = "NameTB";
             this.NameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NameTB.ReadOnly = false;
-            this.NameTB.Size = new System.Drawing.Size(255, 24);
+            this.NameTB.Size = new System.Drawing.Size(255, 32);
             this.NameTB.TabIndex = 40;
             this.NameTB.Texts = "";
             this.NameTB.UnderlinedStyle = false;
@@ -553,46 +602,18 @@ namespace Victoria_3_Modding_Tool
             this.TextureTB.Name = "TextureTB";
             this.TextureTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.TextureTB.ReadOnly = false;
-            this.TextureTB.Size = new System.Drawing.Size(906, 24);
+            this.TextureTB.Size = new System.Drawing.Size(906, 32);
             this.TextureTB.TabIndex = 38;
             this.TextureTB.Texts = "";
             this.TextureTB.UnderlinedStyle = false;
             this.TextureTB.CustomTextBox_TextChanged += new System.EventHandler(this.TextureTB_CustomTextBox_TextChanged);
-            // 
-            // NameGameTB
-            // 
-            this.NameGameTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
-            this.NameGameTB.BackgroundColorFocus = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
-            this.NameGameTB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-            this.NameGameTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NameGameTB.BorderSize = 1;
-            this.NameGameTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.NameGameTB.Location = new System.Drawing.Point(16, 129);
-            this.NameGameTB.Multiline = false;
-            this.NameGameTB.Name = "NameGameTB";
-            this.NameGameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
-            this.NameGameTB.ReadOnly = false;
-            this.NameGameTB.Size = new System.Drawing.Size(742, 24);
-            this.NameGameTB.TabIndex = 61;
-            this.NameGameTB.Texts = "";
-            this.NameGameTB.UnderlinedStyle = false;
-            this.NameGameTB.CustomTextBox_TextChanged += new System.EventHandler(this.NameGameTB_CustomTextBox_TextChanged);
-            // 
-            // NameGameL
-            // 
-            this.NameGameL.AutoSize = true;
-            this.NameGameL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.NameGameL.Location = new System.Drawing.Point(12, 105);
-            this.NameGameL.Name = "NameGameL";
-            this.NameGameL.Size = new System.Drawing.Size(127, 21);
-            this.NameGameL.TabIndex = 62;
-            this.NameGameL.Text = "Name in game:";
             // 
             // TechForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.ClientSize = new System.Drawing.Size(995, 718);
+            this.Controls.Add(this.NumberTB);
             this.Controls.Add(this.NameGameL);
             this.Controls.Add(this.NameGameTB);
             this.Controls.Add(this.ModifiersLB);
@@ -675,6 +696,7 @@ namespace Victoria_3_Modding_Tool
         private CustomTextBox NameGameTB;
         private Label NameGameL;
         private Button HelpBT;
+        private CustomTextBox NumberTB;
     }
 }
 

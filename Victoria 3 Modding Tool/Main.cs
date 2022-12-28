@@ -21,8 +21,6 @@ namespace Victoria_3_Modding_Tool
 
     CodeEditor ->make spellcheck, end custom colors, make autocomplete
 
-    -0
-
     */
 
 
@@ -474,6 +472,11 @@ namespace Victoria_3_Modding_Tool
                     TechDataV = new List<ClassTech>();
                     EraDataP = new List<ClassEra>();
                     EraDataV = new List<ClassEra>();
+                    ModifierTypeDataP = new List<ClassModifiersType>();
+                    ModifierTypeDataV = new List<ClassModifiersType>();
+
+                    modifierTypes(VickyPath + "\\game", ModifierTypeDataV);
+                    modifierTypes(ProjPath, ModifierTypeDataP);
 
                     EraTech(VickyPath + "\\game", EraDataV, TechDataV, "\\inventions_l_" + language + ".yml");
                     EraTech(ProjPath, EraDataP, TechDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
@@ -746,6 +749,7 @@ namespace Victoria_3_Modding_Tool
                         int i;
                         i = new ClassTech().hasNameIndex(TechDataV, VickyLB.Items[vickySelectedIndex].ToString());
                         form.sizeOfVicky = TechDataV.Count;
+                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
                         form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
                         form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
                         form.local = new ClassTech(TechDataV[i]);
@@ -1046,6 +1050,7 @@ namespace Victoria_3_Modding_Tool
                         int i;
                         i = new ClassTech().hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
                         form.sizeOfVicky = TechDataV.Count;
+                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
                         form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
                         form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
                         form.local = new ClassTech(TechDataP[i]);
@@ -1347,6 +1352,7 @@ namespace Victoria_3_Modding_Tool
                             int i;
                             i = new ClassTech().hasNameIndex(TechDataM, ModLB.Items[modSelectedIndex].ToString());
                             form.sizeOfVicky = TechDataV.Count;
+                            form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
                             form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
                             form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
                             form.local = new ClassTech(TechDataM[i]);
@@ -1636,6 +1642,7 @@ namespace Victoria_3_Modding_Tool
                     {
                         int i;
                         form.sizeOfVicky = TechDataV.Count;
+                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
                         form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
                         form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
                         form.local = null;
@@ -2509,7 +2516,8 @@ namespace Victoria_3_Modding_Tool
         }
 
         private void EraTech(string path, List<ClassEra> EraData, List<ClassTech> TechData, string localization_name)
-        {
+        { 
+
             LoadEraData(path + "\\common\\technology\\eras", EraData);
 
             LoadTechData(path + "\\common\\technology\\technologies", TechData);

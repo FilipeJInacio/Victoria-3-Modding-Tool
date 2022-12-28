@@ -14,6 +14,7 @@ namespace Victoria_3_Modding_Tool
     public partial class TechForm : Form
     {
         public List<ClassTech> TechList; // Needed   (Victoria 3 + Project)
+        public List<ClassModifiersType> ModifiersTypes; // Needed
 
         public List<ClassEra> EraList; // Needed   (Victoria 3 + Project)
 
@@ -141,12 +142,15 @@ namespace Victoria_3_Modding_Tool
                 NeededTechLB.Items.RemoveAt(NeededTechLB.SelectedIndex);
                 SaveStatus = 2;
             }
-
         }
 
         private void ModifiersLB_DoubleClick(object sender, EventArgs e)
         {
-            // To do
+            if (ModifiersLB.SelectedIndex != -1)
+            {
+                ModifiersLB.Items.RemoveAt(ModifiersLB.SelectedIndex);
+                SaveStatus = 2;
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,12 +189,66 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            SaveStatus = 2;
         }
 
-        private void ModifiersBT_Click(object sender, EventArgs e)
+        private bool containsModifier(string name)
         {
+            foreach (string entry in ModifiersLB.Items)
+            {
+                if (entry.Split(' ')[0] == name){ return false; }
+            }
+            return true;
+        }
 
-        } // To Do
+        private void ModifiersAddBT_Click(object sender, EventArgs e)
+        {
+            float i=0;
+            bool verif;
+
+            if (!Regex.Match(NumberTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(NumberTB.Texts))
+            {
+                NumberTB.BorderColor = Color.FromArgb(255, 39, 58);
+                NumberTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                verif = false;
+            }
+            else
+            {
+
+                if (float.TryParse(NumberTB.Texts.Replace(".", ","), out i) && i > -2147483647 && i < 2147483647)
+                {
+                    NumberTB.BorderColor = Color.FromArgb(66, 66, 66);
+                    NumberTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+                    verif = true;
+                }
+                else
+                {
+                    NumberTB.BorderColor = Color.FromArgb(255, 39, 58);
+                    NumberTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                    verif = false;
+                }
+
+            }
+
+            if (ModifiersCB.SelectedIndex == -1)
+            {
+                verif = false;
+                ModifiersCB.BorderColor = Color.FromArgb(255, 39, 58);
+            }
+            else
+            {
+                ModifiersCB.BorderColor = Color.FromArgb(66, 66, 66);
+            }
+
+            if (verif)
+            { 
+                if (containsModifier(ModifiersCB.SelectedItem.ToString()))
+                {
+                    ModifiersLB.Items.Add(ModifiersCB.SelectedItem.ToString() + " = " + i.ToString().Replace(',','.'));
+                }
+            }
+            SaveStatus = 2;
+        }
 
         private void SaveBT_Click(object sender, EventArgs e)
         {
@@ -361,13 +419,13 @@ namespace Victoria_3_Modding_Tool
                 i = 0;
             }
 
+            foreach (string entry in local.modifiers)
+            {
+                ModifiersLB.Items.Add(entry);
+            }
 
-            ////
-            ////
-            //// Modifiers
-            ////
-            ////
-           
+
+
             SaveStatus = 0;
 
         }
@@ -377,7 +435,7 @@ namespace Victoria_3_Modding_Tool
 
             local = new ClassTech(NameTB.Texts, NameGameTB.Texts, (int)EraCB.SelectedItem, TextureTB.Texts, DescriptionTB.Texts, CategoryCB.SelectedItem.ToString().ToLower(), CanResearchCB.Checked? true:false);
 
-            List<string> words = NeededTechLB.Items.Cast<String>().ToList();
+            List<string> words = NeededTechLB.Items.Cast<string>().ToList();
 
             words.RemoveAt(0);
 
@@ -388,8 +446,8 @@ namespace Victoria_3_Modding_Tool
 
             local.restrictions = words.Cast<string>().ToList();
 
+            local.modifiers = ModifiersLB.Items.Cast<string>().ToList();
 
-            // Modifiers to add
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -430,14 +488,12 @@ namespace Victoria_3_Modding_Tool
 
             NeededTechLB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
             NeededCB.Items.Add("Choose a category.");
-            
 
 
-            ModifiersLB.Items.Add("Work In Progress");
-            // TO DO
-
-
-
+            foreach (ClassModifiersType entry in ModifiersTypes)
+            {
+                ModifiersCB.Items.Add(entry.name);
+            }
 
             if (local != null )
             {
