@@ -28,7 +28,6 @@ namespace Victoria_3_Modding_Tool
             this.Padding = new Padding(1);//Border size
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-            rect.Width = rect.Width / 2;
             this.Location = new Point(rect.Width/2, 0);
 
         }
@@ -109,7 +108,7 @@ namespace Victoria_3_Modding_Tool
                 {
 
                     //Get the path of specified file
-                    TextureTB.Texts = openFileDialog.FileName.Substring(openFileDialog.FileName.IndexOf("gfx"));
+                    TextureTB.Texts = openFileDialog.FileName;
 
                 }
 
@@ -127,15 +126,15 @@ namespace Victoria_3_Modding_Tool
         private void LoadInfoToControls()
         {
 
-            NameTB.Texts = local.name;
+            NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.TrueName;
 
-            TextureTB.Texts = local.texture;
+            TextureTB.Texts = local.Texture;
 
-            CostTB.Texts = local.cost.ToString();
+            CostTB.Texts = local.Cost.ToString();
 
-            if (local.tradeable == false)
+            if (local.Tradeable == false)
             {
                 TradeableCB.Checked = false;
             }
@@ -144,7 +143,7 @@ namespace Victoria_3_Modding_Tool
                 TradeableCB.Checked = true;
             }
 
-            if (local.fixed_price == true)
+            if (local.Fixed_price == true)
             {
                 FixedCB.Checked = true;
             }
@@ -153,7 +152,7 @@ namespace Victoria_3_Modding_Tool
                 FixedCB.Checked = false;
             }
 
-            switch (local.category)
+            switch (local.Category)
             {
                 case "staple":
                     CategoryCB.SelectedIndex = 0;
@@ -169,11 +168,11 @@ namespace Victoria_3_Modding_Tool
                     break;
             }
 
-            ObsessionTB.Texts = local.obsession.ToString().Replace(",",".");
-            PrestigeTB.Texts = local.prestige.ToString().Replace(",", ".");
-            ConvoyTB.Texts = local.convoy_cost.ToString().Replace(",", ".");
-            TradedTB.Texts = local.tradedQuantity.ToString();
-            ConsumptionTB.Texts = local.consumption.ToString();
+            ObsessionTB.Texts = local.Obsession.ToString().Replace(",",".");
+            PrestigeTB.Texts = local.Prestige.ToString().Replace(",", ".");
+            ConvoyTB.Texts = local.Convoy_cost.ToString().Replace(",", ".");
+            TradedTB.Texts = local.TradedQuantity.ToString();
+            ConsumptionTB.Texts = local.Consumption.ToString();
 
             SaveStatus = 0;
 
@@ -184,13 +183,13 @@ namespace Victoria_3_Modding_Tool
             float i;
             int j;
 
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassGoods().hasName(GoodsData.GetRange(sizeOfVicky, GoodsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(GoodsData.GetRange(sizeOfVicky, GoodsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success)
+            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(NameGameTB.Texts))
             {
                 canSave[9] = true;
             }
@@ -202,7 +201,7 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[3] = false; }
 
-            if (!Regex.Match(CostTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(CostTB.Texts))
+            if (!Regex.Match(CostTB.Texts, "^([0-9])+$").Success || string.IsNullOrEmpty(CostTB.Texts))
             {
                 CostTB.BorderColor = Color.FromArgb(255, 39, 58);
                 CostTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -226,7 +225,7 @@ namespace Victoria_3_Modding_Tool
 
             }
 
-            if (!Regex.Match(ObsessionTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(ObsessionTB.Texts))
+            if (!Regex.Match(ObsessionTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ObsessionTB.Texts))
             {
                 ObsessionTB.BorderColor = Color.FromArgb(255, 39, 58);
                 ObsessionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -250,7 +249,7 @@ namespace Victoria_3_Modding_Tool
 
             }
 
-            if (!Regex.Match(TradedTB.Texts, "^([-])?([0-9])+$").Success || String.IsNullOrEmpty(TradedTB.Texts))
+            if (!Regex.Match(TradedTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(TradedTB.Texts))
             {
                 TradedTB.BorderColor = Color.FromArgb(255, 39, 58);
                 TradedTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -290,7 +289,7 @@ namespace Victoria_3_Modding_Tool
 
             }
 
-            if (!Regex.Match(ConvoyTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(ConvoyTB.Texts))
+            if (!Regex.Match(ConvoyTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ConvoyTB.Texts))
             {
                 ConvoyTB.BorderColor = Color.FromArgb(255, 39, 58);
                 ConvoyTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -331,7 +330,7 @@ namespace Victoria_3_Modding_Tool
 
             }
 
-            if (!Regex.Match(PrestigeTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(PrestigeTB.Texts))
+            if (!Regex.Match(PrestigeTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(PrestigeTB.Texts))
             {
                 PrestigeTB.BorderColor = Color.FromArgb(255, 39, 58);
                 PrestigeTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -355,7 +354,7 @@ namespace Victoria_3_Modding_Tool
 
             }
 
-            if (!Regex.Match(ConsumptionTB.Texts, "^([-])?([0-9])+$").Success || String.IsNullOrEmpty(ConsumptionTB.Texts))
+            if (!Regex.Match(ConsumptionTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(ConsumptionTB.Texts))
             {
                 ConsumptionTB.BorderColor = Color.FromArgb(255, 39, 58);
                 ConsumptionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -434,7 +433,7 @@ namespace Victoria_3_Modding_Tool
 
         private void Save_Goods()
         {
-            local = new ClassGoods(NameTB.Texts, NameGameTB.Texts, TextureTB.Texts, Int32.Parse(CostTB.Texts), CategoryCB.SelectedItem.ToString().ToLower(), TradeableCB.Checked ? true : false, FixedCB.Checked ? true : false, Int32.Parse(ConsumptionTB.Texts), float.Parse(ObsessionTB.Texts, CultureInfo.InvariantCulture.NumberFormat), float.Parse(PrestigeTB.Texts, CultureInfo.InvariantCulture.NumberFormat), Int32.Parse(TradedTB.Texts), float.Parse(ConvoyTB.Texts, CultureInfo.InvariantCulture.NumberFormat));
+            local = new ClassGoods(NameTB.Texts, NameGameTB.Texts, TextureTB.Texts, Int32.Parse(CostTB.Texts), CategoryCB.SelectedItem.ToString().ToLower(), TradeableCB.Checked, FixedCB.Checked, Int32.Parse(ConsumptionTB.Texts), float.Parse(ObsessionTB.Texts, CultureInfo.InvariantCulture.NumberFormat), float.Parse(PrestigeTB.Texts, CultureInfo.InvariantCulture.NumberFormat), Int32.Parse(TradedTB.Texts), float.Parse(ConvoyTB.Texts, CultureInfo.InvariantCulture.NumberFormat));
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////

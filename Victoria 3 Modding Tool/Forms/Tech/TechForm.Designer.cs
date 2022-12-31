@@ -233,9 +233,9 @@ namespace Victoria_3_Modding_Tool
             this.ModifiersL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.ModifiersL.Location = new System.Drawing.Point(13, 521);
             this.ModifiersL.Name = "ModifiersL";
-            this.ModifiersL.Size = new System.Drawing.Size(91, 21);
+            this.ModifiersL.Size = new System.Drawing.Size(100, 21);
             this.ModifiersL.TabIndex = 36;
-            this.ModifiersL.Text = "Modifiers";
+            this.ModifiersL.Text = "Modifiers:";
             // 
             // TextureL
             // 
@@ -281,7 +281,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.EraCostL.AutoSize = true;
             this.EraCostL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.EraCostL.Location = new System.Drawing.Point(327, 43);
+            this.EraCostL.Location = new System.Drawing.Point(502, 42);
             this.EraCostL.Name = "EraCostL";
             this.EraCostL.Size = new System.Drawing.Size(55, 21);
             this.EraCostL.TabIndex = 46;
@@ -291,7 +291,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.EraL.AutoSize = true;
             this.EraL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.EraL.Location = new System.Drawing.Point(453, 43);
+            this.EraL.Location = new System.Drawing.Point(628, 42);
             this.EraL.Name = "EraL";
             this.EraL.Size = new System.Drawing.Size(46, 21);
             this.EraL.TabIndex = 47;
@@ -301,7 +301,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.CategoryL.AutoSize = true;
             this.CategoryL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.CategoryL.Location = new System.Drawing.Point(650, 43);
+            this.CategoryL.Location = new System.Drawing.Point(670, 100);
             this.CategoryL.Name = "CategoryL";
             this.CategoryL.Size = new System.Drawing.Size(91, 21);
             this.CategoryL.TabIndex = 48;
@@ -311,7 +311,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.CanResearchL.AutoSize = true;
             this.CanResearchL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.CanResearchL.Location = new System.Drawing.Point(851, 134);
+            this.CanResearchL.Location = new System.Drawing.Point(854, 72);
             this.CanResearchL.Name = "CanResearchL";
             this.CanResearchL.Size = new System.Drawing.Size(118, 21);
             this.CanResearchL.TabIndex = 49;
@@ -410,7 +410,7 @@ namespace Victoria_3_Modding_Tool
             this.NumberTB.Name = "NumberTB";
             this.NumberTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NumberTB.ReadOnly = false;
-            this.NumberTB.Size = new System.Drawing.Size(96, 32);
+            this.NumberTB.Size = new System.Drawing.Size(96, 24);
             this.NumberTB.TabIndex = 64;
             this.NumberTB.Texts = "";
             this.NumberTB.UnderlinedStyle = false;
@@ -428,7 +428,7 @@ namespace Victoria_3_Modding_Tool
             this.NameGameTB.Name = "NameGameTB";
             this.NameGameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NameGameTB.ReadOnly = false;
-            this.NameGameTB.Size = new System.Drawing.Size(742, 32);
+            this.NameGameTB.Size = new System.Drawing.Size(652, 24);
             this.NameGameTB.TabIndex = 61;
             this.NameGameTB.Texts = "";
             this.NameGameTB.UnderlinedStyle = false;
@@ -498,7 +498,7 @@ namespace Victoria_3_Modding_Tool
             this.CanResearchCB.AutoSize = true;
             this.CanResearchCB.Checked = true;
             this.CanResearchCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CanResearchCB.Location = new System.Drawing.Point(783, 129);
+            this.CanResearchCB.Location = new System.Drawing.Point(786, 67);
             this.CanResearchCB.MinimumSize = new System.Drawing.Size(62, 32);
             this.CanResearchCB.Name = "CanResearchCB";
             this.CanResearchCB.OffBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
@@ -522,7 +522,7 @@ namespace Victoria_3_Modding_Tool
             this.CategoryCB.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(73)))), ((int)(((byte)(150)))));
             this.CategoryCB.ListBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.CategoryCB.ListTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.CategoryCB.Location = new System.Drawing.Point(654, 67);
+            this.CategoryCB.Location = new System.Drawing.Point(674, 129);
             this.CategoryCB.MinimumSize = new System.Drawing.Size(120, 30);
             this.CategoryCB.Name = "CategoryCB";
             this.CategoryCB.Padding = new System.Windows.Forms.Padding(1);
@@ -543,11 +543,11 @@ namespace Victoria_3_Modding_Tool
             this.EraCB.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(73)))), ((int)(((byte)(150)))));
             this.EraCB.ListBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.EraCB.ListTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.EraCB.Location = new System.Drawing.Point(457, 67);
+            this.EraCB.Location = new System.Drawing.Point(632, 66);
             this.EraCB.MinimumSize = new System.Drawing.Size(120, 32);
             this.EraCB.Name = "EraCB";
             this.EraCB.Padding = new System.Windows.Forms.Padding(1);
-            this.EraCB.Size = new System.Drawing.Size(138, 32);
+            this.EraCB.Size = new System.Drawing.Size(138, 33);
             this.EraCB.TabIndex = 43;
             this.EraCB.Texts = "";
             this.EraCB.OnSelectedIndexChanged += new System.EventHandler(this.EraCB_OnSelectedIndexChanged);
@@ -560,12 +560,12 @@ namespace Victoria_3_Modding_Tool
             this.EraCostTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EraCostTB.BorderSize = 1;
             this.EraCostTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.EraCostTB.Location = new System.Drawing.Point(331, 67);
+            this.EraCostTB.Location = new System.Drawing.Point(506, 66);
             this.EraCostTB.Multiline = false;
             this.EraCostTB.Name = "EraCostTB";
             this.EraCostTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.EraCostTB.ReadOnly = true;
-            this.EraCostTB.Size = new System.Drawing.Size(120, 32);
+            this.EraCostTB.Size = new System.Drawing.Size(120, 24);
             this.EraCostTB.TabIndex = 42;
             this.EraCostTB.Texts = "";
             this.EraCostTB.UnderlinedStyle = false;
@@ -583,7 +583,7 @@ namespace Victoria_3_Modding_Tool
             this.NameTB.Name = "NameTB";
             this.NameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NameTB.ReadOnly = false;
-            this.NameTB.Size = new System.Drawing.Size(255, 32);
+            this.NameTB.Size = new System.Drawing.Size(484, 24);
             this.NameTB.TabIndex = 40;
             this.NameTB.Texts = "";
             this.NameTB.UnderlinedStyle = false;
@@ -602,7 +602,7 @@ namespace Victoria_3_Modding_Tool
             this.TextureTB.Name = "TextureTB";
             this.TextureTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.TextureTB.ReadOnly = false;
-            this.TextureTB.Size = new System.Drawing.Size(906, 32);
+            this.TextureTB.Size = new System.Drawing.Size(906, 24);
             this.TextureTB.TabIndex = 38;
             this.TextureTB.Texts = "";
             this.TextureTB.UnderlinedStyle = false;

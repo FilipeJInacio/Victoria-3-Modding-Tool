@@ -4,10 +4,13 @@ using System.Linq;
 
 namespace Victoria_3_Modding_Tool
 {
-    public class Parser
+    public interface IParser
     {
-        public int count = 0;
+         List<object> ParseFiles(string directoryPath);
+    }
 
+    public class Parser : IParser
+    {
         public List<object> ParseFiles(string directoryPath)
         {
             string[] paths = Directory.GetFiles(directoryPath, "*.txt");
@@ -20,7 +23,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     rawResults.Add(ParseObject(sr));
                 }
-                count = 0;
             }
             return rawResults;
         }
@@ -28,29 +30,17 @@ namespace Victoria_3_Modding_Tool
         public object ParseObject(StreamReader sr)
         {
             string ln;
-            string[] words;
             List<KeyValuePair<string, object>> parsedObject = new List<KeyValuePair<string, object>> ();
             int j = 0;
-            void NextLine() { ln = sr.ReadLine(); count++; }
+            void NextLine() { ln = sr.ReadLine();}
             NextLine();
 
             while (ln != null)
             {
-                ln = StripComments(ln.Trim('\t'));
+                ln = StripComments(ln.Replace("\t",""));
 
-                if (ln.Contains('{')&&ln.Contains('}')) // only for color
-                {
-                    words = ln.Split(' ');
-                    parsedObject.Add(new KeyValuePair<string, object>("red", words[3]));
-                    parsedObject.Add(new KeyValuePair<string, object>("green", words[4]));
-                    parsedObject.Add(new KeyValuePair<string, object>("blue", words[5]));
-                    NextLine();
-                    continue;
-                }
-                else
-                {
-                    ln = ln.Replace(" ","");
-                }
+                ln = ln.Replace(" ","");
+                
 
                 if (ln.Length == 0)
                 {
@@ -58,9 +48,12 @@ namespace Victoria_3_Modding_Tool
                     continue;
                 }
 
-
-
-                if (ln.Contains("{"))
+                if (ln.Contains("{") && ln.Contains("}"))
+                {
+                    NextLine();
+                    continue;
+                }
+                else if (ln.Contains("{"))
                 {
                     parsedObject.Add(new KeyValuePair<string, object>(ln.Split('=')[0], ParseObject(sr)));
                     NextLine();
@@ -107,10 +100,8 @@ namespace Victoria_3_Modding_Tool
 
     }
 
-    public class Parser2
+    public class Parser2 : IParser
     {
-        public int count = 0;
-
         public List<object> ParseFiles(string directoryPath)
         {
             string[] paths = Directory.GetFiles(directoryPath, "*.txt");
@@ -123,7 +114,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     rawResults.Add(ParseObject(sr));
                 }
-                count = 0;
             }
             return rawResults;
         }
@@ -134,12 +124,12 @@ namespace Victoria_3_Modding_Tool
             string[] words;
             List<KeyValuePair<string, object>> parsedObject = new List<KeyValuePair<string, object>>();
             int j = 0;
-            void NextLine() { ln = sr.ReadLine(); count++; }
+            void NextLine() { ln = sr.ReadLine();}
             NextLine();
 
             while (ln != null)
             {
-                ln = StripComments(ln.Trim('\t'));
+                ln = StripComments(ln.Replace("\t",""));
 
                 words = ln.Split(' ');
                 if (ln.Contains('{') && ln.Contains('}')) // only for color
@@ -216,6 +206,96 @@ namespace Victoria_3_Modding_Tool
         }
 
 
+
+    }
+
+    public class LocalizationParser
+    {
+        public Dictionary<string,string> Dic;
+
+
+        public Dictionary<string, string> ParseFiles(string directoryPath)
+        {
+            Dic = new Dictionary<string, string>();
+
+            List<string> paths = GetTextFiles(directoryPath);
+
+            foreach (string filePath in paths)
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    ParseObject(sr);
+                }
+            }
+            return Dic;
+        }
+
+        public void ParseObject(StreamReader sr)
+        {
+            string ln;
+            string[] words;
+            void NextLine() { ln = sr.ReadLine();}
+            NextLine();
+            NextLine();
+
+            while (ln != null)
+            {
+                ln = StripComments(ln.Replace("\t", ""));
+
+                if (ln.Length == 0)
+                {
+                    NextLine();
+                    continue;
+                }
+
+                if (ln.Contains(':')) {
+                    words = ln.Split(':');
+                    Dic.Add(words[0].Trim(' '), words[1].Trim(' '));
+                    NextLine();
+                    continue;
+                }
+                NextLine();
+            }
+
+            return;
+        }
+
+        public string StripComments(string line)
+        {
+            int i;
+
+            if(line.Contains("#"))
+            {
+                if (!line.Contains(":") || line.IndexOf(":") > line.IndexOf("#"))
+                {
+                    i = line.IndexOf("#");
+                    if(i == 0){return "";}
+                    else { return line.Substring(0, i);}
+                }
+                else
+                {
+                    i = line.IndexOf("\"", 4 + line.IndexOf(":"));
+                    return line.Substring(0, i + 1);
+                }
+            }
+
+            return line;
+        }
+
+        public List<string> GetTextFiles(string startingPath)
+        {
+            List<string> files = new List<string>();
+            foreach(string entry in Directory.GetFiles(startingPath, "*.yml"))
+            {
+                files.Add(entry);
+            }
+            foreach (string entry in Directory.GetDirectories(startingPath, "*", SearchOption.TopDirectoryOnly))
+            {
+                files.AddRange(GetTextFiles(entry));
+            }
+            return files;
+
+        }
 
     }
 }

@@ -4,68 +4,68 @@ using System.Globalization;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-    public class ClassGoods
+    public class ClassGoods : IType, ITexture
     {
-        public string name { get; set; }
+        public string Name { get; set; }
         public string TrueName { get; set; }
-        public string texture { get; set; }
-        public int cost { get; set; }
-        public string category { get; set; }
-        public bool tradeable { get; set; }
-        public bool fixed_price { get; set; }
-        public int consumption { get; set; }
-        public float obsession { get; set; }
-        public float prestige { get; set; }
-        public int tradedQuantity { get; set; }
-        public float convoy_cost { get; set; }
+        public string Texture { get; set; }
+        public int Cost { get; set; }
+        public string Category { get; set; }
+        public bool Tradeable { get; set; }
+        public bool Fixed_price { get; set; }
+        public int Consumption { get; set; }
+        public float Obsession { get; set; }
+        public float Prestige { get; set; }
+        public int TradedQuantity { get; set; }
+        public float Convoy_cost { get; set; }
 
         public ClassGoods() { }
 
         public ClassGoods(ClassGoods good)
         {
-            this.name= good.name;
+            this.Name= good.Name;
             this.TrueName= good.TrueName;
-            this.texture = good.texture;
-            this.cost = good.cost;
-            this.category = good.category;
-            this.tradeable = good.tradeable;
-            this.fixed_price= good.fixed_price;
-            this.consumption = good.consumption;
-            this.obsession = good.obsession;
-            this.prestige= good.prestige;
-            this.tradedQuantity= good.tradedQuantity;
-            this.convoy_cost = good.convoy_cost;
+            this.Texture = good.Texture;
+            this.Cost = good.Cost;
+            this.Category = good.Category;
+            this.Tradeable = good.Tradeable;
+            this.Fixed_price= good.Fixed_price;
+            this.Consumption = good.Consumption;
+            this.Obsession = good.Obsession;
+            this.Prestige= good.Prestige;
+            this.TradedQuantity= good.TradedQuantity;
+            this.Convoy_cost = good.Convoy_cost;
         }
 
         public ClassGoods(string name, string TrueName, string texture, int cost, string category, bool tradeablee, bool fixed_price, int consumption, float obsession, float prestige, int tradedQuantity, float convoy_cost)
         {
-            this.name = name;
+            this.Name = name;
             this.TrueName = TrueName;
-            this.texture = texture;
-            this.cost= cost;
-            this.category = category;
-            this.tradeable = tradeablee;
-            this.fixed_price = fixed_price;
-            this.consumption = consumption;
-            this.obsession = obsession;
-            this.prestige = prestige;
-            this.tradedQuantity = tradedQuantity;
-            this.convoy_cost = convoy_cost;
+            this.Texture = texture;
+            this.Cost= cost;
+            this.Category = category;
+            this.Tradeable = tradeablee;
+            this.Fixed_price = fixed_price;
+            this.Consumption = consumption;
+            this.Obsession = obsession;
+            this.Prestige = prestige;
+            this.TradedQuantity = tradedQuantity;
+            this.Convoy_cost = convoy_cost;
 
         }
 
-        public ClassGoods(KeyValuePair<string, object> ParserData)
+        public ClassGoods(KeyValuePair<string, object> ParserData, string TrueName)
         {
 
-            this.tradeable = true;
-            this.fixed_price = false;
-            this.name = ParserData.Key;
-            this.TrueName = "None";
-            this.obsession = -1;
-            this.prestige = -1;
-            this.tradedQuantity = 1;
-            this.convoy_cost = 1;
-            this.consumption = -1;
+            this.Tradeable = true;
+            this.Fixed_price = false;
+            this.Name = ParserData.Key;
+            this.TrueName = TrueName;
+            this.Obsession = -1;
+            this.Prestige = -1;
+            this.TradedQuantity = 1;
+            this.Convoy_cost = 1;
+            this.Consumption = -1;
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
@@ -73,27 +73,27 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                 switch (element.Key)
                 {
                     case "texture":
-                        this.texture = element.Value.ToString().Trim('"'); continue;
+                        this.Texture = element.Value.ToString().Trim('"'); continue;
                     case "cost":
-                        this.cost = Int32.Parse(element.Value.ToString()); continue;
+                        this.Cost = Int32.Parse(element.Value.ToString()); continue;
                     case "category":
-                        this.category = element.Value.ToString(); continue;
+                        this.Category = element.Value.ToString(); continue;
                     case "tradeable":
-                        if (element.Value.ToString() == "no") { this.tradeable = false; continue; } else { this.tradeable = true; }
+                        if (element.Value.ToString() == "no") { this.Tradeable = false; continue; } else { this.Tradeable = true; }
                         continue;
                     case "fixed_price":
-                        if (element.Value.ToString() == "yes") { this.fixed_price = true; continue; } else { this.fixed_price = false; }
+                        if (element.Value.ToString() == "yes") { this.Fixed_price = true; continue; } else { this.Fixed_price = false; }
                         continue;
                     case "obsession_chance":
-                        this.obsession = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
+                        this.Obsession = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
                     case "prestige_factor":
-                        this.prestige = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
+                        this.Prestige = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
                     case "traded_quantity":
-                        this.tradedQuantity = Int32.Parse(element.Value.ToString()); continue;
+                        this.TradedQuantity = Int32.Parse(element.Value.ToString()); continue;
                     case "convoy_cost_multiplier":
-                        this.convoy_cost = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
+                        this.Convoy_cost = float.Parse(element.Value.ToString(), CultureInfo.InvariantCulture.NumberFormat); continue;
                     case "consumption_tax_cost":
-                        this.consumption = Int32.Parse(element.Value.ToString()); continue;
+                        this.Consumption = Int32.Parse(element.Value.ToString()); continue;
                     default:
                         continue;
 
@@ -101,67 +101,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             }
 
-            if (this.tradeable==false) { this.tradedQuantity = -1; this.convoy_cost = -1; }
+            if (this.Tradeable==false) { this.TradedQuantity = -1; this.Convoy_cost = -1; }
 
 
         }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Has name in TechClass list
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public bool hasName(List<ClassGoods> techl, string name)
-        {
-            foreach (ClassGoods goodsEntry in techl)
-            {
-                if (goodsEntry.name == name)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public int hasNameIndex(List<ClassGoods> techl, string name)
-        {
-            int i=0;
-            foreach (ClassGoods goodsEntry in techl)
-            {
-                if (goodsEntry.name == name)
-                {
-                    return i;
-                }
-                i++;
-            }
-
-            return -1;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Merge TechClass list
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public List<ClassGoods> MergeGoods(List<ClassGoods> Pri, List<ClassGoods> Sec)
-        {
-            List<ClassGoods> result = new List<ClassGoods>();
-
-            foreach (ClassGoods goodsEntry in Pri)
-            {
-                result.Add(goodsEntry);
-            }
-
-            foreach (ClassGoods goodsEntry in Sec)
-            {
-                if (!new ClassGoods().hasName(result, goodsEntry.name))
-                {
-                    result.Add(goodsEntry);
-                }
-            }
-
-            return result;
-        }
-
 
     }
 

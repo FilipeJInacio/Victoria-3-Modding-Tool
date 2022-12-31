@@ -131,7 +131,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         {
             foreach (ClassPopNeeds entry in popNeeds)
             {
-                if (entry.name == name)
+                if (entry.Name == name)
                 {
                     return true;
                 }
@@ -145,7 +145,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             int i = 0;
             foreach (ClassPopNeeds entry in popNeeds)
             {
-                if (entry.name == name)
+                if (entry.Name == name)
                 {
                     return i;
                 }
@@ -171,7 +171,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             foreach (ClassPopNeeds Entry in Sec)
             {
-                if (!new ClassPopNeeds().hasName(result, Entry.name))
+                if (!new Functions().hasName(result, Entry.Name))
                 {
                     result.Add(Entry);
                 }

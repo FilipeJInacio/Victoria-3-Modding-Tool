@@ -107,7 +107,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         {
             foreach (ClassGoods goodsEntry in techl)
             {
-                if (goodsEntry.name == name)
+                if (goodsEntry.Name == name)
                 {
                     return true;
                 }
@@ -121,7 +121,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             int i = 0;
             foreach (ClassGoods goodsEntry in techl)
             {
-                if (goodsEntry.name == name)
+                if (goodsEntry.Name == name)
                 {
                     return i;
                 }
@@ -147,7 +147,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             foreach (ClassGoods goodsEntry in Sec)
             {
-                if (!new ClassGoods().hasName(result, goodsEntry.name))
+                if (!new Functions().hasName(result, goodsEntry.Name))
                 {
                     result.Add(goodsEntry);
                 }

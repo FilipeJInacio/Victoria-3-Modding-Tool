@@ -102,10 +102,7 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
-            using (PopNeedsHelp form = new PopNeedsHelp())
-            {
-                form.ShowDialog();
-            }
+
         }
 
 
@@ -133,7 +130,7 @@ namespace Victoria_3_Modding_Tool
             bool[] verif = {false,false,false, false};
             float weight=0, min=0, max=0;
 
-            if (!Regex.Match(WeigthTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(WeigthTB.Texts))
+            if (!Regex.Match(WeigthTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(WeigthTB.Texts))
             {
                 WeigthTB.BorderColor = Color.FromArgb(255, 39, 58);
                 WeigthTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -153,7 +150,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (!Regex.Match(MinTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(MinTB.Texts))
+            if (!Regex.Match(MinTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(MinTB.Texts))
             {
                 MinTB.BorderColor = Color.FromArgb(255, 39, 58);
                 MinTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -173,7 +170,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (!Regex.Match(MaxTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(MaxTB.Texts))
+            if (!Regex.Match(MaxTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(MaxTB.Texts))
             {
                 MaxTB.BorderColor = Color.FromArgb(255, 39, 58);
                 MaxTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -193,7 +190,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (EntryCB.SelectedIndex != -1 && !new ClassPopNeedsEntry().hasGood(localEntry,EntryCB.SelectedItem.ToString()))
+            if (EntryCB.SelectedIndex != -1 && !new Functions().hasName(localEntry,EntryCB.SelectedItem.ToString()))
             {
                 EntryCB.BorderColor = Color.FromArgb(66, 66, 66);
                 verif[3] = true;
@@ -243,7 +240,7 @@ namespace Victoria_3_Modding_Tool
             if (verification())
             {
                 localEntry.Add(new ClassPopNeedsEntry(EntryCB.SelectedItem.ToString(), float.Parse(WeigthTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat), float.Parse(MaxTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat), float.Parse(MinTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat)));
-                EntryLB.Items.Add(String.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", localEntry[localEntry.Count-1].goods, localEntry[localEntry.Count - 1].weight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].minWeight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].maxWeight.ToString().Replace(",", ".")));
+                EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", localEntry[localEntry.Count-1].Name, localEntry[localEntry.Count - 1].Weight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MinWeight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MaxWeight.ToString().Replace(",", ".")));
             }
 
             if (localEntry.Count != 0) { DeleteBT.Enabled = true; }
@@ -274,7 +271,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassPopNeeds().hasName(PopNeedsList.GetRange(sizeOfVicky, PopNeedsList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(PopNeedsList.GetRange(sizeOfVicky, PopNeedsList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -283,7 +280,7 @@ namespace Victoria_3_Modding_Tool
             if (localEntry.Count == 0) { canSave[2] = false; }
             else
             {
-                if (new ClassPopNeedsEntry().hasGood(localEntry, DefaultCB.SelectedItem.ToString())) { canSave[2] = true; }
+                if (new Functions().hasName(localEntry, DefaultCB.SelectedItem.ToString())) { canSave[2] = true; }
                 else { canSave[2] = false; }
             }
 
@@ -330,13 +327,13 @@ namespace Victoria_3_Modding_Tool
         {
             localEntry = new List<ClassPopNeedsEntry>();
 
-            NameTB.Texts = local.name;
+            NameTB.Texts = local.Name;
 
-            DefaultCB.SelectedIndex= new ClassGoods().hasNameIndex(GoodsList, local.defaultgood);
+            DefaultCB.SelectedIndex= new Functions().hasNameIndex(GoodsList, local.Defaultgood);
 
-            foreach (ClassPopNeedsEntry entry in local.entries)
+            foreach (ClassPopNeedsEntry entry in local.Entries)
             {
-                EntryLB.Items.Add(String.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", entry.goods, entry.weight.ToString().Replace(",", "."), entry.minWeight.ToString().Replace(",", "."), entry.maxWeight.ToString().Replace(",", ".")));
+                EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", entry.Name, entry.Weight.ToString().Replace(",", "."), entry.MinWeight.ToString().Replace(",", "."), entry.MaxWeight.ToString().Replace(",", ".")));
                 localEntry.Add(new ClassPopNeedsEntry(entry));
             }
             if (localEntry.Count != 0) { DeleteBT.Enabled = true; }
@@ -351,7 +348,7 @@ namespace Victoria_3_Modding_Tool
 
             foreach(ClassPopNeedsEntry entry in localEntry)
             {
-                local.entries.Add(entry);
+                local.Entries.Add(entry);
             }
         }
 
@@ -382,11 +379,11 @@ namespace Victoria_3_Modding_Tool
 
             foreach (ClassGoods entry in GoodsList)
             {
-                DefaultCB.Items.Add(entry.name);
-                EntryCB.Items.Add(entry.name);
+                DefaultCB.Items.Add(entry.Name);
+                EntryCB.Items.Add(entry.Name);
             }
 
-            EntryLB.Items.Add(String.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", "Good", "Weight", "Min", "Max"));
+            EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", "Good", "Weight", "Min", "Max"));
 
             if (local != null )
             {

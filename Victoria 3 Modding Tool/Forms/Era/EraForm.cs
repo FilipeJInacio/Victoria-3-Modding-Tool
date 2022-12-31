@@ -93,7 +93,7 @@ namespace Victoria_3_Modding_Tool
             Match n = Regex.Match(EraCostTB.Texts, "^[0-9]+$");
 
             // Is int? Era
-            if (!m.Success || String.IsNullOrEmpty(EraTB.Texts))
+            if (!m.Success || string.IsNullOrEmpty(EraTB.Texts))
             {
                 EraTB.BorderColor = Color.FromArgb(255, 39, 58);
                 EraTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -117,7 +117,7 @@ namespace Victoria_3_Modding_Tool
             }
 
             // Is int? Era Cost
-            if (!n.Success || String.IsNullOrEmpty(EraCostTB.Texts))
+            if (!n.Success || string.IsNullOrEmpty(EraCostTB.Texts))
             {
                 EraCostTB.BorderColor = Color.FromArgb(255, 39, 58);
                 EraCostTB.BorderFocusColor = Color.FromArgb(255, 94, 108);

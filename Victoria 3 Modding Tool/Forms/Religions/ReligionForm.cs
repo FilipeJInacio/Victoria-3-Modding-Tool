@@ -205,13 +205,13 @@ namespace Victoria_3_Modding_Tool
         
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassReligions().hasName(ReligionData.GetRange(sizeOfVicky, ReligionData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ReligionData.GetRange(sizeOfVicky, ReligionData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success)
+            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(NameGameTB.Texts))
             {
                 canSave[1] = true;
             }
@@ -303,22 +303,22 @@ namespace Victoria_3_Modding_Tool
         private void LoadInfoToControls()
         {
 
-            NameTB.Texts = local.name;
+            NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.Truename;
 
-            TextureTB.Texts = local.texture;
+            TextureTB.Texts = local.Texture;
 
-            RedTB.Texts = local.red.ToString();
-            GreenTB.Texts = local.green.ToString();
-            BlueTB.Texts = local.blue.ToString();
+            RedTB.Texts = local.Red.ToString();
+            GreenTB.Texts = local.Green.ToString();
+            BlueTB.Texts = local.Blue.ToString();
 
-            foreach(string entry in local.traits)
+            foreach(string entry in local.Traits)
             {
                 TraitsLB.Items.Add(entry);
             }
 
-            foreach (string entry in local.taboos)
+            foreach (string entry in local.Taboos)
             {
                 TaboosLB.Items.Add(entry);
             }
@@ -330,8 +330,8 @@ namespace Victoria_3_Modding_Tool
         private void Save_Technology()
         {
             local = new ClassReligions(NameTB.Texts,NameGameTB.Texts, TextureTB.Texts,Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
-            local.traits = TraitsLB.Items.Cast<string>().ToList();
-            local.taboos = TaboosLB.Items.Cast<string>().ToList();
+            local.Traits = TraitsLB.Items.Cast<string>().ToList();
+            local.Taboos = TaboosLB.Items.Cast<string>().ToList();
 
         }
 
@@ -366,8 +366,8 @@ namespace Victoria_3_Modding_Tool
 
             foreach (ClassGoods entry in GoodsData)
             {
-                if(entry.category== "luxury")
-                TaboosCB.Items.Add(entry.name);
+                if(entry.Category== "luxury")
+                TaboosCB.Items.Add(entry.Name);
             }
 
             if (local != null)
@@ -405,7 +405,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
             int i;
-            if (!Regex.Match(RedTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(RedTB.Texts))
+            if (!Regex.Match(RedTB.Texts, "^([0-9])+$").Success || string.IsNullOrEmpty(RedTB.Texts))
             {
                 canSave[3] = false;
             }
@@ -434,7 +434,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
             int i;
-            if (!Regex.Match(GreenTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(GreenTB.Texts))
+            if (!Regex.Match(GreenTB.Texts, "^([0-9])+$").Success || string.IsNullOrEmpty(GreenTB.Texts))
             {
                 canSave[4] = false;
             }
@@ -462,7 +462,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
             int i;
-            if (!Regex.Match(BlueTB.Texts, "^([0-9])+$").Success || String.IsNullOrEmpty(BlueTB.Texts))
+            if (!Regex.Match(BlueTB.Texts, "^([0-9])+$").Success || string.IsNullOrEmpty(BlueTB.Texts))
             {
                 canSave[5] = false;
             }

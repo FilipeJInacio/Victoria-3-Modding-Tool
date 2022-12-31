@@ -254,7 +254,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void PNameTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            if(!String.IsNullOrEmpty(PNameTB.Texts)) { canMake[0] = true; } else { canMake[0] = false; }
+            if(!string.IsNullOrEmpty(PNameTB.Texts)) { canMake[0] = true; } else { canMake[0] = false; }
         }
 
         private void ProjPathTB_CustomTextBox_TextChanged(object sender, EventArgs e)

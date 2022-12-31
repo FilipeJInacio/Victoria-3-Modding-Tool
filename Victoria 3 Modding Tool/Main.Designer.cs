@@ -352,6 +352,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.SaveBT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
             this.SaveBT.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.SaveBT.Enabled = false;
             this.SaveBT.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.SaveBT.FlatAppearance.BorderSize = 0;
             this.SaveBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
@@ -417,7 +418,7 @@ namespace Victoria_3_Modding_Tool
             this.ModSearchBarTB.Name = "ModSearchBarTB";
             this.ModSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.ModSearchBarTB.ReadOnly = false;
-            this.ModSearchBarTB.Size = new System.Drawing.Size(390, 32);
+            this.ModSearchBarTB.Size = new System.Drawing.Size(390, 24);
             this.ModSearchBarTB.TabIndex = 67;
             this.ModSearchBarTB.Texts = "";
             this.ModSearchBarTB.UnderlinedStyle = false;
@@ -436,7 +437,7 @@ namespace Victoria_3_Modding_Tool
             this.ProjSearchBarTB.Name = "ProjSearchBarTB";
             this.ProjSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.ProjSearchBarTB.ReadOnly = false;
-            this.ProjSearchBarTB.Size = new System.Drawing.Size(240, 32);
+            this.ProjSearchBarTB.Size = new System.Drawing.Size(240, 24);
             this.ProjSearchBarTB.TabIndex = 68;
             this.ProjSearchBarTB.Texts = "";
             this.ProjSearchBarTB.UnderlinedStyle = false;
@@ -455,7 +456,7 @@ namespace Victoria_3_Modding_Tool
             this.VickySearchBarTB.Name = "VickySearchBarTB";
             this.VickySearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.VickySearchBarTB.ReadOnly = false;
-            this.VickySearchBarTB.Size = new System.Drawing.Size(240, 32);
+            this.VickySearchBarTB.Size = new System.Drawing.Size(240, 24);
             this.VickySearchBarTB.TabIndex = 66;
             this.VickySearchBarTB.Texts = "";
             this.VickySearchBarTB.UnderlinedStyle = false;
@@ -474,7 +475,7 @@ namespace Victoria_3_Modding_Tool
             this.MainSearchBarTB.Name = "MainSearchBarTB";
             this.MainSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.MainSearchBarTB.ReadOnly = false;
-            this.MainSearchBarTB.Size = new System.Drawing.Size(240, 32);
+            this.MainSearchBarTB.Size = new System.Drawing.Size(240, 24);
             this.MainSearchBarTB.TabIndex = 65;
             this.MainSearchBarTB.Texts = "";
             this.MainSearchBarTB.UnderlinedStyle = false;
@@ -519,6 +520,7 @@ namespace Victoria_3_Modding_Tool
             this.Text = " ";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+            this.Load += new System.EventHandler(this.Main_Load);
             this.HotBarP.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

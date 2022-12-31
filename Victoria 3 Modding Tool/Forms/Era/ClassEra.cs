@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Victoria_3_Modding_Tool.Forms.Era
 {
-    public class ClassEra
+    public class ClassEra : IType
     {
+        string IType.Name
+        {
+            get { return Era.ToString(); }
+        }
+
         public int Era { get; set; }
         public int Cost { get; set; }
 
@@ -14,68 +20,16 @@ namespace Victoria_3_Modding_Tool.Forms.Era
             this.Cost = cost;
         }
 
-        public bool FindEra(List<ClassEra> EraData, int Era)
+        public ClassEra(KeyValuePair<string, object> ParserData)
         {
-            foreach (ClassEra EraEntry in EraData)
+            foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-                if (EraEntry.Era == Era)
-                {
-
-                    return true;
-                }
+                this.Era = Int32.Parse(ParserData.Key.ToString().Substring(4));
+                this.Cost = Convert.ToInt32(element.Value);
             }
-            return false;
         }
 
-        public bool FindEraValue(List<ClassEra> EraData, int Era , int Value)
-        {
-            foreach (ClassEra EraEntry in EraData)
-            {
-                if (EraEntry.Era == Era && EraEntry.Cost == Value)
-                {
 
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public int FindEraValue(List<ClassEra> EraData, int Era)
-        {
-            int i = 0;
-            foreach (ClassEra EraEntry in EraData)
-            {
-                if (EraEntry.Era == Era) { return i; }
-                i++;
-            }
-            return -1;
-        }
-
-        public List<ClassEra> MergeEra(List<ClassEra> Pri, List<ClassEra> Sec)
-        {
-
-            List<ClassEra> ListE = new List<ClassEra>();
-
-            foreach(ClassEra eraEntry in Pri)
-            {
-                ListE.Add(new ClassEra(eraEntry.Era, eraEntry.Cost));
-            }
-
-            foreach (ClassEra SecEntry in Sec)
-            {
-                if (!FindEra(ListE, SecEntry.Era))
-                {
-                    ListE.Add(new ClassEra(SecEntry.Era, SecEntry.Cost));
-                }
-            }
-
-            ListE.Sort(delegate (ClassEra t1, ClassEra t2)
-            {   // 0.5 s Make more efi
-                return (t1.Era.CompareTo(t2.Era));
-            });
-
-            return ListE;
-        }
 
     }
 }

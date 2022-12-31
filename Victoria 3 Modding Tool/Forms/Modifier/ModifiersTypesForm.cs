@@ -99,28 +99,28 @@ namespace Victoria_3_Modding_Tool
         private void LoadInfoToControls()
         {
 
-            NameTB.Texts = local.name;
+            NameTB.Texts = local.Name;
 
-            NumDeciTB.Texts = local.num_decimals.ToString();
+            NumDeciTB.Texts = local.Num_decimals.ToString();
 
-            AIValueTB.Texts=local.ai_value.ToString();
+            AIValueTB.Texts=local.Ai_value.ToString();
 
-            if (local.translate!=null)
+            if (local.Translate!=null)
             {
-                TranslateTB.Texts = local.translate.ToString();
+                TranslateTB.Texts = local.Translate.ToString();
             }
 
-            if (local.postfix != null)
+            if (local.Postfix != null)
             {
-                PostfixTB.Texts = local.postfix.ToString();
+                PostfixTB.Texts = local.Postfix.ToString();
             }
             
 
-            GoodTB.Texts = local.good.ToString();
-            NeutralTB.Texts = local.neutral.ToString();
-            PercentageTB.Texts = local.percent.ToString();
-            InvertTB.Texts = local.invert.ToString();
-            BooleanTB.Texts = local.boolean.ToString();
+            GoodTB.Texts = local.Good.ToString();
+            NeutralTB.Texts = local.Neutral.ToString();
+            PercentageTB.Texts = local.Percent.ToString();
+            InvertTB.Texts = local.Invert.ToString();
+            BooleanTB.Texts = local.Boolean.ToString();
 
             SaveStatus = 0;
 
@@ -130,25 +130,25 @@ namespace Victoria_3_Modding_Tool
         {
             int j;
 
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassModifiersType().hasName(ModifiersData.GetRange(sizeOfVicky, ModifiersData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ModifiersData.GetRange(sizeOfVicky, ModifiersData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (Regex.Match(TranslateTB.Texts, "^[\\u0000-\\u007E]+$").Success || String.IsNullOrEmpty(TranslateTB.Texts))
+            if (Regex.Match(TranslateTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(TranslateTB.Texts))
             {
                 canSave[3] = true;
             }
             else { canSave[3] = false; }
 
-            if (Regex.Match(PostfixTB.Texts, "^[\\u0000-\\u007E]+$").Success || String.IsNullOrEmpty(PostfixTB.Texts))
+            if (Regex.Match(PostfixTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(PostfixTB.Texts))
             {
                 canSave[4] = true;
             }
             else { canSave[4] = false; }
 
-            if (String.IsNullOrEmpty(NumDeciTB.Texts))
+            if (string.IsNullOrEmpty(NumDeciTB.Texts))
             {
                 NumDeciTB.BorderColor = Color.FromArgb(255, 39, 58);
                 NumDeciTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -171,7 +171,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (!Regex.Match(AIValueTB.Texts, "^([-])?([0-9])+$").Success || String.IsNullOrEmpty(AIValueTB.Texts))
+            if (!Regex.Match(AIValueTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(AIValueTB.Texts))
             {
                 AIValueTB.BorderColor = Color.FromArgb(255, 39, 58);
                 AIValueTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -194,7 +194,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (String.IsNullOrEmpty(GoodTB.Texts))
+            if (string.IsNullOrEmpty(GoodTB.Texts))
             {
                 GoodTB.BorderColor = Color.FromArgb(255, 39, 58);
                 GoodTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -217,7 +217,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (String.IsNullOrEmpty(PercentageTB.Texts))
+            if (string.IsNullOrEmpty(PercentageTB.Texts))
             {
                 PercentageTB.BorderColor = Color.FromArgb(255, 39, 58);
                 PercentageTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -240,7 +240,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (String.IsNullOrEmpty(InvertTB.Texts))
+            if (string.IsNullOrEmpty(InvertTB.Texts))
             {
                 InvertTB.BorderColor = Color.FromArgb(255, 39, 58);
                 InvertTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -263,7 +263,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (String.IsNullOrEmpty(NeutralTB.Texts))
+            if (string.IsNullOrEmpty(NeutralTB.Texts))
             {
                 NeutralTB.BorderColor = Color.FromArgb(255, 39, 58);
                 NeutralTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -286,7 +286,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (String.IsNullOrEmpty(BooleanTB.Texts))
+            if (string.IsNullOrEmpty(BooleanTB.Texts))
             {
                 BooleanTB.BorderColor = Color.FromArgb(255, 39, 58);
                 BooleanTB.BorderFocusColor = Color.FromArgb(255, 94, 108);

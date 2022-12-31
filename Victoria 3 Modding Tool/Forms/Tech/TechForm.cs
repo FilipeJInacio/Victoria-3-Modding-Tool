@@ -137,7 +137,7 @@ namespace Victoria_3_Modding_Tool
 
         private void NeededTechLB_DoubleClick(object sender, EventArgs e)
         {
-            if (NeededTechLB.SelectedIndex != 0)
+            if (NeededTechLB.SelectedIndex != 0 && NeededTechLB.SelectedIndex != -1)
             {
                 NeededTechLB.Items.RemoveAt(NeededTechLB.SelectedIndex);
                 SaveStatus = 2;
@@ -172,7 +172,7 @@ namespace Victoria_3_Modding_Tool
                 {
 
                     //Get the path of specified file
-                    TextureTB.Texts = openFileDialog.FileName.Substring(openFileDialog.FileName.IndexOf("gfx"));
+                    TextureTB.Texts = openFileDialog.FileName;
 
                 }
 
@@ -206,7 +206,7 @@ namespace Victoria_3_Modding_Tool
             float i=0;
             bool verif;
 
-            if (!Regex.Match(NumberTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || String.IsNullOrEmpty(NumberTB.Texts))
+            if (!Regex.Match(NumberTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(NumberTB.Texts))
             {
                 NumberTB.BorderColor = Color.FromArgb(255, 39, 58);
                 NumberTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -261,19 +261,19 @@ namespace Victoria_3_Modding_Tool
         
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new ClassTech().hasName(TechList.GetRange(sizeOfVicky, TechList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(TechList.GetRange(sizeOfVicky, TechList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
-            if (Regex.Match(DescriptionTB.Texts, "^[\\u0000-\\u007E]+$").Success)
+            if (Regex.Match(DescriptionTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(DescriptionTB.Texts))
             {
                 canSave[4] = true;
             }
             else { canSave[4] = false; }
 
-            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success)
+            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(NameGameTB.Texts))
             {
                 canSave[5] = true;
             }
@@ -364,16 +364,22 @@ namespace Victoria_3_Modding_Tool
         private void LoadInfoToControls()
         {
 
-            NameTB.Texts = local.name;
+            NameTB.Texts = local.Name;
+
 
             NameGameTB.Texts = local.TrueName;
 
-            EraCB.SelectedIndex = local.era - 1;
+            
 
-            TextureTB.Texts = local.texture;
+            EraCB.SelectedIndex = local.Era - 1;
+
+            TextureTB.Texts = local.Texture;
+
             DescriptionTB.Texts = local.Desc;
 
-            switch (local.category)
+            
+
+            switch (local.Category)
             {
                 case "production":
                     CategoryCB.SelectedIndex = 0;
@@ -386,7 +392,7 @@ namespace Victoria_3_Modding_Tool
                     break;
             }
 
-            if (local.canResearch == false)
+            if (local.CanResearch == false)
             {
                 CanResearchCB.Checked = false;
             }
@@ -394,32 +400,32 @@ namespace Victoria_3_Modding_Tool
             int i = 0;
 
             NeededCB.Items.Clear();
-            NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
+            NeededCB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
             foreach (ClassTech TechEntry in TechList)
             {
-                if (TechEntry.category == CategoryCB.SelectedItem.ToString().ToLower())
+                if (TechEntry.Category == CategoryCB.SelectedItem.ToString().ToLower())
                 {
-                    NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.name, TechEntry.era, TechEntry.category.ToUpper()[0] + TechEntry.category.Substring(1)));
+                    NeededCB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.Name, TechEntry.Era, TechEntry.Category.ToUpper()[0] + TechEntry.Category.Substring(1)));
                 }
             }
 
 
-            foreach (string needTech in local.restrictions)
+            foreach (string needTech in local.Restrictions)
             {
                 foreach (ClassTech techsingular in TechList)
                 {
-                    if (techsingular.name == needTech)
+                    if (techsingular.Name == needTech)
                     {
                         break;
                     }
                     i++;
                 }
 
-                NeededTechLB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechList[i].name, TechList[i].era.ToString(), TechList[i].category.ToUpper()[0] + TechList[i].category.Substring(1)));
+                NeededTechLB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", TechList[i].Name, TechList[i].Era.ToString(), TechList[i].Category.ToUpper()[0] + TechList[i].Category.Substring(1)));
                 i = 0;
             }
 
-            foreach (string entry in local.modifiers)
+            foreach (string entry in local.Modifiers)
             {
                 ModifiersLB.Items.Add(entry);
             }
@@ -444,9 +450,9 @@ namespace Victoria_3_Modding_Tool
                 words[i] = words[i].ToString().Substring(0, 65).Trim(' ');
             }
 
-            local.restrictions = words.Cast<string>().ToList();
+            local.Restrictions = words.Cast<string>().ToList();
 
-            local.modifiers = ModifiersLB.Items.Cast<string>().ToList();
+            local.Modifiers = ModifiersLB.Items.Cast<string>().ToList();
 
         }
 
@@ -486,13 +492,13 @@ namespace Victoria_3_Modding_Tool
             CategoryCB.Items.Add("Society");
 
 
-            NeededTechLB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
+            NeededTechLB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
             NeededCB.Items.Add("Choose a category.");
 
 
             foreach (ClassModifiersType entry in ModifiersTypes)
             {
-                ModifiersCB.Items.Add(entry.name);
+                ModifiersCB.Items.Add(entry.Name);
             }
 
             if (local != null )
@@ -534,12 +540,12 @@ namespace Victoria_3_Modding_Tool
             {
                 canSave[2] = true;
                 NeededCB.Items.Clear();
-                NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
+                NeededCB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
                 foreach (ClassTech TechEntry in TechList)
                 {
-                    if (TechEntry.category == CategoryCB.SelectedItem.ToString().ToLower())
+                    if (TechEntry.Category == CategoryCB.SelectedItem.ToString().ToLower())
                     {
-                        NeededCB.Items.Add(String.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.name, TechEntry.era, TechEntry.category.ToUpper()[0] + TechEntry.category.Substring(1)));
+                        NeededCB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.Name, TechEntry.Era, TechEntry.Category.ToUpper()[0] + TechEntry.Category.Substring(1)));
                     }
                 }
 

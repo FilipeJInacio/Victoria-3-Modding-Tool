@@ -8,20 +8,32 @@ using Victoria_3_Modding_Tool.Forms.Tech;
 using Victoria_3_Modding_Tool.Forms.Era;
 using System.Drawing.Drawing2D;
 using System.Text;
+using System.Linq;
 
 namespace Victoria_3_Modding_Tool
 {
 
     /*
+     
     To do:
 
-    exit save bug
+    dic same error
 
-    Help  (Main-PopNeeds-PathForm Needs)
+    form position
+
+    religion -> make file !!
+
+    modifiers -> hardcode 
+
+    Help
 
     CodeEditor ->make spellcheck, end custom colors, make autocomplete
 
     */
+
+    // Questions
+    // - What are the traits?
+    // - 
 
 
     public partial class Main : Form
@@ -35,6 +47,10 @@ namespace Victoria_3_Modding_Tool
         public string ProjPath;
         public string ModPath;  // null -> no mod
         public string ModName;
+
+        public Dictionary<string, string> LocalizationDataP;
+        public Dictionary<string, string> LocalizationDataV;
+        public Dictionary<string, string> LocalizationDataM;
 
         public int mainSelectedIndex = -1;
         public int vickySelectedIndex = -1;
@@ -51,6 +67,14 @@ namespace Victoria_3_Modding_Tool
         public List<ClassGoods> GoodsDataV;
         public List<ClassGoods> GoodsDataM;
 
+        public List<ClassModifiers> ModifierDataP;
+        public List<ClassModifiers> ModifierDataV;
+        public List<ClassModifiers> ModifierDataM;
+
+        public List<ClassModifiersType> ModifierTypeDataP;
+        public List<ClassModifiersType> ModifierTypeDataV;
+        public List<ClassModifiersType> ModifierTypeDataM;
+
         public List<ClassPopNeeds> PopNeedsDataP;
         public List<ClassPopNeeds> PopNeedsDataV;
         public List<ClassPopNeeds> PopNeedsDataM;
@@ -64,9 +88,11 @@ namespace Victoria_3_Modding_Tool
         public List<ClassTech> TechDataV;
         public List<ClassTech> TechDataM;
 
-        public List<ClassModifiersType> ModifierTypeDataP;
-        public List<ClassModifiersType> ModifierTypeDataV;
-        public List<ClassModifiersType> ModifierTypeDataM;
+        
+
+        
+
+        
 
         public Main()
         {
@@ -154,6 +180,13 @@ namespace Victoria_3_Modding_Tool
                 }
 
             }
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            LocalizationDataV = LocalizationSetup(VickyPath + "\\game");
+            LocalizationDataP = LocalizationSetup(ProjPath);
+            LocalizationDataM = LocalizationSetup(ModPath);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,6 +290,276 @@ namespace Victoria_3_Modding_Tool
             LB_DrawItem(sender, e, ModLB);
         }
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // LB Search Bar *
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //*
+        private void LoadMainLB()
+        {
+            MainData.Add("Era");
+            MainData.Add("Goods");
+            MainData.Add("Modifiers");
+            MainData.Add("Modifier Types");
+            MainData.Add("Pop Needs");
+            MainData.Add("Religions");
+            MainData.Add("Technology");
+
+
+            MainLB.Items.Add("Era");
+            MainLB.Items.Add("Goods");
+            MainLB.Items.Add("Modifiers");
+            MainLB.Items.Add("Modifier Types");
+            MainLB.Items.Add("Pop Needs");
+            MainLB.Items.Add("Religions");
+            MainLB.Items.Add("Technology");
+        }
+
+        private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+            if (mainSelectedIndex == -1) { return; }
+
+            if (string.IsNullOrEmpty(MainSearchBarTB.Texts) == false)
+            {
+                MainLB.Items.Clear();
+                foreach (string entry in MainData)
+                {
+                    if (entry.StartsWith(MainSearchBarTB.Texts))
+                    {
+                        MainLB.Items.Add(entry);
+                    }
+
+                }
+
+            }
+            else if (MainSearchBarTB.Texts == "")
+            {
+                MainLB.Items.Clear();
+                foreach (string entry in MainData)
+                {
+                    MainLB.Items.Add(entry);
+                }
+            }
+        }
+
+        private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
+        }
+
+        private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
+        }
+
+        private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+        }
+
+        // *
+        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData) 
+        {
+
+            if (mainSelectedIndex == -1) { return; }
+
+            switch (MainData[mainSelectedIndex].ToString())
+            {
+
+                case "Era":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+
+                        foreach (ClassEra entry in EraData)
+                        {
+                            if (entry.Era.ToString().StartsWith(TB.Texts))
+                            { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+
+                        foreach (ClassEra entry in EraData)
+                        {
+                            if (entry.Era.ToString().StartsWith(TB.Texts))
+                            { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+                        }
+                    }
+
+
+                    break;
+
+                case "Goods":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassGoods str in GoodsData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassGoods str in GoodsData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "Modifiers":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassModifiers str in ModifierData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassModifiers str in ModifierData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "Modifier Types":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassModifiersType str in ModifierTypeData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "Pop Needs":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassPopNeeds str in PopNeedsData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassPopNeeds str in PopNeedsData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+
+                case "Religions":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassReligions str in ReligionsData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "Technology":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassTech str in TechData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassTech str in TechData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                default:
+                    MainLB.Items.Add("Error");
+                    break;
+            }
+
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LB data *
@@ -275,45 +578,57 @@ namespace Victoria_3_Modding_Tool
                     case "Era":
 
                         EraDataM = new List<ClassEra>();
-                        LoadEraData(ModPath + "\\common\\technology\\eras", EraDataM);
-                        ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                        foreach (ClassEra eraEntry in EraDataM) { ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        ReadFilesCommon(ModPath + "\\common\\technology\\eras", EraDataM, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+                        ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEra eraEntry in EraDataM) { ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                         break;
                     case "Goods":
 
                         GoodsDataM = new List<ClassGoods>();
-                        goods(ModPath, GoodsDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
-                        foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.name); }
+                        ReadFilesCommon(ModPath + "\\common\\goods", GoodsDataM, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataM[s.Key].Length - 4) : string.Empty), t => t.Name);
+                        foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
-                    case "Modifiers Types":
+                    case "Modifiers":
+
+                        ModifierDataM = new List<ClassModifiers>();
+                        ReadFilesCommon(ModPath + "\\common\\modifiers", ModifierDataM, new Parser(), s => new ClassModifiers(s,
+                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
+                            LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
+
+                        break;
+                    case "Modifier Types":
 
                         ModifierTypeDataM = new List<ClassModifiersType>();
-                        modifierTypes(ModPath, ModifierTypeDataM);
-                        foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.name); }
+                        ReadFilesCommon(ModPath + "\\common\\modifier_types", ModifierTypeDataM, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
                     case "Pop Needs":
 
                         PopNeedsDataM = new List<ClassPopNeeds>();
-                        popneeds(ModPath, PopNeedsDataM);
-                        foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.name); }
+                        ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
+                        foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
                     case "Religions":
 
                         ReligionsDataM = new List<ClassReligions>();
-                        religions(ModPath, ReligionsDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
-                        foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.name); }
+                        ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser2(), s => new ClassReligions(s,
+                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataM[s.Key].Length - 4) : string.Empty), t => t.Name);
+                        foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
                     case "Technology":
 
                         TechDataM = new List<ClassTech>();
-                        EraDataM = new List<ClassEra>();
-                        EraTech(ModPath, EraDataM, TechDataM, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
-                        foreach (ClassTech techEntry in TechDataM) { ModLB.Items.Add(techEntry.name); }
+                        ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
+                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
+                            LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        foreach (ClassTech techEntry in TechDataM) { ModLB.Items.Add(techEntry.Name); }
 
                         break;
 
@@ -356,6 +671,7 @@ namespace Victoria_3_Modding_Tool
             }
 
             AddBT.Enabled = true;
+            SaveBT.Enabled = true;
 
             VickyLB.Items.Clear();
             ProjectLB.Items.Clear();
@@ -371,13 +687,13 @@ namespace Victoria_3_Modding_Tool
                     EraDataP = new List<ClassEra>();
                     EraDataV = new List<ClassEra>();
 
-                    LoadEraData(VickyPath + "\\game\\common\\technology\\eras", EraDataV);
-                    LoadEraData(ProjPath + "\\common\\technology\\eras", EraDataP);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", EraDataV, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+                    ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
 
-                    VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataV) { VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                    ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                    VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                    foreach (ClassEra eraEntry in EraDataV) { VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                     if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -389,13 +705,47 @@ namespace Victoria_3_Modding_Tool
                     GoodsDataP = new List<ClassGoods>();
                     GoodsDataV = new List<ClassGoods>();
 
-                    goods(VickyPath + "\\game", GoodsDataV, "\\goods_l_" + language + ".yml");
-                    goods(ProjPath, GoodsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
+                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
 
-                    foreach (ClassGoods goodsEntry in GoodsDataV) { VickyLB.Items.Add(goodsEntry.name); }
-                    foreach (ClassGoods goodsEntry in GoodsDataP) { ProjectLB.Items.Add(goodsEntry.name); }
+                    new Functions().TextureMerger(VickyPath + "\\game\\", GoodsDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", GoodsDataP);
+
+                    foreach (ClassGoods goodsEntry in GoodsDataV) { VickyLB.Items.Add(goodsEntry.Name); }
+                    foreach (ClassGoods goodsEntry in GoodsDataP) { ProjectLB.Items.Add(goodsEntry.Name); }
 
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+                    Mod();
+
+                    break;
+
+                case "Modifiers":
+                    ModifierTypeDataP = new List<ClassModifiersType>();
+                    ModifierTypeDataV = new List<ClassModifiersType>();
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+
+                    ModifierDataP = new List<ClassModifiers>();
+                    ModifierDataV = new List<ClassModifiers>();
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s, 
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty , 
+                        LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s, 
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataP[s.Key].Length - 4) : string.Empty,
+                        LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, LocalizationDataP[s.Key + "_desc"].Length - 4) : string.Empty), t => t.Name);
+
+                    new Functions().TextureMerger(VickyPath + "\\game\\", ModifierDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", ModifierDataP);
+
+                    foreach (ClassModifiers entry in ModifierDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
                     Mod();
 
@@ -405,11 +755,11 @@ namespace Victoria_3_Modding_Tool
                     ModifierTypeDataP = new List<ClassModifiersType>();
                     ModifierTypeDataV = new List<ClassModifiersType>();
 
-                    modifierTypes(VickyPath + "\\game",ModifierTypeDataV);
-                    modifierTypes(ProjPath, ModifierTypeDataP);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                    foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.name); }
-                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -424,17 +774,20 @@ namespace Victoria_3_Modding_Tool
                     GoodsDataP = new List<ClassGoods>();
                     GoodsDataV = new List<ClassGoods>();
 
-                    goods(VickyPath + "\\game", GoodsDataV, "\\goods_l_" + language + ".yml");
-                    goods(ProjPath, GoodsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
+                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+
 
                     PopNeedsDataP = new List<ClassPopNeeds>();
                     PopNeedsDataV = new List<ClassPopNeeds>();
 
-                    popneeds(VickyPath + "\\game", PopNeedsDataV);
-                    popneeds(ProjPath, PopNeedsDataP);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
 
-                    foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.name); }
-                    foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.name); }
+                    foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
+                    foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
                     if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -447,18 +800,26 @@ namespace Victoria_3_Modding_Tool
                     GoodsDataP = new List<ClassGoods>();
                     GoodsDataV = new List<ClassGoods>();
 
-                    goods(VickyPath + "\\game", GoodsDataV, "\\goods_l_" + language + ".yml");
-                    goods(ProjPath, GoodsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_" + language + ".yml");
+                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
 
                     ReligionsDataP = new List<ClassReligions>();
                     ReligionsDataV = new List<ClassReligions>();
 
-                    religions(VickyPath + "\\game", ReligionsDataV, "\\religion_l_" + language + ".yml");
-                    religions(ProjPath, ReligionsDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
+                    ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser2(), s => new ClassReligions(s, 
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser2(), s => new ClassReligions(s,
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
 
+                    new Functions().TextureMerger(VickyPath + "\\game\\", ReligionsDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", ReligionsDataP);
 
-                    foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.name); }
-                    foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.name); }
+                    TraitsAdder(); // temp
+
+                    foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.Name); }
+                    foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
                     if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -475,13 +836,24 @@ namespace Victoria_3_Modding_Tool
                     ModifierTypeDataP = new List<ClassModifiersType>();
                     ModifierTypeDataV = new List<ClassModifiersType>();
 
-                    modifierTypes(VickyPath + "\\game", ModifierTypeDataV);
-                    modifierTypes(ProjPath, ModifierTypeDataP);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                    EraTech(VickyPath + "\\game", EraDataV, TechDataV, "\\inventions_l_" + language + ".yml");
-                    EraTech(ProjPath, EraDataP, TechDataP, "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_" + language + ".yml");
-                    foreach (ClassTech techEntry in TechDataV) { VickyLB.Items.Add(techEntry.name); }
-                    foreach (ClassTech techEntry in TechDataP) { ProjectLB.Items.Add(techEntry.name); }
+                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", EraDataV, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+                    ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
+                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty , 
+                        LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
+                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
+                        LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+
+                    new Functions().TextureMerger(VickyPath + "\\game\\", TechDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", TechDataP);
+
+                    foreach (ClassTech techEntry in TechDataV) { VickyLB.Items.Add(techEntry.Name); }
+                    foreach (ClassTech techEntry in TechDataP) { ProjectLB.Items.Add(techEntry.Name); }
 
                     if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -496,635 +868,51 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-        // *
         private void VickyLB_Click(object sender, EventArgs e)
         {
-            if (mainSelectedIndex == -1) { return; }
-            SaveStatus = 2;
-
-            switch (MainData[mainSelectedIndex].ToString())
-            {
-
-                case "Era":
-
-                    if (VickyLB.SelectedIndex == 0) { return; }
-
-                    if (VickyLB.Items.Count == 1) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 1; VickyLB.SelectedIndex = 1; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-                    using (EraForm form = new EraForm())
-                    {
-                        int i;
-                        i = new ClassEra().FindEraValue(EraDataV, Int32.Parse(VickyLB.Items[vickySelectedIndex].ToString().Substring(0, 20)));
-                        form.local = new ClassEra(EraDataV[i].Era, EraDataV[i].Cost);
-                        form.ShowDialog();
-                        ClassEra j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassEra().FindEraValue(EraDataP, j.Era); // Index to change
-                            if (i == -1)
-                            {
-                                EraDataP.Add(new ClassEra(j.Era, j.Cost));
-                                EraDataP.Sort(delegate (ClassEra t1, ClassEra t2)
-                                {
-                                    return (t1.Era.CompareTo(t2.Era));
-                                });
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                            }
-                            else
-                            {
-                                EraDataP[i].Cost = j.Cost;
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                            }
-                        }
-                    }
-
-                    if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Goods":
-
-                    if (VickyLB.Items.Count == 0) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-                    using (GoodsForm form = new GoodsForm())
-                    {
-                        int i;
-                        i = new ClassGoods().hasNameIndex(GoodsDataV, VickyLB.Items[vickySelectedIndex].ToString());
-
-
-                        form.sizeOfVicky = GoodsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.local = new ClassGoods(GoodsDataV[i]);
-                        form.ShowDialog();
-
-                        ClassGoods j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassGoods().hasNameIndex(GoodsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                GoodsDataP.Add(new ClassGoods(j));
-                                GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                GoodsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Modifier Types":
-
-                    if (VickyLB.Items.Count == 0) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-                    using (ModifiersTypesForm form = new ModifiersTypesForm())
-                    {
-                        int i;
-                        i = new ClassModifiersType().hasNameIndex(ModifierTypeDataV, VickyLB.Items[vickySelectedIndex].ToString());
-
-
-                        form.sizeOfVicky = ModifierTypeDataV.Count;
-                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                        form.local = new ClassModifiersType(ModifierTypeDataV[i]);
-                        form.ShowDialog();
-
-                        ClassModifiersType j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                ModifierTypeDataP.Add(new ClassModifiersType(j));
-                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                ModifierTypeDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-
-                case "Pop Needs":
-
-                    if (VickyLB.Items.Count == 0) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-
-                    using (PopNeedsForm form = new PopNeedsForm())
-                    {
-                        int i;
-                        i = new ClassPopNeeds().hasNameIndex(PopNeedsDataV, VickyLB.Items[vickySelectedIndex].ToString());
-                        form.sizeOfVicky = PopNeedsDataV.Count;
-                        form.GoodsList = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.PopNeedsList = new ClassPopNeeds().Merge(PopNeedsDataP, PopNeedsDataV);
-                        form.local = new ClassPopNeeds(PopNeedsDataV[i]);
-                        form.ShowDialog();
-                        ClassPopNeeds j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                PopNeedsDataP.Add(new ClassPopNeeds(j));
-                                PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                PopNeedsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Religions":
-
-                    if (VickyLB.Items.Count == 0) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-
-                    using (ReligionForm form = new ReligionForm())
-                    {
-                        int i;
-                        i = new ClassReligions().hasNameIndex(ReligionsDataV, VickyLB.Items[vickySelectedIndex].ToString());
-                        form.sizeOfVicky = ReligionsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
-                        form.local = new ClassReligions(ReligionsDataV[i]);
-                        form.Traits = TraitsData;
-                        form.ShowDialog();
-                        ClassReligions j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                ReligionsDataP.Add(new ClassReligions(j));
-                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                ReligionsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Technology":
-
-                    if (VickyLB.Items.Count == 0) { return; }
-
-                    if (VickyLB.SelectedIndex == -1) { vickySelectedIndex = 0; VickyLB.SelectedIndex = 0; } else { vickySelectedIndex = VickyLB.SelectedIndex; }
-
-
-                    using (TechForm form = new TechForm())
-                    {
-                        int i;
-                        i = new ClassTech().hasNameIndex(TechDataV, VickyLB.Items[vickySelectedIndex].ToString());
-                        form.sizeOfVicky = TechDataV.Count;
-                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                        form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
-                        form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
-                        form.local = new ClassTech(TechDataV[i]);
-                        form.ShowDialog();
-                        ClassTech j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassTech().hasNameIndex(TechDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                TechDataP.Add(new ClassTech(j));
-                                TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                TechDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-
-
-
-                default:
-                    MainLB.Items.Add("Error");
-                    break;
-            }
-
-
-
+            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
         }
 
-        // *
         private void ProjectLB_Click(object sender, EventArgs e)
         {
-            if (mainSelectedIndex == -1) { return; }
-            SaveStatus = 2;
-
-            switch (MainData[mainSelectedIndex].ToString())
-            {
-
-                case "Era":
-
-                    if (ProjectLB.SelectedIndex == 0) { return; }
-
-                    if (ProjectLB.Items.Count == 1) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 1; ProjectLB.SelectedIndex = 1; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-                    using (EraForm form = new EraForm())
-                    {
-                        int i;
-                        i = new ClassEra().FindEraValue(EraDataP, Int32.Parse(ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20)));
-                        form.local = new ClassEra(EraDataP[i].Era, EraDataP[i].Cost);
-                        form.ShowDialog();
-                        ClassEra j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassEra().FindEraValue(EraDataP, j.Era); // Index to change
-                            if (i == -1)
-                            {
-                                EraDataP.Add(new ClassEra(j.Era, j.Cost));
-                                EraDataP.Sort(delegate (ClassEra t1, ClassEra t2)
-                                {
-                                    return (t1.Era.CompareTo(t2.Era));
-                                });
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                            }
-                            else
-                            {
-                                EraDataP[i].Cost = j.Cost;
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                            }
-                        }
-                    }
-
-                    if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Goods":
-
-                    if (ProjectLB.Items.Count == 0) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-                    using (GoodsForm form = new GoodsForm())
-                    {
-                        int i;
-                        i = new ClassGoods().hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-
-
-                        form.sizeOfVicky = GoodsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.local = new ClassGoods(GoodsDataP[i]);
-                        form.ShowDialog();
-
-                        ClassGoods j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassGoods().hasNameIndex(GoodsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                GoodsDataP.Add(new ClassGoods(j));
-                                GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                GoodsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Modifier Types":
-
-                    if (ProjectLB.Items.Count == 0) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-                    using (ModifiersTypesForm form = new ModifiersTypesForm())
-                    {
-                        int i;
-                        i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
-
-
-                        form.sizeOfVicky = GoodsDataV.Count;
-                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                        form.local = new ClassModifiersType(ModifierTypeDataP[i]);
-                        form.ShowDialog();
-
-                        ClassModifiersType j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                ModifierTypeDataP.Add(new ClassModifiersType(j));
-                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                ModifierTypeDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Pop Needs":
-
-                    if (ProjectLB.Items.Count == 0) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-
-                    using (PopNeedsForm form = new PopNeedsForm())
-                    {
-                        int i;
-                        i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                        form.sizeOfVicky = PopNeedsDataP.Count;
-                        form.GoodsList = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.PopNeedsList = new ClassPopNeeds().Merge(PopNeedsDataP, PopNeedsDataV);
-                        form.local = new ClassPopNeeds(PopNeedsDataP[i]);
-                        form.ShowDialog();
-                        ClassPopNeeds j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                PopNeedsDataP.Add(new ClassPopNeeds(j));
-                                PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                PopNeedsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-
-                    break;
-
-                case "Religions":
-
-                    if (ProjectLB.Items.Count == 0) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-
-                    using (ReligionForm form = new ReligionForm())
-                    {
-                        int i;
-                        i = new ClassReligions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                        form.sizeOfVicky = ReligionsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
-                        form.local = new ClassReligions(ReligionsDataP[i]);
-                        form.Traits = TraitsData;
-                        form.ShowDialog();
-                        ClassReligions j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                ReligionsDataP.Add(new ClassReligions(j));
-                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                ReligionsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-
-                    break;
-
-                case "Technology":
-
-                    if (ProjectLB.Items.Count == 0) { return; }
-
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-
-                    using (TechForm form = new TechForm())
-                    {
-                        int i;
-                        i = new ClassTech().hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                        form.sizeOfVicky = TechDataV.Count;
-                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                        form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
-                        form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
-                        form.local = new ClassTech(TechDataP[i]);
-                        form.ShowDialog();
-                        ClassTech j = form.ReturnValue();
-                        if (j != null)
-                        {
-                            i = new ClassTech().hasNameIndex(TechDataP, j.name); // Index to change
-                            if (i == -1)
-                            {
-                                TechDataP.Add(new ClassTech(j));
-                                TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
-                                {
-                                    return (t1.name.CompareTo(t2.name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-                            else
-                            {
-                                TechDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
-                            }
-
-                        }
-
-                    }
-
-                    if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-
-                    break;
-
-
-
-                default:
-                    MainLB.Items.Add("Error");
-                    break;
-            }
-
-
+            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
         }
 
-        // *
         private void ModLB_DoubleClick(object sender, EventArgs e)
         {
+            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+        }
+
+        //*
+        private void DoubleClickList(ListBox ListBox , string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData)
+        {
+
             if (mainSelectedIndex == -1) { return; }
             SaveStatus = 2;
 
-            if (ModPath != null)
+            if (path != null)
             {
                 switch (MainData[mainSelectedIndex].ToString())
                 {
 
                     case "Era":
 
-                        if (ModLB.SelectedIndex == 0) { return; }
+                        if (ListBox.SelectedIndex == 0) { return; }
 
-                        if (ModLB.Items.Count == 1) { return; }
+                        if (ListBox.Items.Count == 1) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 1; ModLB.SelectedIndex = 1; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 1; ListBox.SelectedIndex = 1; } else { selectedIndex = ListBox.SelectedIndex; }
 
                         using (EraForm form = new EraForm())
                         {
                             int i;
-                            i = new ClassEra().FindEraValue(EraDataM, Int32.Parse(ModLB.Items[modSelectedIndex].ToString().Substring(0, 20)));
-                            form.local = new ClassEra(EraDataM[i].Era, EraDataM[i].Cost);
+                            i = new Functions().hasNameIndex(EraData, ListBox.Items[selectedIndex].ToString().Substring(0, 20));
+                            form.local = new ClassEra(EraData[i].Era, EraData[i].Cost);
                             form.ShowDialog();
                             ClassEra j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassEra().FindEraValue(EraDataP, j.Era); // Index to change
+                                i = new Functions().hasNameIndex(EraDataP, j.Era.ToString()); // Index to change
                                 if (i == -1)
                                 {
                                     EraDataP.Add(new ClassEra(j.Era, j.Cost));
@@ -1133,15 +921,15 @@ namespace Victoria_3_Modding_Tool
                                         return (t1.Era.CompareTo(t2.Era));
                                     });
                                     ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                 }
                                 else
                                 {
                                     EraDataP[i].Cost = j.Cost;
                                     ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                 }
                             }
                         }
@@ -1153,40 +941,40 @@ namespace Victoria_3_Modding_Tool
 
                     case "Goods":
 
-                        if (ModLB.Items.Count == 0) { return; }
+                        if (ListBox.Items.Count == 0) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                         using (GoodsForm form = new GoodsForm())
                         {
                             int i;
-                            i = new ClassGoods().hasNameIndex(GoodsDataM, ModLB.Items[modSelectedIndex].ToString());
+                            i = new Functions().hasNameIndex(GoodsData, ListBox.Items[selectedIndex].ToString());
 
 
                             form.sizeOfVicky = GoodsDataV.Count;
-                            form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                            form.local = new ClassGoods(GoodsDataM[i]);
+                            form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
+                            form.local = new ClassGoods(GoodsData[i]);
                             form.ShowDialog();
 
                             ClassGoods j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassGoods().hasNameIndex(GoodsDataP, j.name); // Index to change
+                                i = new Functions().hasNameIndex(GoodsDataP, j.Name); // Index to change
                                 if (i == -1)
                                 {
                                     GoodsDataP.Add(new ClassGoods(j));
                                     GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
                                     {
-                                        return (t1.name.CompareTo(t2.name));
+                                        return (t1.Name.CompareTo(t2.Name));
                                     });
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     GoodsDataP[i] = j;
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
 
                             }
@@ -1198,42 +986,90 @@ namespace Victoria_3_Modding_Tool
 
                         break;
 
+                    case "Modifiers":
+
+                        if (ListBox.Items.Count == 0) { return; }
+
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                        using (ModifiersForm form = new ModifiersForm())
+                        {
+                            int i;
+                            i = new Functions().hasNameIndex(ModifierData, ListBox.Items[selectedIndex].ToString());
+
+
+                            form.sizeOfVicky = ModifierDataV.Count;
+                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.ModifiersData = new Functions().MergeClasses(ModifierDataP, ModifierDataV);
+                            form.local = new ClassModifiers(ModifierData[i]);
+                            form.ShowDialog();
+
+                            ClassModifiers j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = new Functions().hasNameIndex(ModifierDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    ModifierDataP.Add(new ClassModifiers(j));
+                                    ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ModifierDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+
+                            }
+
+                        }
+
+                        if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+
                     case "Modifier Types":
 
-                        if (ModLB.Items.Count == 0) { return; }
+                        if (ListBox.Items.Count == 0) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                         using (ModifiersTypesForm form = new ModifiersTypesForm())
                         {
                             int i;
-                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataM, ModLB.Items[modSelectedIndex].ToString());
+                            i = new Functions().hasNameIndex(ModifierTypeData, ListBox.Items[selectedIndex].ToString());
 
 
                             form.sizeOfVicky = ModifierTypeDataV.Count;
-                            form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                            form.local = new ClassModifiersType(ModifierTypeDataM[i]);
+                            form.ModifiersData = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.local = new ClassModifiersType(ModifierTypeData[i]);
                             form.ShowDialog();
 
                             ClassModifiersType j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                                i = new Functions().hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
                                 if (i == -1)
                                 {
                                     ModifierTypeDataP.Add(new ClassModifiersType(j));
                                     ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
                                     {
-                                        return (t1.name.CompareTo(t2.name));
+                                        return (t1.Name.CompareTo(t2.Name));
                                     });
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ModifierTypeDataP[i] = j;
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
 
                             }
@@ -1247,39 +1083,39 @@ namespace Victoria_3_Modding_Tool
 
                     case "Pop Needs":
 
-                        if (ModLB.Items.Count == 0) { return; }
+                        if (ListBox.Items.Count == 0) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
 
                         using (PopNeedsForm form = new PopNeedsForm())
                         {
                             int i;
-                            i = new ClassPopNeeds().hasNameIndex(PopNeedsDataM, ModLB.Items[modSelectedIndex].ToString());
+                            i = new Functions().hasNameIndex(PopNeedsData, ListBox.Items[selectedIndex].ToString());
                             form.sizeOfVicky = PopNeedsDataV.Count;
-                            form.GoodsList = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                            form.PopNeedsList = new ClassPopNeeds().Merge(PopNeedsDataP, PopNeedsDataV);
-                            form.local = new ClassPopNeeds(PopNeedsDataM[i]);
+                            form.GoodsList = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
+                            form.PopNeedsList = new Functions().MergeClasses(PopNeedsDataP, PopNeedsDataV);
+                            form.local = new ClassPopNeeds(PopNeedsData[i]);
                             form.ShowDialog();
                             ClassPopNeeds j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, j.name); // Index to change
+                                i = new Functions().hasNameIndex(PopNeedsDataP, j.Name); // Index to change
                                 if (i == -1)
                                 {
                                     PopNeedsDataP.Add(new ClassPopNeeds(j));
                                     PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
                                     {
-                                        return (t1.name.CompareTo(t2.name));
+                                        return (t1.Name.CompareTo(t2.Name));
                                     });
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     PopNeedsDataP[i] = j;
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
 
                             }
@@ -1294,40 +1130,40 @@ namespace Victoria_3_Modding_Tool
 
                     case "Religions":
 
-                        if (ModLB.Items.Count == 0) { return; }
+                        if (ListBox.Items.Count == 0) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
 
                         using (ReligionForm form = new ReligionForm())
                         {
                             int i;
-                            i = new ClassReligions().hasNameIndex(ReligionsDataM, ModLB.Items[modSelectedIndex].ToString());
+                            i = new Functions().hasNameIndex(ReligionsData, ListBox.Items[selectedIndex].ToString());
                             form.sizeOfVicky = ReligionsDataV.Count;
-                            form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                            form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
-                            form.local = new ClassReligions(ReligionsDataM[i]);
+                            form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
+                            form.ReligionData = new Functions().MergeClasses(ReligionsDataP, ReligionsDataV);
+                            form.local = new ClassReligions(ReligionsData[i]);
                             form.Traits = TraitsData;
                             form.ShowDialog();
                             ClassReligions j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                                i = new Functions().hasNameIndex(ReligionsDataP, j.Name); // Index to change
                                 if (i == -1)
                                 {
                                     ReligionsDataP.Add(new ClassReligions(j));
                                     ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
                                     {
-                                        return (t1.name.CompareTo(t2.name));
+                                        return (t1.Name.CompareTo(t2.Name));
                                     });
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ReligionsDataP[i] = j;
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
 
                             }
@@ -1342,40 +1178,40 @@ namespace Victoria_3_Modding_Tool
 
                     case "Technology":
 
-                        if (ModLB.Items.Count == 0) { return; }
+                        if (ListBox.Items.Count == 0) { return; }
 
-                        if (ModLB.SelectedIndex == -1) { modSelectedIndex = 0; ModLB.SelectedIndex = 0; } else { modSelectedIndex = ModLB.SelectedIndex; }
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
 
                         using (TechForm form = new TechForm())
                         {
                             int i;
-                            i = new ClassTech().hasNameIndex(TechDataM, ModLB.Items[modSelectedIndex].ToString());
+                            i = new Functions().hasNameIndex(TechData, ListBox.Items[selectedIndex].ToString());
                             form.sizeOfVicky = TechDataV.Count;
-                            form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                            form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
-                            form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
-                            form.local = new ClassTech(TechDataM[i]);
+                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.TechList = new Functions().MergeClasses(TechDataP, TechDataV);
+                            form.EraList = new Functions().MergeClasses(EraDataP, EraDataV);
+                            form.local = new ClassTech(TechData[i]);
                             form.ShowDialog();
                             ClassTech j = form.ReturnValue();
                             if (j != null)
                             {
-                                i = new ClassTech().hasNameIndex(TechDataP, j.name); // Index to change
+                                i = new Functions().hasNameIndex(TechDataP, j.Name); // Index to change
                                 if (i == -1)
                                 {
                                     TechDataP.Add(new ClassTech(j));
                                     TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
                                     {
-                                        return (t1.name.CompareTo(t2.name));
+                                        return (t1.Name.CompareTo(t2.Name));
                                     });
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     TechDataP[i] = j;
                                     ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
 
                             }
@@ -1394,6 +1230,11 @@ namespace Victoria_3_Modding_Tool
                         break;
                 }
             }
+
+
+
+
+
         }
 
 
@@ -1437,7 +1278,7 @@ namespace Victoria_3_Modding_Tool
                         if (j != null)
                         {
 
-                            i = new ClassEra().FindEraValue(EraDataP, j.Era); // Index to change
+                            i = new Functions().hasNameIndex(EraDataP, j.Era.ToString()); // Index to change
                             if (i == -1)
                             {
                                 EraDataP.Add(new ClassEra(j.Era, j.Cost));
@@ -1446,15 +1287,15 @@ namespace Victoria_3_Modding_Tool
                                     return (t1.Era.CompareTo(t2.Era));
                                 });
                                 ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                             }
                             else
                             {
                                 EraDataP[i].Cost = j.Cost;
                                 ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                             }
                         }
                     }
@@ -1472,29 +1313,29 @@ namespace Victoria_3_Modding_Tool
                         int i;
 
                         form.sizeOfVicky = GoodsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
+                        form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
                         form.local = null;
                         form.ShowDialog();
 
                         ClassGoods j = form.ReturnValue();
                         if (j != null)
                         {
-                            i = new ClassGoods().hasNameIndex(GoodsDataP, j.name); // Index to change
+                            i = new Functions().hasNameIndex(GoodsDataP, j.Name); // Index to change
                             if (i == -1)
                             {
                                 GoodsDataP.Add(new ClassGoods(j));
                                 GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
                                 {
-                                    return (t1.name.CompareTo(t2.name));
+                                    return (t1.Name.CompareTo(t2.Name));
                                 });
                                 ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
                             else
                             {
                                 GoodsDataP[i] = j;
                                 ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
 
                         }
@@ -1510,6 +1351,52 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Modifiers":
+
+                    using (ModifiersForm form = new ModifiersForm())
+                    {
+                        int i;
+
+                        form.sizeOfVicky = ModifierDataV.Count;
+                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                        form.ModifiersData = new Functions().MergeClasses(ModifierDataP, ModifierDataV);
+                        form.local = null;
+                        form.ShowDialog();
+
+                        ClassModifiers j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new Functions().hasNameIndex(ModifierDataP, j.Name); // Index to change
+                            if (i == -1)
+                            {
+                                ModifierDataP.Add(new ClassModifiers(j));
+                                ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                {
+                                    return (t1.Name.CompareTo(t2.Name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+                            else
+                            {
+                                ModifierDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+
+                        }
+
+
+
+
+                    }
+
+                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Modifier Types":
 
                     using (ModifiersTypesForm form = new ModifiersTypesForm())
@@ -1517,29 +1404,29 @@ namespace Victoria_3_Modding_Tool
                         int i;
 
                         form.sizeOfVicky = ModifierTypeDataV.Count;
-                        form.ModifiersData = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
+                        form.ModifiersData = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
                         form.local = null;
                         form.ShowDialog();
 
                         ClassModifiersType j = form.ReturnValue();
                         if (j != null)
                         {
-                            i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, j.name); // Index to change
+                            i = new Functions().hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
                             if (i == -1)
                             {
                                 ModifierTypeDataP.Add(new ClassModifiersType(j));
                                 ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
                                 {
-                                    return (t1.name.CompareTo(t2.name));
+                                    return (t1.Name.CompareTo(t2.Name));
                                 });
                                 ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
                             else
                             {
                                 ModifierTypeDataP[i] = j;
                                 ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
 
                         }
@@ -1561,29 +1448,29 @@ namespace Victoria_3_Modding_Tool
                     {
                         int i;
                         form.sizeOfVicky = PopNeedsDataV.Count;
-                        form.GoodsList = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.PopNeedsList = new ClassPopNeeds().Merge(PopNeedsDataP, PopNeedsDataV);
+                        form.GoodsList = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
+                        form.PopNeedsList = new Functions().MergeClasses(PopNeedsDataP, PopNeedsDataV);
                         form.local = null;
                         form.ShowDialog();
                         ClassPopNeeds j = form.ReturnValue();
                         if (j != null)
                         {
-                            i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, j.name); // Index to change
+                            i = new Functions().hasNameIndex(PopNeedsDataP, j.Name); // Index to change
                             if (i == -1)
                             {
                                 PopNeedsDataP.Add(new ClassPopNeeds(j));
                                 PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
                                 {
-                                    return (t1.name.CompareTo(t2.name));
+                                    return (t1.Name.CompareTo(t2.Name));
                                 });
                                 ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
                             else
                             {
                                 PopNeedsDataP[i] = j;
                                 ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
 
                         }
@@ -1601,30 +1488,30 @@ namespace Victoria_3_Modding_Tool
                     {
                         int i;
                         form.sizeOfVicky = ReligionsDataV.Count;
-                        form.GoodsData = new ClassGoods().MergeGoods(GoodsDataP, GoodsDataV);
-                        form.ReligionData = new ClassReligions().Merge(ReligionsDataP, ReligionsDataV);
+                        form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
+                        form.ReligionData = new Functions().MergeClasses(ReligionsDataP, ReligionsDataV);
                         form.Traits = TraitsData;
                         form.local = null;
                         form.ShowDialog();
                         ClassReligions j = form.ReturnValue();
                         if (j != null)
                         {
-                            i = new ClassReligions().hasNameIndex(ReligionsDataP, j.name); // Index to change
+                            i = new Functions().hasNameIndex(ReligionsDataP, j.Name); // Index to change
                             if (i == -1)
                             {
                                 ReligionsDataP.Add(new ClassReligions(j));
                                 ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
                                 {
-                                    return (t1.name.CompareTo(t2.name));
+                                    return (t1.Name.CompareTo(t2.Name));
                                 });
                                 ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
                             else
                             {
                                 ReligionsDataP[i] = j;
                                 ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
 
                         }
@@ -1642,30 +1529,30 @@ namespace Victoria_3_Modding_Tool
                     {
                         int i;
                         form.sizeOfVicky = TechDataV.Count;
-                        form.ModifiersTypes = new ClassModifiersType().Merge(ModifierTypeDataP, ModifierTypeDataV);
-                        form.TechList = new ClassTech().MergeTech(TechDataP, TechDataV);
-                        form.EraList = new ClassEra().MergeEra(EraDataP, EraDataV);
+                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                        form.TechList = new Functions().MergeClasses(TechDataP, TechDataV);
+                        form.EraList = new Functions().MergeClasses(EraDataP, EraDataV);
                         form.local = null;
                         form.ShowDialog();
                         ClassTech j = form.ReturnValue();
                         if (j != null)
                         {
-                            i = new ClassTech().hasNameIndex(TechDataP, j.name); // Index to change
+                            i = new Functions().hasNameIndex(TechDataP, j.Name); // Index to change
                             if (i == -1)
                             {
                                 TechDataP.Add(new ClassTech(j));
                                 TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
                                 {
-                                    return (t1.name.CompareTo(t2.name));
+                                    return (t1.Name.CompareTo(t2.Name));
                                 });
                                 ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
                             else
                             {
                                 TechDataP[i] = j;
                                 ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
+                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
 
                         }
@@ -1700,6 +1587,10 @@ namespace Victoria_3_Modding_Tool
 
             }
 
+            LocalizationDataV = LocalizationSetup(VickyPath + "\\game");
+            LocalizationDataP = LocalizationSetup(ProjPath);
+            LocalizationDataM = LocalizationSetup(ModPath);
+
         }
 
         // *
@@ -1718,11 +1609,11 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 1; ProjectLB.SelectedIndex = 1; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassEra().FindEraValue(EraDataP, Int32.Parse(ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20)));
+                    i = new Functions().hasNameIndex(EraDataP, ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20));
                     EraDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                     if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -1733,12 +1624,27 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassGoods().hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    i = new Functions().hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
                     GoodsDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
+                case "Modifiers":
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    i = new Functions().hasNameIndex(ModifierDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    ModifierDataP.RemoveAt(i);
+                    ProjectLB.Items.Clear();
+                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
 
@@ -1748,10 +1654,10 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassModifiersType().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    i = new Functions().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
                     ModifierTypeDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -1763,10 +1669,10 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassPopNeeds().hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    i = new Functions().hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
                     PopNeedsDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -1778,10 +1684,10 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassReligions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    i = new Functions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
                     ReligionsDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -1793,10 +1699,10 @@ namespace Victoria_3_Modding_Tool
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    i = new ClassTech().hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    i = new Functions().hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
                     TechDataP.RemoveAt(i);
                     ProjectLB.Items.Clear();
-                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.name); }
+                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -1814,847 +1720,51 @@ namespace Victoria_3_Modding_Tool
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // LB Search Bar *
+        // Localization
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //*
-        private void LoadMainLB()
+        private Dictionary<string,string> LocalizationSetup(string path)
         {
-            MainData.Add("Era");
-            MainData.Add("Goods");
-            MainData.Add("Modifier Types");
-            MainData.Add("Pop Needs");
-            MainData.Add("Religions");
-            MainData.Add("Technology");
-
-
-            MainLB.Items.Add("Era");
-            MainLB.Items.Add("Goods");
-            MainLB.Items.Add("Modifier Types");
-            MainLB.Items.Add("Pop Needs");
-            MainLB.Items.Add("Religions");
-            MainLB.Items.Add("Technology");
+            if (Directory.Exists(path + "\\localization\\"+language))
+            { 
+                return new LocalizationParser().ParseFiles(path + "\\localization\\" + language);
+            }
+            return null;
         }
 
-        private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        private void ReadFilesCommon<T>(string path, List<T> Data, IParser Iparser, Func<KeyValuePair<string, object>, T> ClassCreator, Func<T, string> sortBy)
         {
-
-            if (mainSelectedIndex == -1) { return; }
-
-            if (string.IsNullOrEmpty(MainSearchBarTB.Texts) == false)
-            {
-                MainLB.Items.Clear();
-                foreach (string entry in MainData)
-                {
-                    if (entry.StartsWith(MainSearchBarTB.Texts))
-                    {
-                        MainLB.Items.Add(entry);
-                    }
-
-                }
-
-            }
-            else if (MainSearchBarTB.Texts == "")
-            {
-                MainLB.Items.Clear();
-                foreach (string entry in MainData)
-                {
-                    MainLB.Items.Add(entry);
-                }
-            }
-        }
-
-        // *
-        private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-            if (mainSelectedIndex == -1) { return; }
-
-            switch (MainData[mainSelectedIndex].ToString())
-            {
-
-                case "Era":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataV)
-                        {
-                            if (entry.Era.ToString().StartsWith(VickySearchBarTB.Texts))
-                            { VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataV)
-                        {
-                            if (entry.Era.ToString().StartsWith(VickySearchBarTB.Texts))
-                            { VickyLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-                        }
-                    }
-
-
-                    break;
-
-                case "Goods":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataV)
-                        {
-                            if (str.name.StartsWith(VickySearchBarTB.Texts))
-                            {
-                                VickyLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataV)
-                        {
-                            VickyLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Modifiers Types":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataV)
-                        {
-                            if (str.name.StartsWith(VickySearchBarTB.Texts))
-                            {
-                                VickyLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataV)
-                        {
-                            VickyLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Pop Needs":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataV)
-                        {
-                            if (str.name.StartsWith(VickySearchBarTB.Texts))
-                            {
-                                VickyLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataV)
-                        {
-                            VickyLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-
-                case "Religions":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataV)
-                        {
-                            if (str.name.StartsWith(VickySearchBarTB.Texts))
-                            {
-                                VickyLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataV)
-                        {
-                            VickyLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Technology":
-
-                    if (string.IsNullOrEmpty(VickySearchBarTB.Texts) == false)
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassTech str in TechDataV)
-                        {
-                            if (str.name.StartsWith(VickySearchBarTB.Texts))
-                            {
-                                VickyLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (VickySearchBarTB.Texts == "")
-                    {
-                        VickyLB.Items.Clear();
-                        foreach (ClassTech str in TechDataV)
-                        {
-                            VickyLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                default:
-                    MainLB.Items.Add("Error");
-                    break;
-            }
-
-
-        }
-
-        // *
-        private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (mainSelectedIndex == -1) { return; }
-
-            switch (MainData[mainSelectedIndex].ToString())
-            {
-
-                case "Era":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataP)
-                        {
-                            if (entry.Era.ToString().StartsWith(ProjSearchBarTB.Texts))
-                            { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataP)
-                        {
-                            if (entry.Era.ToString().StartsWith(ProjSearchBarTB.Texts))
-                            { ProjectLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-                        }
-                    }
-
-
-                    break;
-
-                case "Goods":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataP)
-                        {
-                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
-                            {
-                                ProjectLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataP)
-                        {
-                            ProjectLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Modifiers Types":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataP)
-                        {
-                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
-                            {
-                                ProjectLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataP)
-                        {
-                            ProjectLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Pop Needs":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataP)
-                        {
-                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
-                            {
-                                ProjectLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataP)
-                        {
-                            ProjectLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Religions":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataP)
-                        {
-                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
-                            {
-                                ProjectLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataP)
-                        {
-                            ProjectLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Technology":
-
-                    if (string.IsNullOrEmpty(ProjSearchBarTB.Texts) == false)
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassTech str in TechDataP)
-                        {
-                            if (str.name.StartsWith(ProjSearchBarTB.Texts))
-                            {
-                                ProjectLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ProjSearchBarTB.Texts == "")
-                    {
-                        ProjectLB.Items.Clear();
-                        foreach (ClassTech str in TechDataP)
-                        {
-                            ProjectLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                default:
-                    MainLB.Items.Add("Error");
-                    break;
-            }
-        }
-
-        // *
-        private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-            if (mainSelectedIndex == -1) { return; }
-
-            switch (MainData[mainSelectedIndex].ToString())
-            {
-
-                case "Era":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataM)
-                        {
-                            if (entry.Era.ToString().StartsWith(ModSearchBarTB.Texts))
-                            { ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraDataM)
-                        {
-                            if (entry.Era.ToString().StartsWith(ModSearchBarTB.Texts))
-                            { ModLB.Items.Add(String.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-                        }
-                    }
-
-
-                    break;
-
-                case "Goods":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataM)
-                        {
-                            if (str.name.StartsWith(ModSearchBarTB.Texts))
-                            {
-                                ModLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassGoods str in GoodsDataM)
-                        {
-                            ModLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Modifiers Types":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataM)
-                        {
-                            if (str.name.StartsWith(ModSearchBarTB.Texts))
-                            {
-                                ModLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeDataM)
-                        {
-                            ModLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "PopNeeds":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataM)
-                        {
-                            if (str.name.StartsWith(ModSearchBarTB.Texts))
-                            {
-                                ModLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsDataM)
-                        {
-                            ModLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-                case "Religions":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataM)
-                        {
-                            if (str.name.StartsWith(ModSearchBarTB.Texts))
-                            {
-                                ModLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsDataM)
-                        {
-                            ModLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-
-                case "Technology":
-
-                    if (string.IsNullOrEmpty(ModSearchBarTB.Texts) == false)
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassTech str in TechDataM)
-                        {
-                            if (str.name.StartsWith(ModSearchBarTB.Texts))
-                            {
-                                ModLB.Items.Add(str.name);
-                            }
-
-                        }
-
-                    }
-                    else if (ModSearchBarTB.Texts == "")
-                    {
-                        ModLB.Items.Clear();
-                        foreach (ClassTech str in TechDataM)
-                        {
-                            ModLB.Items.Add(str.name);
-                        }
-                    }
-
-                    break;
-
-
-
-                default:
-                    MainLB.Items.Add("Error");
-                    break;
-            }
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Tech / Era
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private void LoadEraData(string path, List<ClassEra> EraData)
-        {
-
             if (Directory.Exists(path))
             {
 
-                foreach (List<KeyValuePair<string, object>> Techs in new Parser().ParseFiles(path)) // Files
+                foreach (List<KeyValuePair<string, object>> entry in Iparser.ParseFiles(path).Cast<List<KeyValuePair<string, object>>>()) // Files
                 {
-                    foreach (KeyValuePair<string, object> techEntry in Techs) // Individual Tech  Pair (Name,Dic)
+                    foreach (KeyValuePair<string, object> entry2 in entry)
                     {
-                        foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)techEntry.Value)
-                        {
-                            EraData.Add(new ClassEra(Int32.Parse(techEntry.Key.ToString().Substring(4)), Convert.ToInt32(element.Value)));
-                        }
+                        Data.Add(ClassCreator(entry2));
                     }
                 }
 
+                Data.Sort(delegate (T t1, T t2)
+                {   // 0.5 s Make more efi
+                    return sortBy(t1).CompareTo(sortBy(t2));
+                });
+
             }
-
-        }
-
-        private void LoadTechData(string path, List<ClassTech> TechData)
-        {
-
-            if (Directory.Exists(path))
-            {
-
-                foreach (List<KeyValuePair<string, object>> Techs in new Parser().ParseFiles(path)) // Files
-                {
-                    foreach (KeyValuePair<string, object> techEntry in Techs) // Individual Tech  Pair (Name,Dic)
-                    {
-                        TechData.Add(new ClassTech(techEntry));
-                    }
-                }
-            }
-
-        }
-
-        private void OpenPathDescripTech(string path, List<ClassTech> TechData)
-        {
-            Dictionary<string, int> dic = new Dictionary<string, int>();
-            int i = 0;
-
-            foreach (ClassTech techEntry in TechData)
-            {
-                dic.Add(techEntry.name, i);
-                i++;
-            }
-
-            if (File.Exists(path))
-            {
-                using (StreamReader sr = File.OpenText(path))
-                {
-                    bool b = false;
-
-                    string ln;
-                    string[] words;
-                    void NextLine() { ln = sr.ReadLine(); }
-                    NextLine();
-                    NextLine();
-
-                    while (ln != null)
-                    {
-                        b = false;
-
-                        if ((i = ln.IndexOf("#")) == -1)
-                        {
-                        }
-                        else if (i < 7)
-                        {
-                            NextLine();
-                            continue;
-                        }
-                        else { ln = ln.Substring(0, i); }
-
-
-                        if (ln.Contains(":"))
-                        {
-                            words = ln.Split(':');
-                            words[0] = words[0].Trim(' ');
-
-                            if (dic.ContainsKey(words[0]))
-                            {
-                                i = dic[words[0]];
-                                b = true;
-                                TechData[i].TrueName = words[1].Substring(3, words[1].Length - 4);
-                                NextLine();
-                                words = ln.Split(':');
-                                words[0] = words[0].Trim(' ');
-                                if (words[0] == TechData[i].name + "_desc" && !words[0].Contains("#"))
-                                {
-                                    TechData[i].Desc = words[1].Substring(3, words[1].Length - 4);
-                                    NextLine();
-                                }
-                            }
-                            else if (dic.ContainsKey(words[0].Substring(0, words[0].Length - 6)))
-                            {
-                                b = true;
-                                TechData[dic[words[0].Substring(0, words[0].Length - 6)]].Desc = words[1].Substring(3, words[1].Length - 4);
-                                NextLine();
-                            }
-
-                            if (b == false)
-                            {
-                                NextLine();
-                            }
-
-
-                        }
-                        else { NextLine(); }
-
-                    }
-                }
-            }
-        }
-
-        private void EraTech(string path, List<ClassEra> EraData, List<ClassTech> TechData, string localization_name)
-        { 
-
-            LoadEraData(path + "\\common\\technology\\eras", EraData);
-
-            LoadTechData(path + "\\common\\technology\\technologies", TechData);
-
-            TechData.Sort(delegate (ClassTech t1, ClassTech t2)
-            {   // 0.5 s Make more efi
-                return (t1.name.CompareTo(t2.name));
-            });
-
-            OpenPathDescripTech(path + "\\localization\\" + language + localization_name, TechData);
-
-
             return;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Goods / Pop Needs
+        // Traits
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void OpenPathDescripGoods(string path, List<ClassGoods> GoodsData)
-        {
-            Dictionary<string, int> dic = new Dictionary<string, int>();
-            int i = 0;
-
-            foreach (ClassGoods goodsEntry in GoodsData)
-            {
-                dic.Add(goodsEntry.name, i);
-                i++;
-            }
-
-            if (File.Exists(path))
-            {
-                using (StreamReader sr = File.OpenText(path))
-                {
-
-                    string ln;
-                    string[] words;
-                    void NextLine() { ln = sr.ReadLine(); }
-                    NextLine();
-                    NextLine();
-
-                    while (ln != null)
-                    {
-
-                        if ((i = ln.IndexOf("#")) == -1)
-                        {
-                        }
-                        else if (i < 7)
-                        {
-                            NextLine();
-                            continue;
-                        }
-                        else { ln = ln.Substring(0, i); }
-
-
-                        if (ln.Contains(":"))
-                        {
-                            words = ln.Split(':');
-                            words[0] = words[0].Trim(' ');
-
-                            if (dic.ContainsKey(words[0]))
-                            {
-                                i = dic[words[0]];
-                                GoodsData[i].TrueName = words[1].Substring(3, words[1].Length - 4);
-                                NextLine();
-                            }
-                            else
-                            {
-                                NextLine();
-                            }
-
-                        }
-                        else { NextLine(); }
-
-                    }
-                }
-            }
-        }
-
-        private void goods(string path, List<ClassGoods> GoodsData, string localization_name)
-        {
-
-            if (Directory.Exists(path + "\\common\\goods"))
-            {
-                foreach (List<KeyValuePair<string, object>> Goods in new Parser().ParseFiles(path + "\\common\\goods")) // Files
-                {
-                    foreach (KeyValuePair<string, object> Entry in Goods) // Individual Tech  Pair (Name,Dic)
-                    {
-                        GoodsData.Add(new ClassGoods(Entry));
-                    }
-                }
-            }
-
-            GoodsData.Sort(delegate (ClassGoods t1, ClassGoods t2)
-            {   // 0.5 s Make more efi
-                return (t1.name.CompareTo(t2.name));
-            });
-
-            OpenPathDescripGoods(path + "\\localization\\" + language + localization_name, GoodsData);
-
-            return;
-        }
-
-        private void popneeds(string path, List<ClassPopNeeds> PopNeedsData)
-        {
-
-            if (Directory.Exists(path + "\\common\\pop_needs"))
-            {
-                foreach (List<KeyValuePair<string, object>> PopNeeds in new Parser().ParseFiles(path + "\\common\\pop_needs")) // Files
-                {
-                    foreach (KeyValuePair<string, object> Entry in PopNeeds)
-                    {
-                        PopNeedsData.Add(new ClassPopNeeds(Entry));
-                    }
-                }
-            }
-
-            PopNeedsData.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
-            {   // 0.5 s Make more efi
-                return (t1.name.CompareTo(t2.name));
-            });
-
-            return;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Religion
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void traitsAdder()
+        private void TraitsAdder()
         {
             TraitsData = new List<string>();
 
             foreach (ClassReligions entry in ReligionsDataV)
             {
-                foreach(string trait in entry.traits)
+                foreach(string trait in entry.Traits)
                 {
                     if (!TraitsData.Contains(trait))
                     {
@@ -2665,7 +1775,7 @@ namespace Victoria_3_Modding_Tool
 
             foreach (ClassReligions entry in ReligionsDataP)
             {
-                foreach (string trait in entry.traits)
+                foreach (string trait in entry.Traits)
                 {
                     if (!TraitsData.Contains(trait))
                     {
@@ -2676,122 +1786,6 @@ namespace Victoria_3_Modding_Tool
 
         }
 
-        private void OpenPathDescripReligion(string path, List<ClassReligions> ReligionData)
-        {
-            Dictionary<string, int> dic = new Dictionary<string, int>();
-            int i = 0;
-
-            foreach (ClassReligions entry in ReligionData)
-            {
-                dic.Add(entry.name, i);
-                i++;
-            }
-
-            if (File.Exists(path))
-            {
-                using (StreamReader sr = File.OpenText(path))
-                {
-
-                    string ln;
-                    string[] words;
-                    void NextLine() { ln = sr.ReadLine(); }
-                    NextLine();
-                    NextLine();
-
-                    while (ln != null)
-                    {
-
-                        if ((i = ln.IndexOf("#")) == -1)
-                        {
-                        }
-                        else if (i < 7)
-                        {
-                            NextLine();
-                            continue;
-                        }
-                        else { ln = ln.Substring(0, i); }
-
-
-                        if (ln.Contains(":"))
-                        {
-                            words = ln.Split(':');
-                            words[0] = words[0].Trim(' ');
-
-                            if (dic.ContainsKey(words[0]))
-                            {
-                                i = dic[words[0]];
-                                ReligionData[i].Truename = words[1].Substring(3, words[1].Length - 4);
-                                NextLine();
-                            }
-                            else
-                            {
-                                NextLine();
-                            }
-
-                        }
-                        else { NextLine(); }
-
-                    }
-                }
-            }
-        }
-
-        private void religions(string path, List<ClassReligions> ReligionData, string localization_name)
-        {
-            if (Directory.Exists(path + "\\common\\religions"))
-            {
-
-                foreach (List<KeyValuePair<string, object>> religion in new Parser2().ParseFiles(path + "\\common\\religions")) // Files
-                {
-                    foreach (KeyValuePair<string, object> religionEntry in religion) // Individual Tech  Pair (Name,Dic)
-                    {
-                        ReligionData.Add(new ClassReligions(religionEntry));
-                    }
-                }
-            }
-
-            ReligionData.Sort(delegate (ClassReligions t1, ClassReligions t2)
-            {   // 0.5 s Make more efi
-                return (t1.name.CompareTo(t2.name));
-            });
-
-            OpenPathDescripReligion(path + "\\localization\\" + language + localization_name, ReligionData);
-
-            traitsAdder();
-
-            return;
-
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Religion
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private void modifierTypes(string path, List<ClassModifiersType> ModifierData)
-        {
-            if (Directory.Exists(path + "\\common\\modifier_types"))
-            {
-
-                foreach (List<KeyValuePair<string, object>> entry in new Parser().ParseFiles(path + "\\common\\modifier_types")) // Files
-                {
-                    foreach (KeyValuePair<string, object> entry2 in entry)
-                    {
-                        ModifierData.Add(new ClassModifiersType(entry2));
-                    }
-                }
-            }
-
-            ModifierData.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
-            {   // 0.5 s Make more efi
-                return (t1.name.CompareTo(t2.name));
-            });
-
-            return;
-
-        }
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Make Project *
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2799,443 +1793,577 @@ namespace Victoria_3_Modding_Tool
         // *
         private void MakeProjFiles()
         {
-            // 1st
-            // Common
+
+            // Makes Common
             if (!Directory.Exists(ProjPath + "\\common"))
             {
                 Directory.CreateDirectory(ProjPath + "\\common");
             }
 
-
-            // 2nd
-            // Makes technology
-            if (TechDataP != null)
-            {
-                if (TechDataP.Count != 0)
-                {
-                    if (!Directory.Exists(ProjPath + "\\common\\technology"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\technology");
-                    }
-
-                    if (!Directory.Exists(ProjPath + "\\common\\technology\\technologies"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\technology\\technologies");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\technologies\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassTech techEntry in TechDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine(techEntry.name + " = {");
-                            sw.WriteLine("\tera = era_" + techEntry.era);
-                            sw.WriteLine("\ttexture = \"" + techEntry.texture + "\"");
-                            sw.WriteLine("\tcategory = " + techEntry.category);
-                            if (techEntry.canResearch == false) { sw.WriteLine("\tcan_research = no"); }
-                            if (techEntry.modifiers.Count != 0)
-                            {
-                                sw.WriteLine();
-                                sw.WriteLine("\tmodifier = {");
-                                foreach (string modifier in techEntry.modifiers)
-                                {
-                                    sw.WriteLine("\t\t" + modifier);
-                                }
-                                sw.WriteLine("\t}");
-                            }
-                            if (techEntry.restrictions.Count != 0)
-                            {
-                                sw.WriteLine();
-                                sw.WriteLine("\tunlocking_technologies = {");
-                                foreach (string restr in techEntry.restrictions)
-                                {
-                                    sw.WriteLine("\t\t" + restr);
-                                }
-                                sw.WriteLine("\t}");
-                            }
-                            sw.WriteLine("}");
-                        }
-
-
-                    }
-                }
-            }
-
-            // 2nd
-            // Makes era
-            if (EraDataP != null)
-            {
-
-                if (EraDataP.Count != 0)
-                {
-                    if (!Directory.Exists(ProjPath + "\\common\\technology"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\technology");
-                    }
-                    if (!Directory.Exists(ProjPath + "\\common\\technology\\eras"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\technology\\eras");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\eras\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassEra eraEntry in EraDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine("era_" + eraEntry.Era + " = {");
-                            sw.WriteLine("\ttechnology_cost = " + eraEntry.Cost);
-                            sw.WriteLine("}");
-                        }
-
-
-                    }
-
-                }
-            }
-
-            // 2nd
-            // Makes goods
-            if (GoodsDataP != null)
-            {
-                if (GoodsDataP.Count != 0)
-                {
-
-                    if (!Directory.Exists(ProjPath + "\\common\\goods"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\goods");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\goods\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassGoods Entry in GoodsDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine(Entry.name + " = {");
-                            sw.WriteLine("\ttexture = \"" + Entry.texture + "\"");
-                            sw.WriteLine("\tcost = " + Entry.cost);
-                            sw.WriteLine("\tcategory = " + Entry.category);
-
-                            if (Entry.tradeable == false) { sw.WriteLine("\ttradeable = no"); }
-
-                            if (Entry.fixed_price == true) { sw.WriteLine("\tfixed_price = yes"); }
-
-                            sw.WriteLine();
-
-                            if (Entry.obsession != -1) { sw.WriteLine("\tobsession_chance = " + Entry.obsession.ToString().Replace(",", ".")); }
-
-                            sw.WriteLine("\tprestige_factor = " + Entry.prestige.ToString().Replace(",", "."));
-
-                            if (Entry.tradedQuantity != -1) { sw.WriteLine("\ttraded_quantity = " + Entry.tradedQuantity); }
-
-                            if (Entry.convoy_cost != -1) { sw.WriteLine("\tconvoy_cost_multiplier = " +  Entry.convoy_cost.ToString().Replace(",",".")); }
-
-                            if (Entry.consumption != -1) { sw.WriteLine("\tconsumption_tax_cost = " + Entry.consumption); }
-
-                            sw.WriteLine("}");
-                            sw.WriteLine();
-
-                        }
-                    }
-
-
-                }
-            }
-
-            // 2nd
-            // Makes pop needs
-            if (PopNeedsDataP != null)
-            {
-                if (PopNeedsDataP.Count != 0)
-                {
-
-                    if (!Directory.Exists(ProjPath + "\\common\\pop_needs"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\pop_needs");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\pop_needs\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassPopNeeds Entry in PopNeedsDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine(Entry.name + " = {");
-                            sw.WriteLine("\tdefault = " + Entry.defaultgood);
-
-                            foreach (ClassPopNeedsEntry entry in Entry.entries)
-                            {
-                                sw.WriteLine();
-                                sw.WriteLine("\tentry = {");
-                                sw.WriteLine("\t\tgoods = " + entry.goods);
-                                sw.WriteLine();
-                                sw.WriteLine("\t\tweight = " + entry.weight.ToString().Replace(",", "."));
-                                sw.WriteLine("\t\tmax_weight = " + entry.maxWeight.ToString().Replace(",", "."));
-                                sw.WriteLine("\t\tmin_weight = " + entry.minWeight.ToString().Replace(",", "."));
-                                sw.WriteLine("\t}");
-                                sw.WriteLine();
-                            }
-
-                            sw.WriteLine("}");
-                            sw.WriteLine();
-
-                        }
-                    }
-
-
-                }
-            }
-
-            // 2nd
-            // Makes religions
-            if (ReligionsDataP != null)
-            {
-                if (ReligionsDataP.Count != 0)
-                {
-
-                    if (!Directory.Exists(ProjPath + "\\common\\religions"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\religions");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\religions\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassReligions Entry in ReligionsDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine(Entry.name + " = {");
-                            sw.WriteLine("\ttexture = \"" + Entry.texture + "\"");
-
-                            if (Entry.traits.Count != 0)
-                            {
-                                sw.WriteLine("\ttraits = {");
-                                foreach (string traits in Entry.traits)
-                                {
-                                    sw.WriteLine("\t\t" + traits);
-                                }
-                                sw.WriteLine("\t}");
-                            }
-                            sw.WriteLine("\tcolor = { " + Math.Round((double)Entry.red/255, 2).ToString().Replace(",",".") + " " + Math.Round((double)Entry.green / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)Entry.blue / 255, 2).ToString().Replace(",", ".") + " }");
-                            if (Entry.taboos.Count != 0)
-                            {
-                                sw.WriteLine("\ttaboos = {");
-                                foreach (string taboos in Entry.taboos)
-                                {
-                                    sw.WriteLine("\t\t" + taboos);
-                                }
-                                sw.WriteLine("\t}");
-                            }
-                            sw.WriteLine("}");
-                            sw.WriteLine();
-
-                        }
-                    }
-
-
-                }
-            }
-
-            // 2nd
-            // Makes modifier types
-            if (ModifierTypeDataP != null)
-            {
-                if (ModifierTypeDataP.Count != 0)
-                {
-
-                    if (!Directory.Exists(ProjPath + "\\common\\modifier_types"))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\common\\modifier_types");
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\modifier_types\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        foreach (ClassModifiersType Entry in ModifierTypeDataP)
-                        {
-                            sw.WriteLine();
-                            sw.WriteLine(Entry.name + " = {");
-
-                            if (Entry.neutral != -1)
-                            {
-                                if (Entry.neutral == 1)
-                                {
-                                    sw.WriteLine("\tneutral = yes");
-                                }
-                                else
-                                {
-                                    sw.WriteLine("\tneutral = no");
-                                }
-                            }
-
-                            if (Entry.good != -1)
-                            {
-                                if(Entry.good == 1)
-                                {
-                                    sw.WriteLine("\tgood = yes");
-                                }
-                                else
-                                {
-                                    sw.WriteLine("\tgood = no");
-                                }
-                            }
-
-                            if (Entry.boolean != -1)
-                            {
-                                if (Entry.boolean == 1)
-                                {
-                                    sw.WriteLine("\tboolean = yes");
-                                }
-                                else
-                                {
-                                    sw.WriteLine("\tboolean = no");
-                                }
-                            }
-
-                            if (Entry.percent != -1)
-                            {
-                                if (Entry.percent == 1)
-                                {
-                                    sw.WriteLine("\tpercent = yes");
-                                }
-                                else
-                                {
-                                    sw.WriteLine("\tpercent = no");
-                                }
-                            }
-
-                            if(Entry.invert != -1)
-                            {
-                                if (Entry.invert == 1)
-                                {
-                                    sw.WriteLine("\tinvert = yes");
-                                }
-                                else
-                                {
-                                    sw.WriteLine("\tinvert = no");
-                                }
-                            }
-
-                            if (Entry.num_decimals != -1)
-                            {
-                                sw.WriteLine("\tnum_decimals = " + Entry.num_decimals);
-                            }
-
-                            if (Entry.translate != null)
-                            {
-                                sw.WriteLine("\ttranslate = " + Entry.translate);
-                            }
-
-
-                            if (Entry.postfix != null)
-                            {
-                                sw.WriteLine("\tpostfix = \"" + Entry.postfix + "\"");
-                            }
-
-                            if (Entry.ai_value != -1)
-                            {
-                                sw.WriteLine("\tai_value = " + Entry.ai_value);
-                            }
-
-                            sw.WriteLine("}");
-                            sw.WriteLine();
-
-                        }
-                    }
-
-
-                }
-            }
-
-            //////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////
-
-            // 1st
             // Makes Localization
             if (!Directory.Exists(ProjPath + "\\localization"))
             {
                 Directory.CreateDirectory(ProjPath + "\\localization");
             }
 
-
-            // 2nd
-            // Makes Languages Tech
-            if (TechDataP != null)
+            // Makes GFX
+            if (!Directory.Exists(ProjPath + "\\gfx"))
             {
-                if (TechDataP.Count != 0)
-                {
+                Directory.CreateDirectory(ProjPath + "\\gfx");
+            }
 
-                    if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+            switch (MainData[mainSelectedIndex].ToString())
+            {
+
+                case "Era":
+
+                    if (EraDataP.Count != 0)
                     {
-                        Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        if (!Directory.Exists(ProjPath + "\\common\\technology"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\technology");
+                        }
+                        if (!Directory.Exists(ProjPath + "\\common\\technology\\eras"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\technology\\eras");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\eras\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassEra eraEntry in EraDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine("era_" + eraEntry.Era + " = {");
+                                sw.WriteLine("\ttechnology_cost = " + eraEntry.Cost);
+                                sw.WriteLine("}");
+                            }
+
+
+                        }
+
                     }
 
+                    break;
+                case "Goods":
 
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                    if (GoodsDataP.Count != 0)
                     {
-                        sw.NewLine = "\n";
-                        sw.WriteLine("l_english:");
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\goods"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\goods");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\goods\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassGoods Entry in GoodsDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(Entry.Name + " = {");
+                                sw.WriteLine("\ttexture = \"" + "gfx/interface/icons/goods_icons/" + Entry.Name + ".dds" + "\"");
+                                sw.WriteLine("\tcost = " + Entry.Cost);
+                                sw.WriteLine("\tcategory = " + Entry.Category);
+
+                                if (Entry.Tradeable == false) { sw.WriteLine("\ttradeable = no"); }
+
+                                if (Entry.Fixed_price == true) { sw.WriteLine("\tfixed_price = yes"); }
+
+                                sw.WriteLine();
+
+                                if (Entry.Obsession != -1) { sw.WriteLine("\tobsession_chance = " + Entry.Obsession.ToString().Replace(",", ".")); }
+
+                                sw.WriteLine("\tprestige_factor = " + Entry.Prestige.ToString().Replace(",", "."));
+
+                                if (Entry.TradedQuantity != -1) { sw.WriteLine("\ttraded_quantity = " + Entry.TradedQuantity); }
+
+                                if (Entry.Convoy_cost != -1) { sw.WriteLine("\tconvoy_cost_multiplier = " + Entry.Convoy_cost.ToString().Replace(",", ".")); }
+
+                                if (Entry.Consumption != -1) { sw.WriteLine("\tconsumption_tax_cost = " + Entry.Consumption); }
+
+                                sw.WriteLine("}");
+                                sw.WriteLine();
+
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassGoods Entry in GoodsDataP)
+                            {
+
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+
+                            }
+                        }
+
+                        // gfx
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons\\goods_icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons\\goods_icons");
+                        }
+
+                        foreach (ClassGoods entry in GoodsDataP)
+                        {
+                             File.Copy(VickyPath + "\\game\\" + entry.Texture, ProjPath + "\\gfx\\interface\\icons\\goods_icons\\" + entry.Name + ".dds", true);
+                        }
+
+                    }
+
+                    break;
+                case "Modifiers":
+
+                    if (ModifierDataP.Count != 0)
+                    {
+
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\modifiers"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\modifiers");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\modifiers" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassModifiers entry in ModifierDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(entry.Name + " = {");
+
+                                if (entry.Texture == string.Empty)
+                                {
+                                    sw.WriteLine("\ticon = " + "gfx/interface/icons/timed_modifier_icons/" + entry.Name + ".dds");
+                                }
+
+                                if (entry.Modifiers.Count != 0)
+                                {
+                                    foreach (string modifier in entry.Modifiers)
+                                    {
+                                        sw.WriteLine("\t" + modifier);
+                                    }
+                                }
+
+                                sw.WriteLine("}");
+                            }
+
+
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_modifiers_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassModifiers entry in ModifierDataP)
+                            {
+                                sw.WriteLine(" " + entry.Name + ":0 \"" + entry.TrueName + "\"");
+                                sw.WriteLine(" " + entry.Name + "_desc:0 \"" + entry.Description + "\"");
+                            }
+                        }
+
+                        // gfx
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons\\timed_modifier_icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons\\timed_modifier_icons");
+                        }
+
+                        foreach (ClassModifiers entry in ModifierDataP)
+                        {
+                            if (entry.Texture != ProjPath + "\\gfx\\interface\\icons\\timed_modifier_icons\\" + entry.Name + ".dds")
+                            {
+                                File.Copy(entry.Texture, ProjPath + "\\gfx\\interface\\icons\\timed_modifier_icons\\" + entry.Name + ".dds", true);
+                            }
+
+                        }
+
+
+                    }
+
+                    break;
+                case "Modifier Types":
+
+                    if (ModifierTypeDataP.Count != 0)
+                    {
+
+                        if (!Directory.Exists(ProjPath + "\\common\\modifier_types"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\modifier_types");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\modifier_types\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassModifiersType Entry in ModifierTypeDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(Entry.Name + " = {");
+
+                                if (Entry.Neutral != -1)
+                                {
+                                    if (Entry.Neutral == 1)
+                                    {
+                                        sw.WriteLine("\tneutral = yes");
+                                    }
+                                    else
+                                    {
+                                        sw.WriteLine("\tneutral = no");
+                                    }
+                                }
+
+                                if (Entry.Good != -1)
+                                {
+                                    if (Entry.Good == 1)
+                                    {
+                                        sw.WriteLine("\tgood = yes");
+                                    }
+                                    else
+                                    {
+                                        sw.WriteLine("\tgood = no");
+                                    }
+                                }
+
+                                if (Entry.Boolean != -1)
+                                {
+                                    if (Entry.Boolean == 1)
+                                    {
+                                        sw.WriteLine("\tboolean = yes");
+                                    }
+                                    else
+                                    {
+                                        sw.WriteLine("\tboolean = no");
+                                    }
+                                }
+
+                                if (Entry.Percent != -1)
+                                {
+                                    if (Entry.Percent == 1)
+                                    {
+                                        sw.WriteLine("\tpercent = yes");
+                                    }
+                                    else
+                                    {
+                                        sw.WriteLine("\tpercent = no");
+                                    }
+                                }
+
+                                if (Entry.Invert != -1)
+                                {
+                                    if (Entry.Invert == 1)
+                                    {
+                                        sw.WriteLine("\tinvert = yes");
+                                    }
+                                    else
+                                    {
+                                        sw.WriteLine("\tinvert = no");
+                                    }
+                                }
+
+                                if (Entry.Num_decimals != -1)
+                                {
+                                    sw.WriteLine("\tnum_decimals = " + Entry.Num_decimals);
+                                }
+
+                                if (Entry.Translate != null)
+                                {
+                                    sw.WriteLine("\ttranslate = " + Entry.Translate);
+                                }
+
+
+                                if (Entry.Postfix != null)
+                                {
+                                    sw.WriteLine("\tpostfix = \"" + Entry.Postfix + "\"");
+                                }
+
+                                if (Entry.Ai_value != -1)
+                                {
+                                    sw.WriteLine("\tai_value = " + Entry.Ai_value);
+                                }
+
+                                sw.WriteLine("}");
+                                sw.WriteLine();
+
+                            }
+                        }
+
+
+                    }
+
+                    break;
+                case "Pop Needs":
+
+                    if (PopNeedsDataP.Count != 0)
+                    {
+
+                        if (!Directory.Exists(ProjPath + "\\common\\pop_needs"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\pop_needs");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\pop_needs\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassPopNeeds Entry in PopNeedsDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(Entry.Name + " = {");
+                                sw.WriteLine("\tdefault = " + Entry.Defaultgood);
+
+                                foreach (ClassPopNeedsEntry entry in Entry.Entries)
+                                {
+                                    sw.WriteLine();
+                                    sw.WriteLine("\tentry = {");
+                                    sw.WriteLine("\t\tgoods = " + entry.Name);
+                                    sw.WriteLine();
+                                    sw.WriteLine("\t\tweight = " + entry.Weight.ToString().Replace(",", "."));
+                                    sw.WriteLine("\t\tmax_weight = " + entry.MaxWeight.ToString().Replace(",", "."));
+                                    sw.WriteLine("\t\tmin_weight = " + entry.MinWeight.ToString().Replace(",", "."));
+                                    sw.WriteLine("\t}");
+                                    sw.WriteLine();
+                                }
+
+                                sw.WriteLine("}");
+                                sw.WriteLine();
+
+                            }
+                        }
+
+
+                    }
+
+                    break;
+                case "Religions":
+
+                    if (ReligionsDataP.Count != 0)
+                    {
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\religions"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\religions");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\religions\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassReligions Entry in ReligionsDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(Entry.Name + " = {");
+                                sw.WriteLine("\ttexture = \"" + "gfx/interface/icons/religion_icons/" + Entry.Name + ".dds" + "\"");
+
+                                if (Entry.Traits.Count != 0)
+                                {
+                                    sw.WriteLine("\ttraits = {");
+                                    foreach (string traits in Entry.Traits)
+                                    {
+                                        sw.WriteLine("\t\t" + traits);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                sw.WriteLine("\tcolor = { " + Math.Round((double)Entry.Red / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)Entry.Green / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)Entry.Blue / 255, 2).ToString().Replace(",", ".") + " }");
+                                if (Entry.Taboos.Count != 0)
+                                {
+                                    sw.WriteLine("\ttaboos = {");
+                                    foreach (string taboos in Entry.Taboos)
+                                    {
+                                        sw.WriteLine("\t\t" + taboos);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                sw.WriteLine("}");
+                                sw.WriteLine();
+
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_religions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassReligions Entry in ReligionsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.Truename + "\"");
+                            }
+                        }
+
+                        // gfx
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons\\religion_icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons\\religion_icons");
+                        }
+
+                        foreach (ClassReligions entry in ReligionsDataP)
+                        {
+                            if (entry.Texture != ProjPath + "\\gfx\\interface\\icons\\religion_icons\\" + entry.Name + ".dds")
+                            {
+                                File.Copy(entry.Texture, ProjPath + "\\gfx\\interface\\icons\\religion_icons\\" + entry.Name + ".dds", true);
+                            }
+
+                        }
+
+
+
+                    }
+
+                    break;
+                case "Technology":
+
+                    if (TechDataP.Count != 0)
+                    {
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\technology"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\technology");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\common\\technology\\technologies"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\technology\\technologies");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\technologies\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassTech techEntry in TechDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(techEntry.Name + " = {");
+                                sw.WriteLine("\tera = era_" + techEntry.Era);
+                                sw.WriteLine("\ttexture = \"" + "gfx/interface/icons/invention_icons/" + techEntry.Name + ".dds" + "\"");
+                                sw.WriteLine("\tcategory = " + techEntry.Category);
+                                if (techEntry.CanResearch == false) { sw.WriteLine("\tcan_research = no"); }
+                                if (techEntry.Modifiers.Count != 0)
+                                {
+                                    sw.WriteLine();
+                                    sw.WriteLine("\tmodifier = {");
+                                    foreach (string modifier in techEntry.Modifiers)
+                                    {
+                                        sw.WriteLine("\t\t" + modifier);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                if (techEntry.Restrictions.Count != 0)
+                                {
+                                    sw.WriteLine();
+                                    sw.WriteLine("\tunlocking_technologies = {");
+                                    foreach (string restr in techEntry.Restrictions)
+                                    {
+                                        sw.WriteLine("\t\t" + restr);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                sw.WriteLine("}");
+                            }
+
+
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassTech techEntry in TechDataP)
+                            {
+
+                                sw.WriteLine(" " + techEntry.Name + ":0 \"" + techEntry.TrueName + "\"");
+                                sw.WriteLine(" " + techEntry.Name + "_desc:0 \"" + techEntry.Desc + "\"");
+
+                            }
+                        }
+
+                        // gfx
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons\\invention_icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons\\invention_icons");
+                        }
 
                         foreach (ClassTech techEntry in TechDataP)
                         {
-
-                            sw.WriteLine(" " + techEntry.name + ":0 \"" + techEntry.TrueName + "\"");
-                            sw.WriteLine(" " + techEntry.name + "_desc:0 \"" + techEntry.Desc + "\"");
-
+                            if (techEntry.Texture!= ProjPath + "\\gfx\\interface\\icons\\invention_icons\\" + techEntry.Name + ".dds") {
+                                File.Copy(techEntry.Texture, ProjPath + "\\gfx\\interface\\icons\\invention_icons\\" + techEntry.Name + ".dds", true);
+                            }
+                            
                         }
+
                     }
-                }
+                    
+                    break;
+
+                default:
+                    break;
             }
 
-            if (GoodsDataP != null)
-            {
-                if (GoodsDataP.Count != 0)
-                {
-                    if (!Directory.Exists(ProjPath + "\\localization\\" + language))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        sw.WriteLine("l_english:");
-
-                        foreach (ClassGoods Entry in GoodsDataP)
-                        {
-
-                            sw.WriteLine(" " + Entry.name + ":0 \"" + Entry.TrueName + "\"");
-
-                        }
-                    }
-                }
-            }
-
-            if (ReligionsDataP != null)
-            {
-                if (ReligionsDataP.Count != 0)
-                {
-                    if (!Directory.Exists(ProjPath + "\\localization\\" + language))
-                    {
-                        Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_religions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
-                    {
-                        sw.NewLine = "\n";
-                        sw.WriteLine("l_english:");
-
-                        foreach (ClassReligions Entry in ReligionsDataP)
-                        {
-
-                            sw.WriteLine(" " + Entry.name + ":0 \"" + Entry.Truename + "\"");
-
-                        }
-                    }
-                }
-            }
 
         }
 
@@ -3258,6 +2386,6 @@ namespace Victoria_3_Modding_Tool
             Directory.Delete(target_dir, false);
         }
 
-        
+
     }
 }
