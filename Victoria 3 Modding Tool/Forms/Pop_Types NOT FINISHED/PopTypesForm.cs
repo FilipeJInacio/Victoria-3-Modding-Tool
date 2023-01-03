@@ -347,7 +347,7 @@ namespace Victoria_3_Modding_Tool
 
         private void SaveForm()
         {
-            local = new ClassPopNeeds(NameTB.Texts, DefaultCB.SelectedItem.ToString());
+            local = null; // creator
 
             foreach(ClassPopNeedsEntry entry in localEntry)
             {

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Victoria_3_Modding_Tool
 {
@@ -234,52 +236,32 @@ namespace Victoria_3_Modding_Tool
         {
             string ln;
             string[] words;
+            Match m;
             void NextLine() { ln = sr.ReadLine();}
             NextLine();
             NextLine();
 
+
             while (ln != null)
             {
-                ln = StripComments(ln.Replace("\t", ""));
-
-                if (ln.Length == 0)
+                if ((m=Regex.Match(ln, "[\\u0000-\\u007E]+:\\d\\s\"[\u0000-\u0021\u0023-\u007E]*\"(?:[\u0000-\u0021\u0023-\u007E]*\"[\u0000-\u0021\u0023-\u007E]*\")*")).Success)
                 {
-                    NextLine();
-                    continue;
-                }
-
-                if (ln.Contains(':')) {
+                    ln = m.Value;
                     words = ln.Split(':');
-                    Dic.Add(words[0].Trim(' '), words[1].Trim(' '));
+                    if (!words[0].Contains("#")) {
+                        Dic.Add(words[0].Trim(' '), words[1].Substring(3, words[1].Length-4));
+                    }
                     NextLine();
                     continue;
-                }
-                NextLine();
-            }
-
-            return;
-        }
-
-        public string StripComments(string line)
-        {
-            int i;
-
-            if(line.Contains("#"))
-            {
-                if (!line.Contains(":") || line.IndexOf(":") > line.IndexOf("#"))
-                {
-                    i = line.IndexOf("#");
-                    if(i == 0){return "";}
-                    else { return line.Substring(0, i);}
                 }
                 else
                 {
-                    i = line.IndexOf("\"", 4 + line.IndexOf(":"));
-                    return line.Substring(0, i + 1);
+                    NextLine();
+                    continue;
                 }
             }
 
-            return line;
+            return;
         }
 
         public List<string> GetTextFiles(string startingPath)

@@ -21,10 +21,6 @@ namespace Victoria_3_Modding_Tool
 
     form position
 
-    religion -> make file !!
-
-    modifiers -> hardcode 
-
     Help
 
     CodeEditor ->make spellcheck, end custom colors, make autocomplete
@@ -33,8 +29,15 @@ namespace Victoria_3_Modding_Tool
 
     // Questions
     // - What are the traits?
-    // - 
+    // - Modifier -> color made?       modifiers_haitian
+    // - Worth of items   (Pop Needs)
+    // - Duplicate error 
 
+    // Not working
+    // - Modifiers/ ModifierTypes
+    // - Pop_Needs -> localization
+    // - Religion -> not working
+    
 
     public partial class Main : Form
     {
@@ -66,6 +69,10 @@ namespace Victoria_3_Modding_Tool
         public List<ClassGoods> GoodsDataP;
         public List<ClassGoods> GoodsDataV;
         public List<ClassGoods> GoodsDataM;
+
+        public List<ClassInstitutions> InstitutionsDataP;
+        public List<ClassInstitutions> InstitutionsDataV;
+        public List<ClassInstitutions> InstitutionsDataM;
 
         public List<ClassModifiers> ModifierDataP;
         public List<ClassModifiers> ModifierDataV;
@@ -299,6 +306,7 @@ namespace Victoria_3_Modding_Tool
         {
             MainData.Add("Era");
             MainData.Add("Goods");
+            MainData.Add("Institutions");
             MainData.Add("Modifiers");
             MainData.Add("Modifier Types");
             MainData.Add("Pop Needs");
@@ -308,6 +316,7 @@ namespace Victoria_3_Modding_Tool
 
             MainLB.Items.Add("Era");
             MainLB.Items.Add("Goods");
+            MainLB.Items.Add("Institutions");
             MainLB.Items.Add("Modifiers");
             MainLB.Items.Add("Modifier Types");
             MainLB.Items.Add("Pop Needs");
@@ -343,23 +352,26 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
+        //*
         private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
+            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
         }
 
+        //*
         private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
+            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
         }
 
+        //*
         private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, InstitutionsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
         }
 
         // *
-        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData) 
+        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData) 
         {
 
             if (mainSelectedIndex == -1) { return; }
@@ -416,6 +428,32 @@ namespace Victoria_3_Modding_Tool
                     {
                         LB.Items.Clear();
                         foreach (ClassGoods str in GoodsData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "Institutions":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassInstitutions str in InstitutionData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+
+                        }
+
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassInstitutions str in InstitutionData)
                         {
                             LB.Items.Add(str.Name);
                         }
@@ -587,16 +625,24 @@ namespace Victoria_3_Modding_Tool
 
                         GoodsDataM = new List<ClassGoods>();
                         ReadFilesCommon(ModPath + "\\common\\goods", GoodsDataM, new Parser(), s => new ClassGoods(s,
-                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataM[s.Key].Length - 4) : string.Empty), t => t.Name);
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
+
+                        break;
+                    case "Institutions":
+
+                        InstitutionsDataM = new List<ClassInstitutions>();
+                        ReadFilesCommon(ModPath + "\\common\\institutions", InstitutionsDataM, new Parser(), s => new ClassInstitutions(s,
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
                     case "Modifiers":
 
                         ModifierDataM = new List<ClassModifiers>();
                         ReadFilesCommon(ModPath + "\\common\\modifiers", ModifierDataM, new Parser(), s => new ClassModifiers(s,
-                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
-                            LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
@@ -610,7 +656,8 @@ namespace Victoria_3_Modding_Tool
                     case "Pop Needs":
 
                         PopNeedsDataM = new List<ClassPopNeeds>();
-                        ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
+                        ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s,
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
@@ -618,7 +665,7 @@ namespace Victoria_3_Modding_Tool
 
                         ReligionsDataM = new List<ClassReligions>();
                         ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser2(), s => new ClassReligions(s,
-                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataM[s.Key].Length - 4) : string.Empty), t => t.Name);
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
@@ -626,8 +673,8 @@ namespace Victoria_3_Modding_Tool
 
                         TechDataM = new List<ClassTech>();
                         ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
-                            LocalizationDataM.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
-                            LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassTech techEntry in TechDataM) { ModLB.Items.Add(techEntry.Name); }
 
                         break;
@@ -673,6 +720,8 @@ namespace Victoria_3_Modding_Tool
             AddBT.Enabled = true;
             SaveBT.Enabled = true;
 
+            ClearClassData();
+
             VickyLB.Items.Clear();
             ProjectLB.Items.Clear();
             ModLB.Items.Clear();
@@ -701,20 +750,49 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Institutions":
+                    ModifierTypeDataP = new List<ClassModifiersType>();
+                    ModifierTypeDataV = new List<ClassModifiersType>();
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+
+                    InstitutionsDataP = new List<ClassInstitutions>();
+                    InstitutionsDataV = new List<ClassInstitutions>();
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\institutions", InstitutionsDataV, new Parser(), s => new ClassInstitutions(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\institutions", InstitutionsDataP, new Parser(), s => new ClassInstitutions(s,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+
+                    new Functions().TextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", InstitutionsDataP);
+                    new Functions().BackTextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
+                    new Functions().BackTextureMerger(ProjPath + "\\", InstitutionsDataP);
+
+                    foreach (ClassInstitutions entry in InstitutionsDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+                    Mod();
+
+                    break;
+
                 case "Goods":
                     GoodsDataP = new List<ClassGoods>();
                     GoodsDataV = new List<ClassGoods>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     new Functions().TextureMerger(VickyPath + "\\game\\", GoodsDataV);
                     new Functions().TextureMerger(ProjPath + "\\", GoodsDataP);
 
-                    foreach (ClassGoods goodsEntry in GoodsDataV) { VickyLB.Items.Add(goodsEntry.Name); }
-                    foreach (ClassGoods goodsEntry in GoodsDataP) { ProjectLB.Items.Add(goodsEntry.Name); }
+                    foreach (ClassGoods entry in GoodsDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
@@ -733,11 +811,11 @@ namespace Victoria_3_Modding_Tool
                     ModifierDataV = new List<ClassModifiers>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s, 
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty , 
-                        LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty , 
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s, 
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, LocalizationDataP[s.Key].Length - 4) : string.Empty,
-                        LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, LocalizationDataP[s.Key + "_desc"].Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     new Functions().TextureMerger(VickyPath + "\\game\\", ModifierDataV);
                     new Functions().TextureMerger(ProjPath + "\\", ModifierDataP);
@@ -775,16 +853,18 @@ namespace Victoria_3_Modding_Tool
                     GoodsDataV = new List<ClassGoods>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
 
                     PopNeedsDataP = new List<ClassPopNeeds>();
                     PopNeedsDataV = new List<ClassPopNeeds>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s), t => t.Name);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s,
+                        LocalizationDataP !=null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
                     foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
@@ -801,17 +881,17 @@ namespace Victoria_3_Modding_Tool
                     GoodsDataV = new List<ClassGoods>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
 
                     ReligionsDataP = new List<ClassReligions>();
                     ReligionsDataV = new List<ClassReligions>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser2(), s => new ClassReligions(s, 
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser2(), s => new ClassReligions(s,
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty) , t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
 
                     new Functions().TextureMerger(VickyPath + "\\game\\", ReligionsDataV);
                     new Functions().TextureMerger(ProjPath + "\\", ReligionsDataP);
@@ -843,11 +923,11 @@ namespace Victoria_3_Modding_Tool
                     ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
-                        LocalizationDataV.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty , 
-                        LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty , 
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
-                        LocalizationDataP.TryGetValue(s.Key, out string x) ? x.Substring(3, x.Length - 4) : string.Empty,
-                        LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x.Substring(3, x.Length - 4) : string.Empty), t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     new Functions().TextureMerger(VickyPath + "\\game\\", TechDataV);
                     new Functions().TextureMerger(ProjPath + "\\", TechDataP);
@@ -868,23 +948,26 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
+        //*
         private void VickyLB_Click(object sender, EventArgs e)
         {
-            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
-        }
-
-        private void ProjectLB_Click(object sender, EventArgs e)
-        {
-            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
-        }
-
-        private void ModLB_DoubleClick(object sender, EventArgs e)
-        {
-            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
         }
 
         //*
-        private void DoubleClickList(ListBox ListBox , string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData)
+        private void ProjectLB_Click(object sender, EventArgs e)
+        {
+            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
+        }
+
+        //*
+        private void ModLB_DoubleClick(object sender, EventArgs e)
+        {
+            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, InstitutionsDataP, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+        }
+
+        //*
+        private void DoubleClickList(ListBox ListBox , string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData)
         {
 
             if (mainSelectedIndex == -1) { return; }
@@ -982,6 +1065,54 @@ namespace Victoria_3_Modding_Tool
                         }
 
                         if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+
+                    case "Institutions":
+
+                        if (ListBox.Items.Count == 0) { return; }
+
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                        using (InstitutionsForm form = new InstitutionsForm())
+                        {
+                            int i;
+                            i = new Functions().hasNameIndex(InstitutionsData, ListBox.Items[selectedIndex].ToString());
+
+
+                            form.sizeOfVicky = InstitutionsDataV.Count;
+                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.InstitutionsData = new Functions().MergeClasses(InstitutionsDataP, InstitutionsDataV);
+                            form.local = new ClassInstitutions(InstitutionsData[i]);
+                            form.ShowDialog();
+
+                            ClassInstitutions j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = new Functions().hasNameIndex(InstitutionsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    InstitutionsDataP.Add(new ClassInstitutions(j));
+                                    InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    InstitutionsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+
+                            }
+
+                        }
+
+                        if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
 
                         break;
@@ -1351,6 +1482,52 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Institutions":
+
+                    using (InstitutionsForm form = new InstitutionsForm())
+                    {
+                        int i;
+
+                        form.sizeOfVicky = InstitutionsDataV.Count;
+                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                        form.InstitutionsData = new Functions().MergeClasses(InstitutionsDataP, InstitutionsDataV);
+                        form.local = null;
+                        form.ShowDialog();
+
+                        ClassInstitutions j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new Functions().hasNameIndex(InstitutionsDataP, j.Name); // Index to change
+                            if (i == -1)
+                            {
+                                InstitutionsDataP.Add(new ClassInstitutions(j));
+                                InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                {
+                                    return (t1.Name.CompareTo(t2.Name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+                            else
+                            {
+                                InstitutionsDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+
+                        }
+
+
+
+
+                    }
+
+                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Modifiers":
 
                     using (ModifiersForm form = new ModifiersForm())
@@ -1635,6 +1812,21 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
+                case "Institutions":
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    i = new Functions().hasNameIndex(InstitutionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    InstitutionsDataP.RemoveAt(i);
+                    ProjectLB.Items.Clear();
+                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+
+                    break;
+
                 case "Modifiers":
 
                     if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
@@ -1720,7 +1912,7 @@ namespace Victoria_3_Modding_Tool
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Localization
+        // Important
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private Dictionary<string,string> LocalizationSetup(string path)
@@ -1753,6 +1945,42 @@ namespace Victoria_3_Modding_Tool
             }
             return;
         }
+
+        // *
+        private void ClearClassData()
+        {
+            EraDataP?.Clear();
+            EraDataV?.Clear();
+            EraDataM?.Clear();
+
+            GoodsDataP?.Clear();
+            GoodsDataV?.Clear();
+            GoodsDataM?.Clear();
+
+            InstitutionsDataP?.Clear();
+            InstitutionsDataV?.Clear();
+            InstitutionsDataM?.Clear();
+
+            ModifierDataP?.Clear();
+            ModifierDataV?.Clear();
+            ModifierDataM?.Clear();
+
+            ModifierTypeDataP?.Clear();
+            ModifierTypeDataV?.Clear();
+            ModifierTypeDataM?.Clear();
+
+            PopNeedsDataP?.Clear();
+            PopNeedsDataV?.Clear();
+            PopNeedsDataM?.Clear();
+
+            ReligionsDataP?.Clear();
+            ReligionsDataV?.Clear();
+            ReligionsDataM?.Clear();
+
+            TechDataP?.Clear();
+            TechDataV?.Clear();
+            TechDataM?.Clear();
+    }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Traits
@@ -1931,6 +2159,104 @@ namespace Victoria_3_Modding_Tool
                     }
 
                     break;
+                case "Institutions":
+
+                    if (InstitutionsDataP.Count != 0)
+                    {
+
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\institutions"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\institutions");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\institutions\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassInstitutions entry in InstitutionsDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(entry.Name + " = {");
+
+                                sw.WriteLine("\ticon = " + "gfx/interface/icons/institution_icons/" + entry.Name + ".dds");
+                                sw.WriteLine("\tbackground_texture = " + "gfx/interface/illustrations/institutions/" + entry.Name + ".dds");
+
+                                if (entry.Modifiers.Count != 0)
+                                {
+                                    foreach (string modifier in entry.Modifiers)
+                                    {
+                                        sw.WriteLine("\t" + modifier);
+                                    }
+                                }
+
+                                sw.WriteLine("}");
+                            }
+
+
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_institutions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassInstitutions entry in InstitutionsDataP)
+                            {
+                                sw.WriteLine(" " + entry.Name + ":0 \"" + entry.TrueName + "\"");
+                            }
+                        }
+
+                        // gfx
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\icons\\institution_icons"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\icons\\institution_icons");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\illustrations"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\illustrations");
+                        }
+
+                        if (!Directory.Exists(ProjPath + "\\gfx\\interface\\illustrations\\institutions"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\gfx\\interface\\illustrations\\institutions");
+                        }
+
+                        foreach (ClassInstitutions entry in InstitutionsDataP)
+                        {
+                            if (entry.Texture != ProjPath + "\\gfx\\interface\\icons\\institution_icons\\" + entry.Name + ".dds")
+                            {
+                                File.Copy(entry.Texture, ProjPath + "\\gfx\\interface\\icons\\institution_icons\\" + entry.Name + ".dds", true);
+                            }
+
+                            if (entry.BackTexture != ProjPath + "\\gfx\\interface\\illustrations\\institutions\\" + entry.Name + ".dds")
+                            {
+                                File.Copy(entry.BackTexture, ProjPath + "\\gfx\\interface\\illustrations\\institutions\\" + entry.Name + ".dds", true);
+                            }
+
+                        }
+
+
+                    }
+
+                    break;
                 case "Modifiers":
 
                     if (ModifierDataP.Count != 0)
@@ -1950,7 +2276,7 @@ namespace Victoria_3_Modding_Tool
                                 sw.WriteLine();
                                 sw.WriteLine(entry.Name + " = {");
 
-                                if (entry.Texture == string.Empty)
+                                if (entry.Texture != string.Empty)
                                 {
                                     sw.WriteLine("\ticon = " + "gfx/interface/icons/timed_modifier_icons/" + entry.Name + ".dds");
                                 }
@@ -2161,6 +2487,23 @@ namespace Victoria_3_Modding_Tool
                                 sw.WriteLine("}");
                                 sw.WriteLine();
 
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_popneeds_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassPopNeeds Entry in PopNeedsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
                             }
                         }
 

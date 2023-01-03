@@ -144,6 +144,13 @@
     <Compile Include="Forms\Home\PathFormHelp.Designer.cs">
       <DependentUpon>PathFormHelp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Institutions\ClassInstitutions.cs" />
+    <Compile Include="Forms\Institutions\InstitutionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Institutions\InstitutionsForm.Designer.cs">
+      <DependentUpon>InstitutionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Modifier\ClassModifiers.cs" />
     <Compile Include="Forms\Modifier\ModifiersForm.cs">
       <SubType>Form</SubType>
@@ -268,6 +275,9 @@
     <EmbeddedResource Include="Forms\Home\PathFormHelp.resx">
       <DependentUpon>PathFormHelp.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Institutions\InstitutionsForm.resx">
+      <DependentUpon>InstitutionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Modifier\ModifiersForm.resx">
       <DependentUpon>ModifiersForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -318,7 +328,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

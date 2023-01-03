@@ -12,6 +12,10 @@ namespace Victoria_3_Modding_Tool
         string Texture { get; set; }
     }
 
+    internal interface IBackTexture
+    {
+        string BackTexture { get; set; }
+    }
 
     internal class Functions
     {
@@ -66,6 +70,14 @@ namespace Victoria_3_Modding_Tool
             for (int i = 0; i < Data.Count; i++)
             {
                 Data[i].Texture = path + Data[i].Texture.ToString().Replace("/", "\\");
+            }
+        }
+
+        public void BackTextureMerger<T>(string path, List<T> Data) where T : IBackTexture
+        {
+            for (int i = 0; i < Data.Count; i++)
+            {
+                Data[i].BackTexture = path + Data[i].BackTexture.ToString().Replace("/", "\\");
             }
         }
 

@@ -18,7 +18,7 @@ namespace Victoria_3_Modding_Tool
         public ClassPopNeeds local;  // null if new   information if to change
         public List<ClassPopNeedsEntry> localEntry;  // local mem
 
-        public bool[] canSave = { false, false, false }; // Name - Default Good - at least 1 weight   false -> cant save
+        public bool[] canSave = { false, false, false, false }; // Name - Default Good - at least 1 weight - TrueName  false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved   2 -> is not
 
         public int sizeOfVicky; // Needed
@@ -284,6 +284,13 @@ namespace Victoria_3_Modding_Tool
                 else { canSave[2] = false; }
             }
 
+            if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(NameGameTB.Texts))
+            {
+                canSave[3] = true;
+            }
+            else { canSave[3] = false; }
+
+
             if (canSave[0] == false)
             {
                 NameTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -312,8 +319,19 @@ namespace Victoria_3_Modding_Tool
             {
                 EntryCB.BorderColor = Color.FromArgb(66, 66, 66);
             }
+            if (canSave[3] == false)
+            {
+                NameGameTB.BorderColor = Color.FromArgb(255, 39, 58);
+                NameGameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+            }
+            else
+            {
+                NameGameTB.BorderColor = Color.FromArgb(66, 66, 66);
+                NameGameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+            }
 
-            if (canSave[0] == true && canSave[1] == true && canSave[2] == true)
+
+            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true)
             {
                 SaveForm();
                 SaveStatus = 1;
@@ -328,6 +346,8 @@ namespace Victoria_3_Modding_Tool
             localEntry = new List<ClassPopNeedsEntry>();
 
             NameTB.Texts = local.Name;
+
+            NameGameTB.Texts = local.TrueName;
 
             DefaultCB.SelectedIndex= new Functions().hasNameIndex(GoodsList, local.Defaultgood);
 
@@ -344,7 +364,7 @@ namespace Victoria_3_Modding_Tool
 
         private void SaveForm()
         {
-            local = new ClassPopNeeds(NameTB.Texts, DefaultCB.SelectedItem.ToString());
+            local = new ClassPopNeeds(NameTB.Texts,NameGameTB.Texts ,DefaultCB.SelectedItem.ToString());
 
             foreach(ClassPopNeedsEntry entry in localEntry)
             {
@@ -416,6 +436,10 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[1] = false; }
         }
-        
+
+        private void NameGameTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SaveStatus = 2;
+        }
     }
 }

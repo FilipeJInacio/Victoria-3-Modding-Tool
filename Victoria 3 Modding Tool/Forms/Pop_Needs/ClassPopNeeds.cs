@@ -56,6 +56,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
     public class ClassPopNeeds : IType
     {
         public string Name { get; set; }
+
+        public string TrueName { get; set; }
         public string Defaultgood { get; set; }
         public List<ClassPopNeedsEntry> Entries { get; set; }
 
@@ -65,6 +67,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public ClassPopNeeds(ClassPopNeeds Popneed)
         {
             this.Name= Popneed.Name;
+            this.TrueName = Popneed.TrueName;
             this.Defaultgood= Popneed.Defaultgood;
             this.Entries = new List<ClassPopNeedsEntry>();
             foreach (ClassPopNeedsEntry entry in Popneed.Entries)
@@ -74,17 +77,19 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
         }
 
-        public ClassPopNeeds(string name, string defaultgood)
+        public ClassPopNeeds(string name, string Truename, string defaultgood)
         {
             this.Name = name;
+            this.TrueName = Truename;
             this.Defaultgood = defaultgood;
             this.Entries = new List<ClassPopNeedsEntry>();
         }
 
-        public ClassPopNeeds(KeyValuePair<string, object> ParserData)
+        public ClassPopNeeds(KeyValuePair<string, object> ParserData, string Truename)
         {
 
             this.Name = ParserData.Key;
+            this.TrueName = Truename;
             this.Entries = new List<ClassPopNeedsEntry>();
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)

@@ -53,6 +53,8 @@ namespace Victoria_3_Modding_Tool
             this.WeightL = new System.Windows.Forms.Label();
             this.MaxL = new System.Windows.Forms.Label();
             this.MinL = new System.Windows.Forms.Label();
+            this.NameGameL = new System.Windows.Forms.Label();
+            this.NameGameTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.HotBarP.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,7 +70,7 @@ namespace Victoria_3_Modding_Tool
             this.SaveBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.SaveBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.SaveBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.SaveBT.Location = new System.Drawing.Point(728, 67);
+            this.SaveBT.Location = new System.Drawing.Point(928, 126);
             this.SaveBT.Name = "SaveBT";
             this.SaveBT.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.SaveBT.Size = new System.Drawing.Size(60, 32);
@@ -90,7 +92,7 @@ namespace Victoria_3_Modding_Tool
             this.HotBarP.Dock = System.Windows.Forms.DockStyle.Top;
             this.HotBarP.Location = new System.Drawing.Point(0, 0);
             this.HotBarP.Name = "HotBarP";
-            this.HotBarP.Size = new System.Drawing.Size(800, 32);
+            this.HotBarP.Size = new System.Drawing.Size(1000, 32);
             this.HotBarP.TabIndex = 32;
             this.HotBarP.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HotBarP_MouseDown);
             // 
@@ -106,7 +108,7 @@ namespace Victoria_3_Modding_Tool
             this.HelpBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.HelpBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.HelpBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.HelpBT.Location = new System.Drawing.Point(656, 0);
+            this.HelpBT.Location = new System.Drawing.Point(856, 0);
             this.HelpBT.Name = "HelpBT";
             this.HelpBT.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.HelpBT.Size = new System.Drawing.Size(36, 32);
@@ -139,7 +141,7 @@ namespace Victoria_3_Modding_Tool
             this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.MinimiseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.MinimiseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.MinimiseBT.Location = new System.Drawing.Point(692, 0);
+            this.MinimiseBT.Location = new System.Drawing.Point(892, 0);
             this.MinimiseBT.Name = "MinimiseBT";
             this.MinimiseBT.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.MinimiseBT.Size = new System.Drawing.Size(36, 32);
@@ -163,7 +165,7 @@ namespace Victoria_3_Modding_Tool
             this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.ChangeSizeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ChangeSizeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ChangeSizeBT.Location = new System.Drawing.Point(728, 0);
+            this.ChangeSizeBT.Location = new System.Drawing.Point(928, 0);
             this.ChangeSizeBT.Name = "ChangeSizeBT";
             this.ChangeSizeBT.Padding = new System.Windows.Forms.Padding(5, 3, 0, 0);
             this.ChangeSizeBT.Size = new System.Drawing.Size(36, 32);
@@ -185,7 +187,7 @@ namespace Victoria_3_Modding_Tool
             this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.CloseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.CloseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CloseBT.Location = new System.Drawing.Point(764, 0);
+            this.CloseBT.Location = new System.Drawing.Point(964, 0);
             this.CloseBT.Name = "CloseBT";
             this.CloseBT.Padding = new System.Windows.Forms.Padding(5, 1, 0, 0);
             this.CloseBT.Size = new System.Drawing.Size(36, 32);
@@ -220,7 +222,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.DefaultL.AutoSize = true;
             this.DefaultL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.DefaultL.Location = new System.Drawing.Point(378, 43);
+            this.DefaultL.Location = new System.Drawing.Point(672, 43);
             this.DefaultL.Name = "DefaultL";
             this.DefaultL.Size = new System.Drawing.Size(127, 21);
             this.DefaultL.TabIndex = 48;
@@ -236,7 +238,7 @@ namespace Victoria_3_Modding_Tool
             this.EntryLB.ItemHeight = 24;
             this.EntryLB.Location = new System.Drawing.Point(16, 164);
             this.EntryLB.Name = "EntryLB";
-            this.EntryLB.Size = new System.Drawing.Size(772, 288);
+            this.EntryLB.Size = new System.Drawing.Size(972, 288);
             this.EntryLB.TabIndex = 60;
             this.EntryLB.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.EntryLB_DrawItem);
             // 
@@ -256,7 +258,7 @@ namespace Victoria_3_Modding_Tool
             this.EntryCB.MinimumSize = new System.Drawing.Size(200, 30);
             this.EntryCB.Name = "EntryCB";
             this.EntryCB.Padding = new System.Windows.Forms.Padding(1);
-            this.EntryCB.Size = new System.Drawing.Size(289, 32);
+            this.EntryCB.Size = new System.Drawing.Size(324, 32);
             this.EntryCB.TabIndex = 56;
             this.EntryCB.Texts = "";
             // 
@@ -272,11 +274,11 @@ namespace Victoria_3_Modding_Tool
             this.DefaultCB.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(73)))), ((int)(((byte)(150)))));
             this.DefaultCB.ListBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.DefaultCB.ListTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.DefaultCB.Location = new System.Drawing.Point(382, 67);
+            this.DefaultCB.Location = new System.Drawing.Point(676, 67);
             this.DefaultCB.MinimumSize = new System.Drawing.Size(120, 30);
             this.DefaultCB.Name = "DefaultCB";
             this.DefaultCB.Padding = new System.Windows.Forms.Padding(1);
-            this.DefaultCB.Size = new System.Drawing.Size(340, 32);
+            this.DefaultCB.Size = new System.Drawing.Size(312, 32);
             this.DefaultCB.TabIndex = 44;
             this.DefaultCB.Texts = "";
             this.DefaultCB.OnSelectedIndexChanged += new System.EventHandler(this.DefaultCB_OnSelectedIndexChanged);
@@ -294,7 +296,7 @@ namespace Victoria_3_Modding_Tool
             this.NameTB.Name = "NameTB";
             this.NameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NameTB.ReadOnly = false;
-            this.NameTB.Size = new System.Drawing.Size(360, 24);
+            this.NameTB.Size = new System.Drawing.Size(324, 32);
             this.NameTB.TabIndex = 40;
             this.NameTB.Texts = "";
             this.NameTB.UnderlinedStyle = false;
@@ -310,7 +312,7 @@ namespace Victoria_3_Modding_Tool
             this.DeleteBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.DeleteBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.DeleteBT.Location = new System.Drawing.Point(737, 126);
+            this.DeleteBT.Location = new System.Drawing.Point(841, 126);
             this.DeleteBT.Name = "DeleteBT";
             this.DeleteBT.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.DeleteBT.Size = new System.Drawing.Size(51, 32);
@@ -329,12 +331,12 @@ namespace Victoria_3_Modding_Tool
             this.WeigthTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.WeigthTB.BorderSize = 1;
             this.WeigthTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.WeigthTB.Location = new System.Drawing.Point(311, 126);
+            this.WeigthTB.Location = new System.Drawing.Point(346, 126);
             this.WeigthTB.Multiline = false;
             this.WeigthTB.Name = "WeigthTB";
             this.WeigthTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.WeigthTB.ReadOnly = false;
-            this.WeigthTB.Size = new System.Drawing.Size(117, 32);
+            this.WeigthTB.Size = new System.Drawing.Size(140, 32);
             this.WeigthTB.TabIndex = 62;
             this.WeigthTB.Texts = "";
             this.WeigthTB.UnderlinedStyle = false;
@@ -347,12 +349,12 @@ namespace Victoria_3_Modding_Tool
             this.MinTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.MinTB.BorderSize = 1;
             this.MinTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.MinTB.Location = new System.Drawing.Point(434, 126);
+            this.MinTB.Location = new System.Drawing.Point(492, 126);
             this.MinTB.Multiline = false;
             this.MinTB.Name = "MinTB";
             this.MinTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.MinTB.ReadOnly = false;
-            this.MinTB.Size = new System.Drawing.Size(117, 32);
+            this.MinTB.Size = new System.Drawing.Size(140, 32);
             this.MinTB.TabIndex = 63;
             this.MinTB.Texts = "";
             this.MinTB.UnderlinedStyle = false;
@@ -365,12 +367,12 @@ namespace Victoria_3_Modding_Tool
             this.MaxTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.MaxTB.BorderSize = 1;
             this.MaxTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
-            this.MaxTB.Location = new System.Drawing.Point(557, 126);
+            this.MaxTB.Location = new System.Drawing.Point(638, 126);
             this.MaxTB.Multiline = false;
             this.MaxTB.Name = "MaxTB";
             this.MaxTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.MaxTB.ReadOnly = false;
-            this.MaxTB.Size = new System.Drawing.Size(117, 32);
+            this.MaxTB.Size = new System.Drawing.Size(140, 32);
             this.MaxTB.TabIndex = 64;
             this.MaxTB.Texts = "";
             this.MaxTB.UnderlinedStyle = false;
@@ -387,7 +389,7 @@ namespace Victoria_3_Modding_Tool
             this.AddBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
             this.AddBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.AddBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.AddBT.Location = new System.Drawing.Point(680, 126);
+            this.AddBT.Location = new System.Drawing.Point(784, 126);
             this.AddBT.Name = "AddBT";
             this.AddBT.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.AddBT.Size = new System.Drawing.Size(51, 32);
@@ -402,7 +404,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.WeightL.AutoSize = true;
             this.WeightL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.WeightL.Location = new System.Drawing.Point(307, 102);
+            this.WeightL.Location = new System.Drawing.Point(342, 102);
             this.WeightL.Name = "WeightL";
             this.WeightL.Size = new System.Drawing.Size(64, 21);
             this.WeightL.TabIndex = 66;
@@ -412,7 +414,7 @@ namespace Victoria_3_Modding_Tool
             // 
             this.MaxL.AutoSize = true;
             this.MaxL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.MaxL.Location = new System.Drawing.Point(557, 102);
+            this.MaxL.Location = new System.Drawing.Point(640, 102);
             this.MaxL.Name = "MaxL";
             this.MaxL.Size = new System.Drawing.Size(37, 21);
             this.MaxL.TabIndex = 67;
@@ -422,17 +424,48 @@ namespace Victoria_3_Modding_Tool
             // 
             this.MinL.AutoSize = true;
             this.MinL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
-            this.MinL.Location = new System.Drawing.Point(430, 102);
+            this.MinL.Location = new System.Drawing.Point(488, 102);
             this.MinL.Name = "MinL";
             this.MinL.Size = new System.Drawing.Size(37, 21);
             this.MinL.TabIndex = 68;
             this.MinL.Text = "Min";
             // 
+            // NameGameL
+            // 
+            this.NameGameL.AutoSize = true;
+            this.NameGameL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NameGameL.Location = new System.Drawing.Point(351, 43);
+            this.NameGameL.Name = "NameGameL";
+            this.NameGameL.Size = new System.Drawing.Size(127, 21);
+            this.NameGameL.TabIndex = 70;
+            this.NameGameL.Text = "Name in game:";
+            // 
+            // NameGameTB
+            // 
+            this.NameGameTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            this.NameGameTB.BackgroundColorFocus = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
+            this.NameGameTB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.NameGameTB.BorderFocusColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NameGameTB.BorderSize = 1;
+            this.NameGameTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
+            this.NameGameTB.Location = new System.Drawing.Point(346, 67);
+            this.NameGameTB.Multiline = false;
+            this.NameGameTB.Name = "NameGameTB";
+            this.NameGameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+            this.NameGameTB.ReadOnly = false;
+            this.NameGameTB.Size = new System.Drawing.Size(324, 32);
+            this.NameGameTB.TabIndex = 69;
+            this.NameGameTB.Texts = "";
+            this.NameGameTB.UnderlinedStyle = false;
+            this.NameGameTB.CustomTextBox_TextChanged += new System.EventHandler(this.NameGameTB_CustomTextBox_TextChanged);
+            // 
             // PopNeedsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.ClientSize = new System.Drawing.Size(800, 462);
+            this.ClientSize = new System.Drawing.Size(1000, 462);
+            this.Controls.Add(this.NameGameL);
+            this.Controls.Add(this.NameGameTB);
             this.Controls.Add(this.MinL);
             this.Controls.Add(this.MaxL);
             this.Controls.Add(this.WeightL);
@@ -456,9 +489,9 @@ namespace Victoria_3_Modding_Tool
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(800, 462);
+            this.MaximumSize = new System.Drawing.Size(1000, 462);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(800, 462);
+            this.MinimumSize = new System.Drawing.Size(1000, 462);
             this.Name = "PopNeedsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Victoria 3 Modding Tool";
@@ -495,6 +528,8 @@ namespace Victoria_3_Modding_Tool
         private Label WeightL;
         private Label MaxL;
         private Label MinL;
+        private Label NameGameL;
+        private CustomTextBox NameGameTB;
     }
 }
 
