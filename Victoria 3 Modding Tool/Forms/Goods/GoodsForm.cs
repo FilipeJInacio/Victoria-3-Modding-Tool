@@ -19,17 +19,13 @@ namespace Victoria_3_Modding_Tool
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
         public int sizeOfVicky; // Needed
 
-
-
-
         public GoodsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-            this.Location = new Point(rect.Width/2, 0);
-
+            this.Location = new Point(rect.Width / 2, 0);
         }
 
         public ClassGoods ReturnValue()
@@ -39,7 +35,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +45,7 @@ namespace Victoria_3_Modding_Tool
         {
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(61, 61, 61), ButtonBorderStyle.Solid);
         }
-      
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Buttons
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,15 +68,15 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -102,16 +97,11 @@ namespace Victoria_3_Modding_Tool
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
-
-
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-
                     //Get the path of specified file
                     TextureTB.Texts = openFileDialog.FileName;
-
                 }
-
             }
         }
 
@@ -125,7 +115,6 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
-
             NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.TrueName;
@@ -157,25 +146,27 @@ namespace Victoria_3_Modding_Tool
                 case "staple":
                     CategoryCB.SelectedIndex = 0;
                     break;
+
                 case "industrial":
                     CategoryCB.SelectedIndex = 1;
                     break;
+
                 case "luxury":
                     CategoryCB.SelectedIndex = 2;
                     break;
+
                 case "military":
                     CategoryCB.SelectedIndex = 3;
                     break;
             }
 
-            ObsessionTB.Texts = local.Obsession.ToString().Replace(",",".");
+            ObsessionTB.Texts = local.Obsession.ToString().Replace(",", ".");
             PrestigeTB.Texts = local.Prestige.ToString().Replace(",", ".");
             ConvoyTB.Texts = local.Convoy_cost.ToString().Replace(",", ".");
             TradedTB.Texts = local.TradedQuantity.ToString();
             ConsumptionTB.Texts = local.Consumption.ToString();
 
             SaveStatus = 0;
-
         }
 
         private bool SaveVerification()
@@ -209,7 +200,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(CostTB.Texts, out j) && j > 0 && j < 2147483647)
                 {
                     canSave[1] = true;
@@ -222,7 +212,6 @@ namespace Victoria_3_Modding_Tool
                     CostTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[1] = false;
                 }
-
             }
 
             if (!Regex.Match(ObsessionTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ObsessionTB.Texts))
@@ -233,7 +222,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (float.TryParse(ObsessionTB.Texts.Replace(".", ","), out i) && ((i > 0 && i < 2147483647) || i == -1))
                 {
                     canSave[4] = true;
@@ -246,7 +234,6 @@ namespace Victoria_3_Modding_Tool
                     ObsessionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[4] = false;
                 }
-
             }
 
             if (!Regex.Match(TradedTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(TradedTB.Texts))
@@ -257,10 +244,8 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(TradedTB.Texts, out j) && ((j > 0 && j < 2147483647) || j == -1))
                 {
-
                     if (TradeableCB.Checked == false && j != -1)
                     {
                         TradedTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -286,7 +271,6 @@ namespace Victoria_3_Modding_Tool
                     TradedTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[7] = false;
                 }
-
             }
 
             if (!Regex.Match(ConvoyTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ConvoyTB.Texts))
@@ -297,7 +281,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (float.TryParse(ConvoyTB.Texts.Replace(".", ","), out i) && ((i > 0 && i < 2147483647) || i == -1))
                 {
                     if (TradeableCB.Checked == false && i != -1)
@@ -318,8 +301,6 @@ namespace Victoria_3_Modding_Tool
                         ConvoyTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
                         canSave[6] = true;
                     }
-
-
                 }
                 else
                 {
@@ -327,7 +308,6 @@ namespace Victoria_3_Modding_Tool
                     ConvoyTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[6] = false;
                 }
-
             }
 
             if (!Regex.Match(PrestigeTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(PrestigeTB.Texts))
@@ -338,7 +318,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (float.TryParse(PrestigeTB.Texts.Replace(".", ","), out i) && ((i > 0 && i < 2147483647) || i == -1))
                 {
                     canSave[5] = true;
@@ -351,7 +330,6 @@ namespace Victoria_3_Modding_Tool
                     PrestigeTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[5] = false;
                 }
-
             }
 
             if (!Regex.Match(ConsumptionTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(ConsumptionTB.Texts))
@@ -362,7 +340,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(ConsumptionTB.Texts, out j) && ((j > 0 && j < 2147483647) || (j == -1)))
                 {
                     canSave[8] = true;
@@ -375,7 +352,6 @@ namespace Victoria_3_Modding_Tool
                     ConsumptionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     canSave[8] = false;
                 }
-
             }
 
             if (canSave[0] == false)
@@ -428,7 +404,6 @@ namespace Victoria_3_Modding_Tool
             }
 
             return false;
-
         }
 
         private void Save_Goods()
@@ -442,33 +417,28 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
         private void TechForm_Load(object sender, EventArgs e)
         {
-
-
             CategoryCB.Items.Add("Staple");
             CategoryCB.Items.Add("Industrial");
             CategoryCB.Items.Add("Luxury");
             CategoryCB.Items.Add("Military");
 
-
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -476,9 +446,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save
@@ -538,7 +506,5 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
-
-
     }
 }

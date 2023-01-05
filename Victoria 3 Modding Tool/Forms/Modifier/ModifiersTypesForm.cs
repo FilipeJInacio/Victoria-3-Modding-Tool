@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -18,8 +17,6 @@ namespace Victoria_3_Modding_Tool
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
         public int sizeOfVicky; // Needed
 
-
-
         public ModifiersTypesForm()
         {
             InitializeComponent();
@@ -27,8 +24,7 @@ namespace Victoria_3_Modding_Tool
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             rect.Width = rect.Width / 2;
-            this.Location = new Point(rect.Width/2, 0);
-
+            this.Location = new Point(rect.Width / 2, 0);
         }
 
         public ClassModifiersType ReturnValue()
@@ -38,7 +34,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +44,7 @@ namespace Victoria_3_Modding_Tool
         {
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(61, 61, 61), ButtonBorderStyle.Solid);
         }
-      
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Buttons
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,15 +63,15 @@ namespace Victoria_3_Modding_Tool
         {
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -98,14 +93,13 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
-
             NameTB.Texts = local.Name;
 
             NumDeciTB.Texts = local.Num_decimals.ToString();
 
-            AIValueTB.Texts=local.Ai_value.ToString();
+            AIValueTB.Texts = local.Ai_value.ToString();
 
-            if (local.Translate!=null)
+            if (local.Translate != null)
             {
                 TranslateTB.Texts = local.Translate.ToString();
             }
@@ -114,7 +108,6 @@ namespace Victoria_3_Modding_Tool
             {
                 PostfixTB.Texts = local.Postfix.ToString();
             }
-            
 
             GoodTB.Texts = local.Good.ToString();
             NeutralTB.Texts = local.Neutral.ToString();
@@ -123,7 +116,6 @@ namespace Victoria_3_Modding_Tool
             BooleanTB.Texts = local.Boolean.ToString();
 
             SaveStatus = 0;
-
         }
 
         private bool SaveVerification()
@@ -156,8 +148,7 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
-                if (int.TryParse(NumDeciTB.Texts, out j) && (j == -1 || j == 0 || j == 1 || j == 2 ))
+                if (int.TryParse(NumDeciTB.Texts, out j) && (j == -1 || j == 0 || j == 1 || j == 2))
                 {
                     NumDeciTB.BorderColor = Color.FromArgb(66, 66, 66);
                     NumDeciTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
@@ -179,7 +170,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(AIValueTB.Texts, out j) && ((j >= 0 && j < 2147483647) || j == -1))
                 {
                     AIValueTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -202,8 +192,7 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
-                if (int.TryParse(GoodTB.Texts, out j) && (j==-1||j==0||j==1))
+                if (int.TryParse(GoodTB.Texts, out j) && (j == -1 || j == 0 || j == 1))
                 {
                     GoodTB.BorderColor = Color.FromArgb(66, 66, 66);
                     GoodTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
@@ -225,7 +214,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(PercentageTB.Texts, out j) && (j == -1 || j == 0 || j == 1))
                 {
                     PercentageTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -248,7 +236,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(InvertTB.Texts, out j) && (j == -1 || j == 0 || j == 1))
                 {
                     InvertTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -271,7 +258,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(NeutralTB.Texts, out j) && (j == -1 || j == 0 || j == 1))
                 {
                     NeutralTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -294,7 +280,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(BooleanTB.Texts, out j) && (j == -1 || j == 0 || j == 1))
                 {
                     BooleanTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -308,7 +293,6 @@ namespace Victoria_3_Modding_Tool
                     canSave[9] = false;
                 }
             }
-
 
             if (canSave[0] == false)
             {
@@ -343,7 +327,6 @@ namespace Victoria_3_Modding_Tool
                 PostfixTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-
             if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && canSave[4] == true && canSave[5] == true && canSave[6] == true && canSave[7] == true && canSave[8] == true && canSave[9] == true)
             {
                 Save_Goods();
@@ -352,12 +335,11 @@ namespace Victoria_3_Modding_Tool
             }
 
             return false;
-
         }
 
         private void Save_Goods()
         {
-            local = new ClassModifiersType(NameTB.Texts, Int32.Parse(GoodTB.Texts), Int32.Parse(PercentageTB.Texts), Int32.Parse(NumDeciTB.Texts), Int32.Parse(InvertTB.Texts),Int32.Parse(NeutralTB.Texts), Int32.Parse(BooleanTB.Texts),PostfixTB.Texts,TranslateTB.Texts, Int32.Parse(AIValueTB.Texts));
+            local = new ClassModifiersType(NameTB.Texts, Int32.Parse(GoodTB.Texts), Int32.Parse(PercentageTB.Texts), Int32.Parse(NumDeciTB.Texts), Int32.Parse(InvertTB.Texts), Int32.Parse(NeutralTB.Texts), Int32.Parse(BooleanTB.Texts), PostfixTB.Texts, TranslateTB.Texts, Int32.Parse(AIValueTB.Texts));
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,26 +348,23 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
         private void TechForm_Load(object sender, EventArgs e)
         {
-
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -393,9 +372,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save

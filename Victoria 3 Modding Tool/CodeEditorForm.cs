@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Victoria_3_Modding_Tool
 {
@@ -15,10 +14,7 @@ namespace Victoria_3_Modding_Tool
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
-
         }
-
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Border
@@ -43,15 +39,15 @@ namespace Victoria_3_Modding_Tool
             this.WindowState = FormWindowState.Minimized;
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -65,21 +61,19 @@ namespace Victoria_3_Modding_Tool
 
         private void SizeObjects()
         {
-
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             rect.Width = rect.Width / 2;
 
             this.Size = new Size(rect.Width, rect.Height);
             this.MaximumSize = new Size(rect.Width, rect.Height);
             this.MinimumSize = new Size(rect.Width, rect.Height);
-            this.Location = new Point( rect.Width , 0);
+            this.Location = new Point(rect.Width, 0);
 
-            MainRTB.Size = new Size(rect.Width*5/6, rect.Height * 5 / 6);
-            MainRTB.Location = new Point(rect.Width/6, 50);
+            MainRTB.Size = new Size(rect.Width * 5 / 6, rect.Height * 5 / 6);
+            MainRTB.Location = new Point(rect.Width / 6, 50);
 
             DebugRTB.Size = new Size(rect.Width * 5 / 6, rect.Height / 12);
-            DebugRTB.Location = new Point(rect.Width/6, 55 + rect.Height * 5 / 6);
-
+            DebugRTB.Location = new Point(rect.Width / 6, 55 + rect.Height * 5 / 6);
         }
 
         private void CodeEditorForm_Load(object sender, EventArgs e)
@@ -99,7 +93,7 @@ namespace Victoria_3_Modding_Tool
 
             MatchCollection braquetsMatches = Regex.Matches(MainRTB.Text, @"\b{\b");   // Doesn't work
 
-            MatchCollection commentMatches = Regex.Matches(MainRTB.Text, @"#.+$",RegexOptions.Multiline);
+            MatchCollection commentMatches = Regex.Matches(MainRTB.Text, @"#.+$", RegexOptions.Multiline);
 
             MatchCollection stringMatches = Regex.Matches(MainRTB.Text, "\".+?\"");
 
@@ -120,7 +114,7 @@ namespace Victoria_3_Modding_Tool
             {
                 MainRTB.SelectionStart = m.Index;
                 MainRTB.SelectionLength = m.Length;
-                MainRTB.SelectionColor = Color.FromArgb(255,118,118);
+                MainRTB.SelectionColor = Color.FromArgb(255, 118, 118);
             }
 
             foreach (Match m in conditionsMatches)
@@ -157,7 +151,6 @@ namespace Victoria_3_Modding_Tool
             MainRTB.SelectionColor = originalColor;
 
             MainRTB.Focus();
-
         }
     }
 }

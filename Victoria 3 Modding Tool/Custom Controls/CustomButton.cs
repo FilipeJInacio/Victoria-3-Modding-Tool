@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool.Custom_Controls
 {
     internal class CustomButton : Button
     {
-
         //Fields
         private int borderSize = 0;
+
         private int borderRadius = 20;
         private Color borderColor = Color.PaleVioletRed;
-
-
 
         [Category("Custom")]
         public int BorderSize
@@ -26,6 +24,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 this.Invalidate();
             }
         }
+
         [Category("Custom")]
         public int BorderRadius
         {
@@ -36,6 +35,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 this.Invalidate();
             }
         }
+
         [Category("Custom")]
         public Color BorderColor
         {
@@ -46,20 +46,20 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 this.Invalidate();
             }
         }
+
         [Category("Custom")]
         public Color BackgroundColor
         {
             get { return this.BackColor; }
             set { this.BackColor = value; }
         }
+
         [Category("Custom")]
         public Color TextColor
         {
             get { return this.ForeColor; }
             set { this.ForeColor = value; }
         }
-
-
 
         //Constructor
         public CustomButton()
@@ -71,6 +71,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             this.ForeColor = Color.White;
             this.Resize += new EventHandler(Button_Resize);
         }
+
         private void Button_Resize(object sender, EventArgs e)
         {
             if (borderRadius > this.Height)
@@ -90,6 +91,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             path.CloseFigure();
             return path;
         }
+
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
@@ -110,7 +112,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                     this.Region = new Region(pathSurface);
                     //Draw surface border for HD result
                     pevent.Graphics.DrawPath(penSurface, pathSurface);
-                    //Button border                    
+                    //Button border
                     if (borderSize >= 1)
                         //Draw control border
                         pevent.Graphics.DrawPath(penBorder, pathBorder);
@@ -132,18 +134,16 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 }
             }
         }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             this.Parent.BackColorChanged += new EventHandler(Container_BackColorChanged);
         }
+
         private void Container_BackColorChanged(object sender, EventArgs e)
         {
             this.Invalidate();
         }
-
-
-
-
     }
 }

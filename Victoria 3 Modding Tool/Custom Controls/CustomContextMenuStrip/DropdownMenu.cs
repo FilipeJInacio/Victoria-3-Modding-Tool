@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
@@ -13,6 +9,7 @@ namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
     {
         //Fields
         private bool isMainMenu;
+
         private int menuItemHeight = 25;
         private Color menuItemTextColor = Color.Empty;//No color, The default color is set in the MenuRenderer class
         private Color primaryColor = Color.Empty;//No color, The default color is set in the MenuRenderer class
@@ -24,9 +21,8 @@ namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
         {
         }
 
-
         //Properties
-        //Optionally, hide the properties in the toolbox to avoid the problem of displaying and/or 
+        //Optionally, hide the properties in the toolbox to avoid the problem of displaying and/or
         //saving control property changes in the designer at design time in Visual Studio.
         //If the problem I mention does not occur you can expose the properties and manipulate them from the toolbox.
         [Browsable(false)]
@@ -35,25 +31,27 @@ namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
             get { return isMainMenu; }
             set { isMainMenu = value; }
         }
+
         [Browsable(false)]
         public int MenuItemHeight
         {
             get { return menuItemHeight; }
             set { menuItemHeight = value; }
         }
+
         [Browsable(false)]
         public Color MenuItemTextColor
         {
             get { return menuItemTextColor; }
             set { menuItemTextColor = value; }
         }
+
         [Browsable(false)]
         public Color PrimaryColor
         {
             get { return primaryColor; }
             set { primaryColor = value; }
         }
-
 
         //Private methods
         private void LoadMenuItemHeight()
@@ -83,7 +81,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
                 }
             }
         }
-
 
         //Overrides
         protected override void OnHandleCreated(EventArgs e)

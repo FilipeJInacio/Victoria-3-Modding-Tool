@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-
     public class ClassInstitutions : IType, ITexture, IBackTexture
     {
         public string Name { get; set; }
@@ -14,7 +10,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public string BackTexture { get; set; }
         public List<string> Modifiers { get; set; } // Depends on the party -> empty
 
-        public ClassInstitutions() { }
+        public ClassInstitutions()
+        { }
 
         public ClassInstitutions(KeyValuePair<string, object> ParserData, string TrueName)
         {
@@ -24,7 +21,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             foreach (KeyValuePair<string, object> entry in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-
                 switch (entry.Key)
                 {
                     case "icon":
@@ -39,7 +35,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                         continue;
                     default:
                         continue;
-
                 }
             }
         }
@@ -67,6 +62,3 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         }
     }
 }
-    
-
-    

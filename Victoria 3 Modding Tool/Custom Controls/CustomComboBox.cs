@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Design;
-
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool
 {
     [DefaultEvent("OnSelectedIndexChanged")]
-    class CustomComboBox : UserControl
+    internal class CustomComboBox : UserControl
     {
         //Fields
         private Color backColor = Color.WhiteSmoke;
+
         private Color iconColor = Color.MediumSlateBlue;
         private Color listBackColor = Color.FromArgb(230, 228, 245);
         private Color listTextColor = Color.DimGray;
@@ -21,6 +21,7 @@ namespace Victoria_3_Modding_Tool
 
         //Items
         private ComboBox cmbList;
+
         private Label lblText;
         private Button btnIcon;
 
@@ -135,15 +136,12 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-
         [Category("Custom")]
         public bool FormattingEnabled
         {
             get { return cmbList.FormattingEnabled; }
             set { cmbList.FormattingEnabled = value; }
         }
-
-
 
         //Properties
         //-> Data
@@ -156,6 +154,7 @@ namespace Victoria_3_Modding_Tool
         {
             get { return cmbList.Items; }
         }
+
         [Category("Data")]
         [AttributeProvider(typeof(IListSource))]
         [DefaultValue(null)]
@@ -164,6 +163,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.DataSource; }
             set { cmbList.DataSource = value; }
         }
+
         [Category("Data")]
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -175,6 +175,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.AutoCompleteCustomSource; }
             set { cmbList.AutoCompleteCustomSource = value; }
         }
+
         [Category("Data")]
         [Browsable(true)]
         [DefaultValue(AutoCompleteSource.None)]
@@ -184,6 +185,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.AutoCompleteSource; }
             set { cmbList.AutoCompleteSource = value; }
         }
+
         [Category("Data")]
         [Browsable(true)]
         [DefaultValue(AutoCompleteMode.None)]
@@ -193,6 +195,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.AutoCompleteMode; }
             set { cmbList.AutoCompleteMode = value; }
         }
+
         [Category("Data")]
         [Bindable(true)]
         [Browsable(false)]
@@ -202,6 +205,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.SelectedItem; }
             set { cmbList.SelectedItem = value; }
         }
+
         [Category("Data")]
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -210,6 +214,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.SelectedIndex; }
             set { cmbList.SelectedIndex = value; }
         }
+
         [Category("Data")]
         [DefaultValue("")]
         [Editor("System.Windows.Forms.Design.DataMemberFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
@@ -219,6 +224,7 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.DisplayMember; }
             set { cmbList.DisplayMember = value; }
         }
+
         [Category("Data")]
         [DefaultValue("")]
         [Editor("System.Windows.Forms.Design.DataMemberFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
@@ -227,8 +233,6 @@ namespace Victoria_3_Modding_Tool
             get { return cmbList.ValueMember; }
             set { cmbList.ValueMember = value; }
         }
-
-
 
         //Events
         public event EventHandler OnSelectedIndexChanged;//Default event
@@ -280,11 +284,7 @@ namespace Victoria_3_Modding_Tool
             base.BackColor = borderColor; //Border Color
             this.ResumeLayout();
             AdjustComboBoxDimensions();
-
-
         }
-
-
 
         //Private methods
         private void AdjustComboBoxDimensions()
@@ -292,11 +292,10 @@ namespace Victoria_3_Modding_Tool
             cmbList.Width = lblText.Width;
             cmbList.Location = new Point()
             {
-                X = this.Width - this.Padding.Right - cmbList.Width- btnIcon.Size.Width,
+                X = this.Width - this.Padding.Right - cmbList.Width - btnIcon.Size.Width,
                 Y = lblText.Bottom - cmbList.Height
             };
         }
-
 
         //Event methods
         //-> Default event
@@ -307,6 +306,7 @@ namespace Victoria_3_Modding_Tool
             //Refresh text
             lblText.Text = cmbList.Text;
         }
+
         //-> Items actions
         private void Icon_Click(object sender, EventArgs e)
         {
@@ -314,6 +314,7 @@ namespace Victoria_3_Modding_Tool
             cmbList.Select();
             cmbList.DroppedDown = true;
         }
+
         private void Surface_Click(object sender, EventArgs e)
         {
             //Attach label click to user control click
@@ -323,6 +324,7 @@ namespace Victoria_3_Modding_Tool
             if (cmbList.DropDownStyle == ComboBoxStyle.DropDownList)
                 cmbList.DroppedDown = true;//Open dropdown list
         }
+
         private void ComboBox_TextChanged(object sender, EventArgs e)
         {
             //Refresh text
@@ -348,12 +350,12 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-
         //->Attach label events to user control event
         private void Surface_MouseLeave(object sender, EventArgs e)
         {
             this.OnMouseLeave(e);
         }
+
         private void Surface_MouseEnter(object sender, EventArgs e)
         {
             this.OnMouseEnter(e);
@@ -365,7 +367,5 @@ namespace Victoria_3_Modding_Tool
             base.OnResize(e);
             AdjustComboBoxDimensions();
         }
-
-
     }
 }

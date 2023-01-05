@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-
 namespace Victoria_3_Modding_Tool
 {
     public partial class Start : Form
@@ -13,10 +12,7 @@ namespace Victoria_3_Modding_Tool
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
             if (Properties.Settings.Default.Victoria3Path == "Not Set") { LoadEditorButton.Enabled = false; }
-
         }
-
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Border
@@ -41,15 +37,15 @@ namespace Victoria_3_Modding_Tool
             this.WindowState = FormWindowState.Minimized;
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -81,7 +77,6 @@ namespace Victoria_3_Modding_Tool
                 form.ShowDialog();
             }
             this.Show();
-
         }
 
         private void AboutBT_Click(object sender, EventArgs e)

@@ -1,15 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using System;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class CustomTextBox : UserControl
     {
-
         //Fields
         private Color borderColor = Color.MediumSlateBlue;
+
         private Color backgroundFocusColor = Color.DarkSlateGray;
         private int borderSize = 2;
         private bool underlinedStyle = false;
@@ -105,6 +105,7 @@ namespace Victoria_3_Modding_Tool
             get { return textBox1.Text; }
             set { textBox1.Text = value; }
         }
+
         [Category("Custom")]
         public Color BorderFocusColor
         {
@@ -123,7 +124,6 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-
         [Category("Custom")]
         public bool ReadOnly
         {
@@ -141,9 +141,6 @@ namespace Victoria_3_Modding_Tool
             if (CustomTextBox_TextChanged != null)
                 CustomTextBox_TextChanged(this, e);
         }
-
-
-
 
         //Private methods
         private void UpdateControlHeight()
@@ -174,18 +171,19 @@ namespace Victoria_3_Modding_Tool
                     graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
             }
         }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             if (this.DesignMode)
                 UpdateControlHeight();
         }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             UpdateControlHeight();
         }
-
 
         //Change border color in focus mode
         private void textBox1_Enter(object sender, EventArgs e)
@@ -195,6 +193,7 @@ namespace Victoria_3_Modding_Tool
             base.BackColor = backgroundFocusColor;
             this.Invalidate();
         }
+
         private void textBox1_Leave(object sender, EventArgs e)
         {
             isFocused = false;
@@ -202,23 +201,25 @@ namespace Victoria_3_Modding_Tool
             base.BackColor = backup;
             this.Invalidate();
         }
+
         private void textBox1_Click(object sender, EventArgs e)
         {
             this.OnClick(e);
         }
+
         private void textBox1_MouseEnter(object sender, EventArgs e)
         {
             this.OnMouseEnter(e);
         }
+
         private void textBox1_MouseLeave(object sender, EventArgs e)
         {
             this.OnMouseLeave(e);
         }
+
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             this.OnKeyPress(e);
         }
-
-
     }
 }

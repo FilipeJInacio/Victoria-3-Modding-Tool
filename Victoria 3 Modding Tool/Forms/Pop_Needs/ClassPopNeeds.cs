@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
@@ -11,11 +10,11 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public float MinWeight { get; set; }
         public float MaxWeight { get; set; }
 
-        public ClassPopNeedsEntry(){ }
+        public ClassPopNeedsEntry()
+        { }
 
         public ClassPopNeedsEntry(List<KeyValuePair<string, object>> element)
         {
-
             foreach (KeyValuePair<string, object> entry in element)
             {
                 switch (entry.Key)
@@ -42,15 +41,13 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.MaxWeight = popneedentry.MaxWeight;
         }
 
-        public ClassPopNeedsEntry(string goods,float weight, float maxWeight, float minWeight)
+        public ClassPopNeedsEntry(string goods, float weight, float maxWeight, float minWeight)
         {
             this.Name = goods;
             this.Weight = weight;
             this.MinWeight = minWeight;
             this.MaxWeight = maxWeight;
         }
-
-
     }
 
     public class ClassPopNeeds : IType
@@ -61,20 +58,19 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public string Defaultgood { get; set; }
         public List<ClassPopNeedsEntry> Entries { get; set; }
 
-
-        public ClassPopNeeds() { }
+        public ClassPopNeeds()
+        { }
 
         public ClassPopNeeds(ClassPopNeeds Popneed)
         {
-            this.Name= Popneed.Name;
+            this.Name = Popneed.Name;
             this.TrueName = Popneed.TrueName;
-            this.Defaultgood= Popneed.Defaultgood;
+            this.Defaultgood = Popneed.Defaultgood;
             this.Entries = new List<ClassPopNeedsEntry>();
             foreach (ClassPopNeedsEntry entry in Popneed.Entries)
             {
                 Entries.Add(entry);
             }
-
         }
 
         public ClassPopNeeds(string name, string Truename, string defaultgood)
@@ -87,14 +83,12 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
         public ClassPopNeeds(KeyValuePair<string, object> ParserData, string Truename)
         {
-
             this.Name = ParserData.Key;
             this.TrueName = Truename;
             this.Entries = new List<ClassPopNeedsEntry>();
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-
                 switch (element.Key)
                 {
                     case "default":
@@ -106,8 +100,5 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                 }
             }
         }
-
-
     }
-
 }

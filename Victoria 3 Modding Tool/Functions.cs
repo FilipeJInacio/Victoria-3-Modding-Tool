@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
@@ -19,7 +22,6 @@ namespace Victoria_3_Modding_Tool
 
     internal class Functions
     {
-
         public bool hasName<T>(List<T> Data, string name) where T : IType
         {
             foreach (T entry in Data)
@@ -53,10 +55,10 @@ namespace Victoria_3_Modding_Tool
             List<T> result = new List<T>();
 
             result.AddRange(Pri);
-            
+
             foreach (T entry in Sec)
             {
-                if (!new Functions().hasName(result,entry.Name))
+                if (!new Functions().hasName(result, entry.Name))
                 {
                     result.Add(entry);
                 }
@@ -79,6 +81,53 @@ namespace Victoria_3_Modding_Tool
             {
                 Data[i].BackTexture = path + Data[i].BackTexture.ToString().Replace("/", "\\");
             }
+        }
+
+        
+    }
+
+    internal class ExtraFunctions
+    {
+        public List<string> Temp;
+        public List<string> Out;
+
+        // Compare Modifier Types 
+        public void Modifi(List<ClassModifiersType> Data)
+        {
+            string ln;
+            Temp = new List<string>();
+            Out = new List<string>();
+            using (StreamReader sr = new StreamReader("C:\\Users\\fjina\\OneDrive\\Ambiente de Trabalho\\temp.txt"))
+            {
+                void NextLine() { ln = sr.ReadLine(); }
+                NextLine();
+                while (ln != null)
+                {
+                    Temp.Add(ln);
+                    NextLine();
+                }
+            }
+
+            foreach (string entry in Temp)
+            {
+                if (!new Functions().hasName(Data, entry))
+                {
+                    Out.Add(entry);
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter(File.Open("C:\\Users\\fjina\\OneDrive\\Ambiente de Trabalho\\temp2.txt", FileMode.Create)))
+            {
+                foreach (string entry in Out)
+                {
+                    sw.WriteLine(entry);
+                }
+
+            }
+
+            Out.Clear();
+            Temp.Clear();
+
         }
 
     }

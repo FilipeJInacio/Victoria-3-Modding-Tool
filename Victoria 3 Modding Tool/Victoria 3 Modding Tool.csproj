@@ -1,17 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E3F53D8-C1BF-4D5E-AE71-6BCD69067F74}</ProjectGuid>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Victoria_3_Modding_Tool</RootNamespace>
-    <AssemblyName>Victoria 3 Modding Tool</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -29,27 +19,13 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\V3.ico</ApplicationIcon>
@@ -76,287 +52,24 @@
     <ManifestKeyFile>Victoria 3 Modding Tool_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Custom Controls\CustomContextMenuStrip\DropdownMenu.cs">
+    <Compile Update="Custom Controls\CustomContextMenuStrip\DropdownMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomContextMenuStrip\MenuColorTable.cs" />
-    <Compile Include="Custom Controls\CustomContextMenuStrip\MenuRenderer.cs" />
-    <Compile Include="Custom Controls\CustomListBox.cs">
+    <Compile Update="Custom Controls\CustomListBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomButton.cs">
+    <Compile Update="Custom Controls\CustomButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomComboBox.cs">
+    <Compile Update="Custom Controls\CustomComboBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomCheckBox.cs">
+    <Compile Update="Custom Controls\CustomCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomTextBox.cs">
+    <Compile Update="Custom Controls\CustomTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Custom Controls\CustomTextBox.Designer.cs">
-      <DependentUpon>CustomTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Era\ClassEra.cs" />
-    <Compile Include="Forms\Era\EraHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Era\EraHelp.Designer.cs">
-      <DependentUpon>EraHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Era\EraForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Era\EraForm.Designer.cs">
-      <DependentUpon>EraForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Goods\ClassGoods.cs" />
-    <Compile Include="Forms\Goods\GoodsHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Goods\GoodsHelp.Designer.cs">
-      <DependentUpon>GoodsHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Goods\GoodsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Goods\GoodsForm.Designer.cs">
-      <DependentUpon>GoodsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Home\PathFormHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Home\PathFormHelp.Designer.cs">
-      <DependentUpon>PathFormHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Institutions\ClassInstitutions.cs" />
-    <Compile Include="Forms\Institutions\InstitutionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Institutions\InstitutionsForm.Designer.cs">
-      <DependentUpon>InstitutionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Modifier\ClassModifiers.cs" />
-    <Compile Include="Forms\Modifier\ModifiersForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Modifier\ModifiersForm.Designer.cs">
-      <DependentUpon>ModifiersForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Modifier\ModifiersTypesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Modifier\ModifiersTypesForm.Designer.cs">
-      <DependentUpon>ModifiersTypesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Pop_Needs\ClassPopNeeds.cs" />
-    <Compile Include="Forms\Pop_Needs\PopNeedsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Pop_Needs\PopNeedsForm.Designer.cs">
-      <DependentUpon>PopNeedsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Pop_Needs\PopNeedsHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Pop_Needs\PopNeedsHelp.Designer.cs">
-      <DependentUpon>PopNeedsHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Pop_Types NOT FINISHED\ClassPopNeeds.cs" />
-    <Compile Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.Designer.cs">
-      <DependentUpon>PopTypesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Production_Methods NOT FINISHED\ClassProductMethodsTypes.cs" />
-    <Compile Include="Forms\Religions\ClassReligions.cs" />
-    <Compile Include="Forms\Religions\ReligionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Religions\ReligionForm.Designer.cs">
-      <DependentUpon>ReligionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Tech\ClassTech.cs" />
-    <Compile Include="Forms\Tech\TechHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Tech\TechHelp.Designer.cs">
-      <DependentUpon>TechHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Functions.cs" />
-    <Compile Include="MessageBox\ClassMessageBox.cs" />
-    <Compile Include="MessageBox\CustomOverwriteMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageBox\CustomOverwriteMessageBox.Designer.cs">
-      <DependentUpon>CustomOverwriteMessageBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Parser.cs" />
-    <Compile Include="Forms\Tech\TechForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Tech\TechForm.Designer.cs">
-      <DependentUpon>TechForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MessageBox\CustomMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageBox\CustomMessageBox.Designer.cs">
-      <DependentUpon>CustomMessageBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CodeEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CodeEditorForm.Designer.cs">
-      <DependentUpon>CodeEditorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Home\PathForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Home\PathForm.Designer.cs">
-      <DependentUpon>PathForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Home\Credits.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Home\Credits.Designer.cs">
-      <DependentUpon>Credits.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Home\Start.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Home\Start.Designer.cs">
-      <DependentUpon>Start.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Custom Controls\CustomTextBox.resx">
-      <DependentUpon>CustomTextBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Era\EraHelp.resx">
-      <DependentUpon>EraHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Era\EraForm.resx">
-      <DependentUpon>EraForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Goods\GoodsHelp.resx">
-      <DependentUpon>GoodsHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Goods\GoodsForm.resx">
-      <DependentUpon>GoodsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Home\PathFormHelp.resx">
-      <DependentUpon>PathFormHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Institutions\InstitutionsForm.resx">
-      <DependentUpon>InstitutionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Modifier\ModifiersForm.resx">
-      <DependentUpon>ModifiersForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Modifier\ModifiersTypesForm.resx">
-      <DependentUpon>ModifiersTypesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Pop_Needs\PopNeedsForm.resx">
-      <DependentUpon>PopNeedsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Pop_Needs\PopNeedsHelp.resx">
-      <DependentUpon>PopNeedsHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Pop_Types NOT FINISHED\PopTypesForm.resx">
-      <DependentUpon>PopTypesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Religions\ReligionForm.resx">
-      <DependentUpon>ReligionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tech\TechHelp.resx">
-      <DependentUpon>TechHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tech\TechForm.resx">
-      <DependentUpon>TechForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MessageBox\CustomOverwriteMessageBox.resx">
-      <DependentUpon>CustomOverwriteMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MessageBox\CustomMessageBox.resx">
-      <DependentUpon>CustomMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CodeEditorForm.resx">
-      <DependentUpon>CodeEditorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Home\PathForm.resx">
-      <DependentUpon>PathForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Home\Credits.resx">
-      <DependentUpon>Credits.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Home\Start.resx">
-      <DependentUpon>Start.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <None Include="Victoria 3 Modding Tool_TemporaryKey.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\checked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\unchecked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\V3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\V3.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\discord.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -371,16 +84,22 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\addmod.png" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\add.png" />
+    <Compile Remove="Forms\Cultures NOT FINISHED\ClassCultures.cs" />
+    <Compile Remove="Forms\Cultures NOT FINISHED\CultureForm.cs" />
+    <Compile Remove="Forms\Cultures NOT FINISHED\CultureForm.Designer.cs" />
+    <Compile Remove="Forms\Pop_Types NOT FINISHED\ClassPopNeeds.cs" />
+    <Compile Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.cs" />
+    <Compile Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.Designer.cs" />
+    <Compile Remove="Forms\Production_Methods NOT FINISHED\ClassProductMethodsTypes.cs" />
+    <EmbeddedResource Remove="Forms\Cultures NOT FINISHED\CultureForm.resx" />
+    <EmbeddedResource Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\delete.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

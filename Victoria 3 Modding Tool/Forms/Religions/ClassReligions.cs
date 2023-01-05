@@ -14,7 +14,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public int Blue { get; set; }
         public List<string> Taboos { get; set; }
 
-        public ClassReligions() { }
+        public ClassReligions()
+        { }
 
         public ClassReligions(KeyValuePair<string, object> ParserData, string TrueName)
         {
@@ -23,21 +24,28 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             Traits = new List<string>();
             Taboos = new List<string>();
 
-
             foreach (KeyValuePair<string, object> entry in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
                 switch (entry.Key)
                 {
                     case "texture":
                         this.Texture = entry.Value.ToString().Trim('"'); continue;
-                    case "red":
-                        this.Red = (int)Math.Round(float.Parse(entry.Value.ToString().Replace(".",",")) * 255);
-                        continue;
-                    case "green":
-                        this.Green = (int)Math.Round(float.Parse(entry.Value.ToString().Replace(".", ",")) * 255);
-                        continue;
-                    case "blue":
-                        this.Blue = (int)Math.Round(float.Parse(entry.Value.ToString().Replace(".", ",")) * 255);
+                    case "color":
+                        foreach (KeyValuePair<string, object> entry2 in (List<KeyValuePair<string, object>>)entry.Value)
+                        {
+                            switch (entry2.Key)
+                            {
+                                case "0":
+                                    this.Red = (int)Math.Round(float.Parse(entry2.Value.ToString().Replace(".", ",")) * 255);
+                                    continue;
+                                case "1":
+                                    this.Green = (int)Math.Round(float.Parse(entry2.Value.ToString().Replace(".", ",")) * 255);
+                                    continue;
+                                case "2":
+                                    this.Blue = (int)Math.Round(float.Parse(entry2.Value.ToString().Replace(".", ",")) * 255);
+                                    continue;
+                            }
+                        }
                         continue;
                     case "traits":
                         foreach (KeyValuePair<string, object> traits in (List<KeyValuePair<string, object>>)entry.Value)
@@ -46,12 +54,11 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                         }
                         continue;
                     case "taboos":
-                        foreach (string s in (string[])entry.Value)
+                        foreach (KeyValuePair<string, object> entry2 in (List<KeyValuePair<string, object>>)entry.Value)
                         {
-                            this.Taboos.Add(s);
-                        }     
+                            this.Taboos.Add(entry2.Value.ToString());
+                        }
                         continue;
-                    
 
                     default:
                         continue;
@@ -63,7 +70,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         {
             this.Name = religion.Name;
             this.Texture = religion.Texture;
-            this.Red= religion.Red;
+            this.Red = religion.Red;
             this.Green = religion.Green;
             this.Blue = religion.Blue;
             this.Truename = religion.Truename;
@@ -79,7 +86,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             }
         }
 
-        public ClassReligions(string name,string truename, string texture, int red, int green , int blue)
+        public ClassReligions(string name, string truename, string texture, int red, int green, int blue)
         {
             this.Name = name;
             this.Truename = truename;
@@ -88,11 +95,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Red = red;
             this.Green = green;
             this.Blue = blue;
-            this.Taboos= new List<string>();
-
+            this.Taboos = new List<string>();
         }
-       
-
     }
-
 }

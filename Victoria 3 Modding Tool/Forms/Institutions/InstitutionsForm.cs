@@ -20,15 +20,13 @@ namespace Victoria_3_Modding_Tool
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
         public int sizeOfVicky; // Needed
 
-
-
         public InstitutionsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-            this.Location = new Point(rect.Width/2, 0);
+            this.Location = new Point(rect.Width / 2, 0);
         }
 
         public ClassInstitutions ReturnValue()
@@ -38,7 +36,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +56,7 @@ namespace Victoria_3_Modding_Tool
                 graph.DrawRectangle(penBorder, ModifiersLB.Location.X - 2, ModifiersLB.Location.Y - 2, ModifiersLB.Width + 4F, ModifiersLB.Height + 4F);
             }
         }
-      
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Buttons
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ namespace Victoria_3_Modding_Tool
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
 
-
             if (e.Index >= 0)
             {
                 SolidBrush sb = new SolidBrush(((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? horizontalColor : backgroundColor);
@@ -100,7 +96,7 @@ namespace Victoria_3_Modding_Tool
 
         private void ModifiersLB_DrawItem(object sender, DrawItemEventArgs e)
         {
-            LB_DrawItem( e, ModifiersLB);
+            LB_DrawItem(e, ModifiersLB);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,9 +104,10 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -149,16 +146,11 @@ namespace Victoria_3_Modding_Tool
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
-
-
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-
                     //Get the path of specified file
                     IconTB.Texts = openFileDialog.FileName.Substring(openFileDialog.FileName.IndexOf("gfx"));
-
                 }
-
             }
         }
 
@@ -173,12 +165,9 @@ namespace Victoria_3_Modding_Tool
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-
                     //Get the path of specified file
                     BackTB.Texts = openFileDialog.FileName.Substring(openFileDialog.FileName.IndexOf("gfx"));
-
                 }
-
             }
         }
 
@@ -204,7 +193,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (float.TryParse(NumberTB.Texts.Replace(".", ","), out i) && i > -2147483647 && i < 2147483647)
                 {
                     NumberTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -217,7 +205,6 @@ namespace Victoria_3_Modding_Tool
                     NumberTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     verif = false;
                 }
-
             }
 
             if (ModifiersCB.SelectedIndex == -1)
@@ -245,7 +232,6 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
-
             NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.TrueName;
@@ -254,19 +240,16 @@ namespace Victoria_3_Modding_Tool
 
             IconTB.Texts = local.Texture;
 
-
             foreach (string entry in local.Modifiers)
             {
                 ModifiersLB.Items.Add(entry);
             }
 
             SaveStatus = 0;
-
         }
 
         private bool SaveVerification()
         {
-
             if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(InstitutionsData.GetRange(sizeOfVicky, InstitutionsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
@@ -290,7 +273,6 @@ namespace Victoria_3_Modding_Tool
                 canSave[3] = true;
             }
             else { canSave[3] = false; }
-
 
             if (canSave[0] == false)
             {
@@ -336,8 +318,6 @@ namespace Victoria_3_Modding_Tool
                 BackTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
 
-
-
             if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true)
             {
                 Save_Goods();
@@ -346,7 +326,6 @@ namespace Victoria_3_Modding_Tool
             }
 
             return false;
-
         }
 
         private void Save_Goods()
@@ -363,31 +342,28 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
         private void TechForm_Load(object sender, EventArgs e)
         {
-
             foreach (ClassModifiersType entry in ModifiersTypes)
             {
                 ModifiersCB.Items.Add(entry.Name);
             }
 
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -395,9 +371,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save
@@ -422,7 +396,5 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
-
-        
     }
 }

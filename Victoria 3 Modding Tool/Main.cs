@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
-using Victoria_3_Modding_Tool.Forms.Era;
 using System.Drawing.Drawing2D;
-using System.Text;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+using Victoria_3_Modding_Tool.Forms.Era;
+using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
-
     /*
-     
+
     To do:
 
     dic same error
@@ -28,20 +27,20 @@ namespace Victoria_3_Modding_Tool
     */
 
     // Questions
-    // - What are the traits?
+    // - What are the traits  religion/culture?
     // - Modifier -> color made?       modifiers_haitian
     // - Worth of items   (Pop Needs)
-    // - Duplicate error 
+    // - Duplicate error
+    // - Diference? color= rgb{ 62 77 100 }
+    // - Culture German? in localization
 
     // Not working
     // - Modifiers/ ModifierTypes
     // - Pop_Needs -> localization
     // - Religion -> not working
-    
 
     public partial class Main : Form
     {
-
         public int SaveStatus = 0;  // 0 -> just entered // 1 -> saved // 2 -> unsaved
 
         public string language;
@@ -91,13 +90,13 @@ namespace Victoria_3_Modding_Tool
         public List<ClassReligions> ReligionsDataM;
         public List<string> TraitsData;
 
+        public List<ClassStateTraits> StateTraitsDataP;
+        public List<ClassStateTraits> StateTraitsDataV;
+        public List<ClassStateTraits> StateTraitsDataM;
+
         public List<ClassTech> TechDataP;
         public List<ClassTech> TechDataV;
         public List<ClassTech> TechDataM;
-
-        
-
-        
 
         
 
@@ -161,7 +160,7 @@ namespace Victoria_3_Modding_Tool
             SaveL.Location = new Point(rect.Width * 53 / 80 + 62 - SaveBT.Size.Width / 2, 390 + SaveBT.Size.Height);
             DeleteL.Location = new Point(rect.Width * 53 / 80 + 62 - DeleteBT.Size.Width / 2, 400 + SaveBT.Size.Height + DeleteBT.Size.Height);
 
-            XL.Location = new Point(rect.Width * 53 / 80 + 62 + AddModBT.Width/2 - XL.Width , 230);
+            XL.Location = new Point(rect.Width * 53 / 80 + 62 + AddModBT.Width / 2 - XL.Width, 230);
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -178,14 +177,12 @@ namespace Victoria_3_Modding_Tool
                     }
                     else if (resul == DialogResult.Cancel)
                     {
-
                     }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-
             }
         }
 
@@ -195,6 +192,7 @@ namespace Victoria_3_Modding_Tool
             LocalizationDataP = LocalizationSetup(ProjPath);
             LocalizationDataM = LocalizationSetup(ModPath);
         }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Border
@@ -219,7 +217,6 @@ namespace Victoria_3_Modding_Tool
                 graph.DrawRectangle(penBorder, ProjectLB.Location.X - 2, ProjectLB.Location.Y - 2, ProjectLB.Width + 4F, ProjectLB.Height + 4F);
                 graph.DrawRectangle(penBorder, ModLB.Location.X - 2, ModLB.Location.Y - 2, ModLB.Width + 4F, ModLB.Height + 4F);
             }
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +235,6 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,15 +242,15 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +261,6 @@ namespace Victoria_3_Modding_Tool
         {
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
-
 
             if (e.Index >= 0)
             {
@@ -311,8 +306,8 @@ namespace Victoria_3_Modding_Tool
             MainData.Add("Modifier Types");
             MainData.Add("Pop Needs");
             MainData.Add("Religions");
+            MainData.Add("State Traits");
             MainData.Add("Technology");
-
 
             MainLB.Items.Add("Era");
             MainLB.Items.Add("Goods");
@@ -321,12 +316,12 @@ namespace Victoria_3_Modding_Tool
             MainLB.Items.Add("Modifier Types");
             MainLB.Items.Add("Pop Needs");
             MainLB.Items.Add("Religions");
+            MainLB.Items.Add("State Traits");
             MainLB.Items.Add("Technology");
         }
 
         private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-
             if (mainSelectedIndex == -1) { return; }
 
             if (string.IsNullOrEmpty(MainSearchBarTB.Texts) == false)
@@ -338,9 +333,7 @@ namespace Victoria_3_Modding_Tool
                     {
                         MainLB.Items.Add(entry);
                     }
-
                 }
-
             }
             else if (MainSearchBarTB.Texts == "")
             {
@@ -355,30 +348,28 @@ namespace Victoria_3_Modding_Tool
         //*
         private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
+            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV,  StateTraitsDataV, TechDataV);
         }
 
         //*
         private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
+            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
         private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, InstitutionsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, InstitutionsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         // *
-        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData) 
+        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData,List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
-
             if (mainSelectedIndex == -1) { return; }
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-
                 case "Era":
 
                     if (string.IsNullOrEmpty(TB.Texts) == false)
@@ -390,9 +381,7 @@ namespace Victoria_3_Modding_Tool
                         {
                             if (entry.Era.ToString().StartsWith(TB.Texts))
                             { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -405,7 +394,6 @@ namespace Victoria_3_Modding_Tool
                             { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
                         }
                     }
-
 
                     break;
 
@@ -420,9 +408,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -446,9 +432,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -472,9 +456,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -498,9 +480,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -524,9 +504,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -539,7 +517,6 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
-
                 case "Religions":
 
                     if (string.IsNullOrEmpty(TB.Texts) == false)
@@ -551,14 +528,36 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
                         LB.Items.Clear();
                         foreach (ClassReligions str in ReligionsData)
+                        {
+                            LB.Items.Add(str.Name);
+                        }
+                    }
+
+                    break;
+
+                case "State Traits":
+
+                    if (string.IsNullOrEmpty(TB.Texts) == false)
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassStateTraits str in StateTraitsData)
+                        {
+                            if (str.Name.StartsWith(TB.Texts))
+                            {
+                                LB.Items.Add(str.Name);
+                            }
+                        }
+                    }
+                    else if (TB.Texts == "")
+                    {
+                        LB.Items.Clear();
+                        foreach (ClassStateTraits str in StateTraitsData)
                         {
                             LB.Items.Add(str.Name);
                         }
@@ -577,9 +576,7 @@ namespace Victoria_3_Modding_Tool
                             {
                                 LB.Items.Add(str.Name);
                             }
-
                         }
-
                     }
                     else if (TB.Texts == "")
                     {
@@ -596,7 +593,6 @@ namespace Victoria_3_Modding_Tool
                     MainLB.Items.Add("Error");
                     break;
             }
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -606,13 +602,11 @@ namespace Victoria_3_Modding_Tool
         // *
         private void Mod()
         {
-          
             ModLB.Items.Clear();
             if (ModPath != null)
             {
                 switch (MainData[mainSelectedIndex].ToString())
                 {
-
                     case "Era":
 
                         EraDataM = new List<ClassEra>();
@@ -621,6 +615,7 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassEra eraEntry in EraDataM) { ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                         break;
+
                     case "Goods":
 
                         GoodsDataM = new List<ClassGoods>();
@@ -629,6 +624,7 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
                     case "Institutions":
 
                         InstitutionsDataM = new List<ClassInstitutions>();
@@ -637,6 +633,7 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
                     case "Modifiers":
 
                         ModifierDataM = new List<ClassModifiers>();
@@ -646,6 +643,7 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
                     case "Modifier Types":
 
                         ModifierTypeDataM = new List<ClassModifiersType>();
@@ -653,6 +651,7 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
                     case "Pop Needs":
 
                         PopNeedsDataM = new List<ClassPopNeeds>();
@@ -661,21 +660,32 @@ namespace Victoria_3_Modding_Tool
                         foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
                     case "Religions":
 
                         ReligionsDataM = new List<ClassReligions>();
-                        ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser2(), s => new ClassReligions(s,
+                        ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser(), s => new ClassReligions(s,
                             LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                         foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
+
+                    case "State Traits":
+
+                        StateTraitsDataM = new List<ClassStateTraits>();
+                        ReadFilesCommon(ModPath + "\\common\\state_traits", StateTraitsDataM, new Parser(), s => new ClassStateTraits(s,
+                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        foreach (ClassStateTraits entry in StateTraitsDataM) { ModLB.Items.Add(entry.Name); }
+
+                        break;
+
                     case "Technology":
 
                         TechDataM = new List<ClassTech>();
                         ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
                             LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                             LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassTech techEntry in TechDataM) { ModLB.Items.Add(techEntry.Name); }
+                        foreach (ClassTech entry in TechDataM) { ModLB.Items.Add(entry.Name); }
 
                         break;
 
@@ -683,7 +693,6 @@ namespace Victoria_3_Modding_Tool
                         break;
                 }
             }
-
         }
 
         // *
@@ -714,7 +723,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     SaveStatus = 0;
                 }
-
             }
 
             AddBT.Enabled = true;
@@ -730,7 +738,6 @@ namespace Victoria_3_Modding_Tool
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-
                 case "Era":
 
                     EraDataP = new List<ClassEra>();
@@ -810,10 +817,10 @@ namespace Victoria_3_Modding_Tool
                     ModifierDataP = new List<ClassModifiers>();
                     ModifierDataV = new List<ClassModifiers>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s, 
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty , 
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                         LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s, 
+                    ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s,
                         LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                         LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
@@ -836,6 +843,8 @@ namespace Victoria_3_Modding_Tool
                     ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
+                    //new ExtraFunctions().Modifi(ModifierTypeDataV);
+
                     foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.Name); }
                     foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
 
@@ -844,8 +853,6 @@ namespace Victoria_3_Modding_Tool
                     Mod();
 
                     break;
-
-
 
                 case "Pop Needs":
 
@@ -857,14 +864,13 @@ namespace Victoria_3_Modding_Tool
                     ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
                         LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-
                     PopNeedsDataP = new List<ClassPopNeeds>();
                     PopNeedsDataV = new List<ClassPopNeeds>();
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s,
                         LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s,
-                        LocalizationDataP !=null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
                     foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
@@ -883,15 +889,15 @@ namespace Victoria_3_Modding_Tool
                     ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
                         LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     ReligionsDataP = new List<ClassReligions>();
                     ReligionsDataV = new List<ClassReligions>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser2(), s => new ClassReligions(s, 
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser2(), s => new ClassReligions(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty) , t => t.Name);
+                    ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser(), s => new ClassReligions(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser(), s => new ClassReligions(s,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
                     new Functions().TextureMerger(VickyPath + "\\game\\", ReligionsDataV);
                     new Functions().TextureMerger(ProjPath + "\\", ReligionsDataP);
@@ -902,6 +908,42 @@ namespace Victoria_3_Modding_Tool
                     foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
                     if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+                    Mod();
+
+                    break;
+
+                case "State Traits":
+
+                    TechDataP = new List<ClassTech>();
+                    TechDataV = new List<ClassTech>();
+                    ModifierTypeDataP = new List<ClassModifiersType>();
+                    ModifierTypeDataV = new List<ClassModifiersType>();
+                    StateTraitsDataP = new List<ClassStateTraits>();
+                    StateTraitsDataV = new List<ClassStateTraits>();
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+
+                    ReadFilesCommon(VickyPath + "\\game\\common\\state_traits", StateTraitsDataV, new Parser(), s => new ClassStateTraits(s,
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                    ReadFilesCommon(ProjPath + "\\common\\state_traits", StateTraitsDataP, new Parser(), s => new ClassStateTraits(s,
+                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+
+                    new Functions().TextureMerger(VickyPath + "\\game\\", StateTraitsDataV);
+                    new Functions().TextureMerger(ProjPath + "\\", StateTraitsDataP);
+
+                    foreach (ClassStateTraits entry in StateTraitsDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
                     Mod();
 
@@ -923,7 +965,7 @@ namespace Victoria_3_Modding_Tool
                     ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
 
                     ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty , 
+                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                         LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
                     ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
                         LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
@@ -932,15 +974,14 @@ namespace Victoria_3_Modding_Tool
                     new Functions().TextureMerger(VickyPath + "\\game\\", TechDataV);
                     new Functions().TextureMerger(ProjPath + "\\", TechDataP);
 
-                    foreach (ClassTech techEntry in TechDataV) { VickyLB.Items.Add(techEntry.Name); }
-                    foreach (ClassTech techEntry in TechDataP) { ProjectLB.Items.Add(techEntry.Name); }
+                    foreach (ClassTech entry in TechDataV) { VickyLB.Items.Add(entry.Name); }
+                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
 
                     if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
                     Mod();
 
                     break;
-
 
                 default:
                     MainLB.Items.Add("Error");
@@ -951,25 +992,24 @@ namespace Victoria_3_Modding_Tool
         //*
         private void VickyLB_Click(object sender, EventArgs e)
         {
-            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, TechDataV);
+            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
         }
 
         //*
         private void ProjectLB_Click(object sender, EventArgs e)
         {
-            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, TechDataP);
+            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
         private void ModLB_DoubleClick(object sender, EventArgs e)
         {
-            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, InstitutionsDataP, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, TechDataM);
+            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, InstitutionsDataP, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         //*
-        private void DoubleClickList(ListBox ListBox , string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassTech> TechData)
+        private void DoubleClickList(ListBox ListBox, string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
-
             if (mainSelectedIndex == -1) { return; }
             SaveStatus = 2;
 
@@ -977,7 +1017,6 @@ namespace Victoria_3_Modding_Tool
             {
                 switch (MainData[mainSelectedIndex].ToString())
                 {
-
                     case "Era":
 
                         if (ListBox.SelectedIndex == 0) { return; }
@@ -989,7 +1028,7 @@ namespace Victoria_3_Modding_Tool
                         using (EraForm form = new EraForm())
                         {
                             int i;
-                            i = new Functions().hasNameIndex(EraData, ListBox.Items[selectedIndex].ToString().Substring(0, 20));
+                            i = new Functions().hasNameIndex(EraData,int.Parse( ListBox.Items[selectedIndex].ToString().Substring(0, 20)).ToString());
                             form.local = new ClassEra(EraData[i].Era, EraData[i].Cost);
                             form.ShowDialog();
                             ClassEra j = form.ReturnValue();
@@ -1033,7 +1072,6 @@ namespace Victoria_3_Modding_Tool
                             int i;
                             i = new Functions().hasNameIndex(GoodsData, ListBox.Items[selectedIndex].ToString());
 
-
                             form.sizeOfVicky = GoodsDataV.Count;
                             form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
                             form.local = new ClassGoods(GoodsData[i]);
@@ -1059,9 +1097,7 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
@@ -1079,7 +1115,6 @@ namespace Victoria_3_Modding_Tool
                         {
                             int i;
                             i = new Functions().hasNameIndex(InstitutionsData, ListBox.Items[selectedIndex].ToString());
-
 
                             form.sizeOfVicky = InstitutionsDataV.Count;
                             form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
@@ -1107,9 +1142,7 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
@@ -1127,7 +1160,6 @@ namespace Victoria_3_Modding_Tool
                         {
                             int i;
                             i = new Functions().hasNameIndex(ModifierData, ListBox.Items[selectedIndex].ToString());
-
 
                             form.sizeOfVicky = ModifierDataV.Count;
                             form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
@@ -1155,9 +1187,7 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
@@ -1175,7 +1205,6 @@ namespace Victoria_3_Modding_Tool
                         {
                             int i;
                             i = new Functions().hasNameIndex(ModifierTypeData, ListBox.Items[selectedIndex].ToString());
-
 
                             form.sizeOfVicky = ModifierTypeDataV.Count;
                             form.ModifiersData = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
@@ -1202,9 +1231,7 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
@@ -1217,7 +1244,6 @@ namespace Victoria_3_Modding_Tool
                         if (ListBox.Items.Count == 0) { return; }
 
                         if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
 
                         using (PopNeedsForm form = new PopNeedsForm())
                         {
@@ -1248,14 +1274,11 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
-
 
                         break;
 
@@ -1264,7 +1287,6 @@ namespace Victoria_3_Modding_Tool
                         if (ListBox.Items.Count == 0) { return; }
 
                         if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
 
                         using (ReligionForm form = new ReligionForm())
                         {
@@ -1296,14 +1318,55 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
 
+                        break;
+
+                    case "State Traits":
+
+                        if (ListBox.Items.Count == 0) { return; }
+
+                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                        using (StateTraitsForm form = new StateTraitsForm())
+                        {
+                            int i;
+                            i = new Functions().hasNameIndex(StateTraitsData, ListBox.Items[selectedIndex].ToString());
+                            form.sizeOfVicky = StateTraitsDataV.Count;
+                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.TechData = new Functions().MergeClasses(TechDataP, TechDataV);
+                            form.StateTraitsData = new Functions().MergeClasses(StateTraitsDataP, StateTraitsDataV);
+                            form.local = new ClassStateTraits(StateTraitsData[i]);
+                            form.ShowDialog();
+                            ClassStateTraits j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = new Functions().hasNameIndex(StateTraitsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    StateTraitsDataP.Add(new ClassStateTraits(j));
+                                    StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    StateTraitsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
+
+                        if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
                         break;
 
@@ -1312,7 +1375,6 @@ namespace Victoria_3_Modding_Tool
                         if (ListBox.Items.Count == 0) { return; }
 
                         if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
 
                         using (TechForm form = new TechForm())
                         {
@@ -1344,30 +1406,20 @@ namespace Victoria_3_Modding_Tool
                                     ProjectLB.Items.Clear();
                                     foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                                 }
-
                             }
-
                         }
 
                         if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
 
-
                         break;
-
 
                     default:
                         MainLB.Items.Add("Error");
                         break;
                 }
             }
-
-
-
-
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Button Click *
@@ -1377,11 +1429,10 @@ namespace Victoria_3_Modding_Tool
         {
             using (FolderBrowserDialog FBD = new FolderBrowserDialog())
             {
-
                 if (FBD.ShowDialog() == DialogResult.OK)
                 {
                     ModPath = FBD.SelectedPath;  //selected folder path
-                    if (mainSelectedIndex!=-1){Mod();}
+                    if (mainSelectedIndex != -1) { Mod(); }
                     XL.Visible = false;
                 }
                 else
@@ -1397,7 +1448,6 @@ namespace Victoria_3_Modding_Tool
             SaveStatus = 2;
             switch (MainData[mainSelectedIndex].ToString())
             {
-
                 case "Era":
 
                     using (EraForm form = new EraForm())
@@ -1408,7 +1458,6 @@ namespace Victoria_3_Modding_Tool
                         ClassEra j = form.ReturnValue();
                         if (j != null)
                         {
-
                             i = new Functions().hasNameIndex(EraDataP, j.Era.ToString()); // Index to change
                             if (i == -1)
                             {
@@ -1433,7 +1482,6 @@ namespace Victoria_3_Modding_Tool
 
                     if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1468,17 +1516,11 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
-
-
-
                     }
 
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1514,17 +1556,11 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
-
-
-
                     }
 
                     if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1560,17 +1596,11 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
-
-
-
                     }
 
                     if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1605,17 +1635,11 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
-
-
-
                     }
 
                     if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1649,9 +1673,7 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
                     }
 
                     if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
@@ -1690,12 +1712,49 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
                     }
 
                     if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
+
+                    break;
+
+                case "State Traits":
+
+                    using (StateTraitsForm form = new StateTraitsForm())
+                    {
+                        int i;
+                        form.sizeOfVicky = StateTraitsDataV.Count;
+                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                        form.TechData = new Functions().MergeClasses(TechDataP, TechDataV);
+                        form.StateTraitsData = new Functions().MergeClasses(StateTraitsDataP, StateTraitsDataV);
+                        form.local = null;
+                        form.ShowDialog();
+                        ClassStateTraits j = form.ReturnValue();
+                        if (j != null)
+                        {
+                            i = new Functions().hasNameIndex(StateTraitsDataP, j.Name); // Index to change
+                            if (i == -1)
+                            {
+                                StateTraitsDataP.Add(new ClassStateTraits(j));
+                                StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                {
+                                    return (t1.Name.CompareTo(t2.Name));
+                                });
+                                ProjectLB.Items.Clear();
+                                foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+                            else
+                            {
+                                StateTraitsDataP[i] = j;
+                                ProjectLB.Items.Clear();
+                                foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                            }
+                        }
+                    }
+
+                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
                     break;
@@ -1731,18 +1790,13 @@ namespace Victoria_3_Modding_Tool
                                 ProjectLB.Items.Clear();
                                 foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
                             }
-
                         }
-
                     }
 
                     if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
                     break;
-
-
-
 
                 default:
                     MainLB.Items.Add("Error");
@@ -1752,7 +1806,6 @@ namespace Victoria_3_Modding_Tool
 
         private void SaveBT_Click(object sender, EventArgs e)
         {
-
             DialogResult result = MessageBox.ClassMessageBox.ShowOverwrite();
             if (result == DialogResult.OK)
             {
@@ -1761,25 +1814,21 @@ namespace Victoria_3_Modding_Tool
             }
             else if (result == DialogResult.Cancel)
             {
-
             }
 
             LocalizationDataV = LocalizationSetup(VickyPath + "\\game");
             LocalizationDataP = LocalizationSetup(ProjPath);
             LocalizationDataM = LocalizationSetup(ModPath);
-
         }
 
         // *
         private void DeleteBT_Click(object sender, EventArgs e)
         {
-
             int i;
             SaveStatus = 2;
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-
                 case "Era":
 
                     if (ProjectLB.SelectedIndex == 0) { return; }
@@ -1809,7 +1858,6 @@ namespace Victoria_3_Modding_Tool
                     if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
-
                     break;
 
                 case "Institutions":
@@ -1823,7 +1871,6 @@ namespace Victoria_3_Modding_Tool
 
                     if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1839,7 +1886,6 @@ namespace Victoria_3_Modding_Tool
                     if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
-
                     break;
 
                 case "Modifier Types":
@@ -1853,7 +1899,6 @@ namespace Victoria_3_Modding_Tool
 
                     if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
-
 
                     break;
 
@@ -1869,7 +1914,6 @@ namespace Victoria_3_Modding_Tool
                     if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
-
                     break;
 
                 case "Religions":
@@ -1884,6 +1928,19 @@ namespace Victoria_3_Modding_Tool
                     if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
+                    break;
+
+                case "State Traits":
+
+                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                    i = new Functions().hasNameIndex(StateTraitsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                    StateTraitsDataP.RemoveAt(i);
+                    ProjectLB.Items.Clear();
+                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                    else { DeleteBT.Enabled = true; }
 
                     break;
 
@@ -1899,26 +1956,22 @@ namespace Victoria_3_Modding_Tool
                     if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                     else { DeleteBT.Enabled = true; }
 
-
                     break;
-
-
 
                 default:
                     MainLB.Items.Add("Error");
                     break;
             }
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Important
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private Dictionary<string,string> LocalizationSetup(string path)
+        private Dictionary<string, string> LocalizationSetup(string path)
         {
-            if (Directory.Exists(path + "\\localization\\"+language))
-            { 
+            if (Directory.Exists(path + "\\localization\\" + language))
+            {
                 return new LocalizationParser().ParseFiles(path + "\\localization\\" + language);
             }
             return null;
@@ -1928,7 +1981,6 @@ namespace Victoria_3_Modding_Tool
         {
             if (Directory.Exists(path))
             {
-
                 foreach (List<KeyValuePair<string, object>> entry in Iparser.ParseFiles(path).Cast<List<KeyValuePair<string, object>>>()) // Files
                 {
                     foreach (KeyValuePair<string, object> entry2 in entry)
@@ -1941,7 +1993,6 @@ namespace Victoria_3_Modding_Tool
                 {   // 0.5 s Make more efi
                     return sortBy(t1).CompareTo(sortBy(t2));
                 });
-
             }
             return;
         }
@@ -1977,10 +2028,14 @@ namespace Victoria_3_Modding_Tool
             ReligionsDataV?.Clear();
             ReligionsDataM?.Clear();
 
+            StateTraitsDataP?.Clear();
+            StateTraitsDataV?.Clear();
+            StateTraitsDataM?.Clear();
+
             TechDataP?.Clear();
             TechDataV?.Clear();
             TechDataM?.Clear();
-    }
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Traits
@@ -1992,7 +2047,7 @@ namespace Victoria_3_Modding_Tool
 
             foreach (ClassReligions entry in ReligionsDataV)
             {
-                foreach(string trait in entry.Traits)
+                foreach (string trait in entry.Traits)
                 {
                     if (!TraitsData.Contains(trait))
                     {
@@ -2011,7 +2066,6 @@ namespace Victoria_3_Modding_Tool
                     }
                 }
             }
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2021,7 +2075,6 @@ namespace Victoria_3_Modding_Tool
         // *
         private void MakeProjFiles()
         {
-
             // Makes Common
             if (!Directory.Exists(ProjPath + "\\common"))
             {
@@ -2042,7 +2095,6 @@ namespace Victoria_3_Modding_Tool
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-
                 case "Era":
 
                     if (EraDataP.Count != 0)
@@ -2066,13 +2118,11 @@ namespace Victoria_3_Modding_Tool
                                 sw.WriteLine("\ttechnology_cost = " + eraEntry.Cost);
                                 sw.WriteLine("}");
                             }
-
-
                         }
-
                     }
 
                     break;
+
                 case "Goods":
 
                     if (GoodsDataP.Count != 0)
@@ -2112,7 +2162,6 @@ namespace Victoria_3_Modding_Tool
 
                                 sw.WriteLine("}");
                                 sw.WriteLine();
-
                             }
                         }
 
@@ -2129,9 +2178,7 @@ namespace Victoria_3_Modding_Tool
 
                             foreach (ClassGoods Entry in GoodsDataP)
                             {
-
                                 sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
-
                             }
                         }
 
@@ -2153,17 +2200,16 @@ namespace Victoria_3_Modding_Tool
 
                         foreach (ClassGoods entry in GoodsDataP)
                         {
-                             File.Copy(VickyPath + "\\game\\" + entry.Texture, ProjPath + "\\gfx\\interface\\icons\\goods_icons\\" + entry.Name + ".dds", true);
+                            File.Copy(VickyPath + "\\game\\" + entry.Texture, ProjPath + "\\gfx\\interface\\icons\\goods_icons\\" + entry.Name + ".dds", true);
                         }
-
                     }
 
                     break;
+
                 case "Institutions":
 
                     if (InstitutionsDataP.Count != 0)
                     {
-
                         // Common
                         if (!Directory.Exists(ProjPath + "\\common\\institutions"))
                         {
@@ -2191,8 +2237,6 @@ namespace Victoria_3_Modding_Tool
 
                                 sw.WriteLine("}");
                             }
-
-
                         }
 
                         // Localization
@@ -2200,7 +2244,6 @@ namespace Victoria_3_Modding_Tool
                         {
                             Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
                         }
-
 
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_institutions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
@@ -2250,18 +2293,15 @@ namespace Victoria_3_Modding_Tool
                             {
                                 File.Copy(entry.BackTexture, ProjPath + "\\gfx\\interface\\illustrations\\institutions\\" + entry.Name + ".dds", true);
                             }
-
                         }
-
-
                     }
 
                     break;
+
                 case "Modifiers":
 
                     if (ModifierDataP.Count != 0)
                     {
-
                         // Common
                         if (!Directory.Exists(ProjPath + "\\common\\modifiers"))
                         {
@@ -2291,8 +2331,6 @@ namespace Victoria_3_Modding_Tool
 
                                 sw.WriteLine("}");
                             }
-
-
                         }
 
                         // Localization
@@ -2300,7 +2338,6 @@ namespace Victoria_3_Modding_Tool
                         {
                             Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
                         }
-
 
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_modifiers_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
@@ -2336,18 +2373,15 @@ namespace Victoria_3_Modding_Tool
                             {
                                 File.Copy(entry.Texture, ProjPath + "\\gfx\\interface\\icons\\timed_modifier_icons\\" + entry.Name + ".dds", true);
                             }
-
                         }
-
-
                     }
 
                     break;
+
                 case "Modifier Types":
 
                     if (ModifierTypeDataP.Count != 0)
                     {
-
                         if (!Directory.Exists(ProjPath + "\\common\\modifier_types"))
                         {
                             Directory.CreateDirectory(ProjPath + "\\common\\modifier_types");
@@ -2431,7 +2465,6 @@ namespace Victoria_3_Modding_Tool
                                     sw.WriteLine("\ttranslate = " + Entry.Translate);
                                 }
 
-
                                 if (Entry.Postfix != null)
                                 {
                                     sw.WriteLine("\tpostfix = \"" + Entry.Postfix + "\"");
@@ -2444,19 +2477,16 @@ namespace Victoria_3_Modding_Tool
 
                                 sw.WriteLine("}");
                                 sw.WriteLine();
-
                             }
                         }
-
-
                     }
 
                     break;
+
                 case "Pop Needs":
 
                     if (PopNeedsDataP.Count != 0)
                     {
-
                         if (!Directory.Exists(ProjPath + "\\common\\pop_needs"))
                         {
                             Directory.CreateDirectory(ProjPath + "\\common\\pop_needs");
@@ -2486,7 +2516,6 @@ namespace Victoria_3_Modding_Tool
 
                                 sw.WriteLine("}");
                                 sw.WriteLine();
-
                             }
                         }
 
@@ -2506,11 +2535,10 @@ namespace Victoria_3_Modding_Tool
                                 sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
                             }
                         }
-
-
                     }
 
                     break;
+
                 case "Religions":
 
                     if (ReligionsDataP.Count != 0)
@@ -2551,7 +2579,6 @@ namespace Victoria_3_Modding_Tool
                                 }
                                 sw.WriteLine("}");
                                 sw.WriteLine();
-
                             }
                         }
 
@@ -2594,14 +2621,75 @@ namespace Victoria_3_Modding_Tool
                             {
                                 File.Copy(entry.Texture, ProjPath + "\\gfx\\interface\\icons\\religion_icons\\" + entry.Name + ".dds", true);
                             }
-
                         }
-
-
-
                     }
 
                     break;
+
+                case "State Traits":
+
+                    if (StateTraitsDataP.Count != 0)
+                    {
+                        // Common
+                        if (!Directory.Exists(ProjPath + "\\common\\state_traits"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\state_traits");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\state_traits\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassStateTraits entry in StateTraitsDataP)
+                            {
+                                sw.WriteLine();
+                                sw.WriteLine(entry.Name + " = {");
+                                sw.WriteLine("\ticon = \"" + "gfx/interface/icons/state_trait_icons/" + entry.Name + ".dds" + "\"");
+                                sw.WriteLine();
+                                if (entry.RequiredTechsForColonization != string.Empty)
+                                {
+                                    sw.WriteLine("\trequired_techs_for_colonization = { \"" + entry.RequiredTechsForColonization + "\" }");
+                                }
+                                if (entry.DisablingTechnologies != string.Empty)
+                                {
+                                    sw.WriteLine("\tdisabling_technologies = { \"" + entry.DisablingTechnologies + "\" }");
+                                }
+                                if (entry.Modifiers.Count != 0)
+                                {
+                                    sw.WriteLine();
+                                    sw.WriteLine("\tmodifier = {");
+                                    foreach (string modifier in entry.Modifiers)
+                                    {
+                                        sw.WriteLine("\t\t" + modifier);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                
+                                sw.WriteLine("}");
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_state_traits_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_english:");
+
+                            foreach (ClassStateTraits entry in StateTraitsDataP)
+                            {
+                                sw.WriteLine(" " + entry.Name + ":0 \"" + entry.TrueName + "\"");
+                            }
+                        }
+
+                       
+                    }
+
+                    break;
+
                 case "Technology":
 
                     if (TechDataP.Count != 0)
@@ -2650,8 +2738,6 @@ namespace Victoria_3_Modding_Tool
                                 }
                                 sw.WriteLine("}");
                             }
-
-
                         }
 
                         // Localization
@@ -2660,7 +2746,6 @@ namespace Victoria_3_Modding_Tool
                             Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
                         }
 
-
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
@@ -2668,10 +2753,8 @@ namespace Victoria_3_Modding_Tool
 
                             foreach (ClassTech techEntry in TechDataP)
                             {
-
                                 sw.WriteLine(" " + techEntry.Name + ":0 \"" + techEntry.TrueName + "\"");
                                 sw.WriteLine(" " + techEntry.Name + "_desc:0 \"" + techEntry.Desc + "\"");
-
                             }
                         }
 
@@ -2693,21 +2776,18 @@ namespace Victoria_3_Modding_Tool
 
                         foreach (ClassTech techEntry in TechDataP)
                         {
-                            if (techEntry.Texture!= ProjPath + "\\gfx\\interface\\icons\\invention_icons\\" + techEntry.Name + ".dds") {
+                            if (techEntry.Texture != ProjPath + "\\gfx\\interface\\icons\\invention_icons\\" + techEntry.Name + ".dds")
+                            {
                                 File.Copy(techEntry.Texture, ProjPath + "\\gfx\\interface\\icons\\invention_icons\\" + techEntry.Name + ".dds", true);
                             }
-                            
                         }
-
                     }
-                    
+
                     break;
 
                 default:
                     break;
             }
-
-
         }
 
         private void DeleteDirectory(string target_dir)
@@ -2728,7 +2808,5 @@ namespace Victoria_3_Modding_Tool
 
             Directory.Delete(target_dir, false);
         }
-
-
     }
 }

@@ -1,18 +1,16 @@
-﻿using System.Windows.Forms;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System;
+using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool.Custom_Controls
 {
-    class CustomListBox : UserControl
+    internal class CustomListBox : UserControl
     {
         //Fields
         private Color borderColor = Color.MediumSlateBlue;
-        private int borderSize = 1;
 
+        private int borderSize = 1;
 
         //Items
         private ListBox Listb;
@@ -40,7 +38,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             }
         }
 
-
         [Category("Custom")]
         public override Color BackColor
         {
@@ -51,7 +48,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 base.BackColor = value;
             }
         }
-
 
         public void Add(object item)
         {
@@ -72,15 +68,10 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             return this.Listb.SelectedIndex;
         }
 
-
         public object Item(int index)
         {
             return this.Listb.Items[index];
         }
-
-
-       
-
 
         // List Properties
         public CustomListBox()
@@ -94,27 +85,23 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             Listb.ForeColor = Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
             Listb.FormattingEnabled = true;
             Listb.ItemHeight = 24;
-            Listb.Location = new Point(0,0);
+            Listb.Location = new Point(0, 0);
             Listb.Name = "CustomListBox";
             Listb.Size = new Size(235, 936);
             Listb.DrawItem += new DrawItemEventHandler(Listb_DrawItem);
             Listb.Dock = DockStyle.Fill;
             Listb.BackColor = BackColor;
-            
+
             Controls.Add(Listb);
             ResumeLayout();
             AdjustListBoxDimensions();
-
         }
-
-
 
         // Highlight event
         private void Listb_DrawItem(object sender, DrawItemEventArgs e)
         {
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
-
 
             if (e.Index >= 0)
             {
@@ -126,10 +113,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             }
         }
 
-
-
-
-
         //Adjust Dimension (Still in test)
         private void AdjustListBoxDimensions()
         {
@@ -139,7 +122,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 Y = Listb.Height
             };
         }
-
 
         // Draws the border
         protected override void OnPaint(PaintEventArgs e)
@@ -153,9 +135,5 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                 graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
             }
         }
-
-
-
-
     }
 }

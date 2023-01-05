@@ -23,13 +23,11 @@ namespace Victoria_3_Modding_Tool
 
         public int sizeOfVicky; // Needed
 
-
         public PopTypesForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
-            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width/4, 0);
-
+            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
         }
 
         public ClassPopNeeds ReturnValue()
@@ -39,7 +37,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +66,6 @@ namespace Victoria_3_Modding_Tool
         {
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
-
 
             if (e.Index >= 0)
             {
@@ -108,15 +104,15 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -124,14 +120,13 @@ namespace Victoria_3_Modding_Tool
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Button Events
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private bool verification()
         {
-            bool[] verif = {false,false,false, false};
-            float weight=0, min=0, max=0;
+            bool[] verif = { false, false, false, false };
+            float weight = 0, min = 0, max = 0;
 
             if (!Regex.Match(WeigthTB.Texts, "^([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(WeigthTB.Texts))
             {
@@ -193,7 +188,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (EntryCB.SelectedIndex != -1 && !new Functions().hasName(localEntry,EntryCB.SelectedItem.ToString()))
+            if (EntryCB.SelectedIndex != -1 && !new Functions().hasName(localEntry, EntryCB.SelectedItem.ToString()))
             {
                 EntryCB.BorderColor = Color.FromArgb(66, 66, 66);
                 verif[3] = true;
@@ -203,11 +198,8 @@ namespace Victoria_3_Modding_Tool
                 EntryCB.BorderColor = Color.FromArgb(255, 39, 58);
             }
 
-
-            if (verif[0]==true && verif[1]==true&& verif[2] == true && verif[3] == true)
+            if (verif[0] == true && verif[1] == true && verif[2] == true && verif[3] == true)
             {
-
-
                 if (min < weight && weight < max)
                 {
                     WeigthTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -233,8 +225,6 @@ namespace Victoria_3_Modding_Tool
             {
                 return false;
             }
-
-
         }
 
         private void AddBT_Click(object sender, EventArgs e)
@@ -243,7 +233,7 @@ namespace Victoria_3_Modding_Tool
             if (verification())
             {
                 localEntry.Add(new ClassPopNeedsEntry(EntryCB.SelectedItem.ToString(), float.Parse(WeigthTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat), float.Parse(MaxTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat), float.Parse(MinTB.Texts.ToString(), CultureInfo.InvariantCulture.NumberFormat)));
-                EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", localEntry[localEntry.Count-1].Name, localEntry[localEntry.Count - 1].Weight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MinWeight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MaxWeight.ToString().Replace(",", ".")));
+                EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", localEntry[localEntry.Count - 1].Name, localEntry[localEntry.Count - 1].Weight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MinWeight.ToString().Replace(",", "."), localEntry[localEntry.Count - 1].MaxWeight.ToString().Replace(",", ".")));
             }
 
             if (localEntry.Count != 0) { DeleteBT.Enabled = true; }
@@ -261,7 +251,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (localEntry.Count == 0) { DeleteBT.Enabled= false; }
+            if (localEntry.Count == 0) { DeleteBT.Enabled = false; }
         }
 
         private void SaveBT_Click(object sender, EventArgs e)
@@ -323,7 +313,6 @@ namespace Victoria_3_Modding_Tool
                 return true;
             }
             return false;
-
         }
 
         private void LoadInfoToControls()
@@ -332,7 +321,7 @@ namespace Victoria_3_Modding_Tool
 
             NameTB.Texts = local.Name;
 
-            DefaultCB.SelectedIndex= new Functions().hasNameIndex(GoodsList, local.Defaultgood);
+            DefaultCB.SelectedIndex = new Functions().hasNameIndex(GoodsList, local.Defaultgood);
 
             foreach (ClassPopNeedsEntry entry in local.Entries)
             {
@@ -342,14 +331,13 @@ namespace Victoria_3_Modding_Tool
             if (localEntry.Count != 0) { DeleteBT.Enabled = true; }
 
             SaveStatus = 0;
-
         }
 
         private void SaveForm()
         {
             local = null; // creator
 
-            foreach(ClassPopNeedsEntry entry in localEntry)
+            foreach (ClassPopNeedsEntry entry in localEntry)
             {
                 local.Entries.Add(entry);
             }
@@ -361,25 +349,22 @@ namespace Victoria_3_Modding_Tool
 
         private void PopNeedsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
         private void PopNeedsForm_Load(object sender, EventArgs e)
         {
-
             foreach (ClassGoods entry in GoodsList)
             {
                 DefaultCB.Items.Add(entry.Name);
@@ -388,7 +373,7 @@ namespace Victoria_3_Modding_Tool
 
             EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", "Good", "Weight", "Min", "Max"));
 
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -396,9 +381,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save
@@ -419,6 +402,5 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[1] = false; }
         }
-        
     }
 }

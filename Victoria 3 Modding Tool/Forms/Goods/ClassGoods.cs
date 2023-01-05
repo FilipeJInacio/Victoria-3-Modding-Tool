@@ -19,21 +19,22 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public int TradedQuantity { get; set; }
         public float Convoy_cost { get; set; }
 
-        public ClassGoods() { }
+        public ClassGoods()
+        { }
 
         public ClassGoods(ClassGoods good)
         {
-            this.Name= good.Name;
-            this.TrueName= good.TrueName;
+            this.Name = good.Name;
+            this.TrueName = good.TrueName;
             this.Texture = good.Texture;
             this.Cost = good.Cost;
             this.Category = good.Category;
             this.Tradeable = good.Tradeable;
-            this.Fixed_price= good.Fixed_price;
+            this.Fixed_price = good.Fixed_price;
             this.Consumption = good.Consumption;
             this.Obsession = good.Obsession;
-            this.Prestige= good.Prestige;
-            this.TradedQuantity= good.TradedQuantity;
+            this.Prestige = good.Prestige;
+            this.TradedQuantity = good.TradedQuantity;
             this.Convoy_cost = good.Convoy_cost;
         }
 
@@ -42,7 +43,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Name = name;
             this.TrueName = TrueName;
             this.Texture = texture;
-            this.Cost= cost;
+            this.Cost = cost;
             this.Category = category;
             this.Tradeable = tradeablee;
             this.Fixed_price = fixed_price;
@@ -51,12 +52,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Prestige = prestige;
             this.TradedQuantity = tradedQuantity;
             this.Convoy_cost = convoy_cost;
-
         }
 
         public ClassGoods(KeyValuePair<string, object> ParserData, string TrueName)
         {
-
             this.Tradeable = true;
             this.Fixed_price = false;
             this.Name = ParserData.Key;
@@ -69,7 +68,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-
                 switch (element.Key)
                 {
                     case "texture":
@@ -96,16 +94,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                         this.Consumption = Int32.Parse(element.Value.ToString()); continue;
                     default:
                         continue;
-
                 }
-
             }
 
-            if (this.Tradeable==false) { this.TradedQuantity = -1; this.Convoy_cost = -1; }
-
-
+            if (this.Tradeable == false) { this.TradedQuantity = -1; this.Convoy_cost = -1; }
         }
-
     }
-
 }

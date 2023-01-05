@@ -26,7 +26,7 @@ namespace Victoria_3_Modding_Tool
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
-            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width/4, 0);
+            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
         }
 
         public ClassReligions ReturnValue()
@@ -36,7 +36,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +66,6 @@ namespace Victoria_3_Modding_Tool
         {
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
-
 
             if (e.Index >= 0)
             {
@@ -105,7 +103,6 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
-           
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,9 +110,10 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -159,16 +157,11 @@ namespace Victoria_3_Modding_Tool
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
-
-
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-
                     //Get the path of specified file
                     TextureTB.Texts = openFileDialog.FileName.Substring(openFileDialog.FileName.IndexOf("gfx"));
-
                 }
-
             }
         }
 
@@ -202,7 +195,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Load/Save Information
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         private bool SaveVerification()
         {
             if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ReligionData.GetRange(sizeOfVicky, ReligionData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
@@ -222,7 +215,6 @@ namespace Victoria_3_Modding_Tool
                 canSave[2] = true;
             }
             else { canSave[2] = false; }
-
 
             if (canSave[0] == false)
             {
@@ -302,7 +294,6 @@ namespace Victoria_3_Modding_Tool
 
         private void LoadInfoToControls()
         {
-
             NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.Truename;
@@ -313,7 +304,7 @@ namespace Victoria_3_Modding_Tool
             GreenTB.Texts = local.Green.ToString();
             BlueTB.Texts = local.Blue.ToString();
 
-            foreach(string entry in local.Traits)
+            foreach (string entry in local.Traits)
             {
                 TraitsLB.Items.Add(entry);
             }
@@ -324,15 +315,13 @@ namespace Victoria_3_Modding_Tool
             }
 
             SaveStatus = 0;
-
         }
 
         private void Save_Technology()
         {
-            local = new ClassReligions(NameTB.Texts,NameGameTB.Texts, TextureTB.Texts,Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+            local = new ClassReligions(NameTB.Texts, NameGameTB.Texts, TextureTB.Texts, Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
             local.Traits = TraitsLB.Items.Cast<string>().ToList();
             local.Taboos = TaboosLB.Items.Cast<string>().ToList();
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,13 +341,11 @@ namespace Victoria_3_Modding_Tool
                 {
                     e.Cancel = true;
                 }
-
             }
         }
 
         private void ReligionForm_Load(object sender, EventArgs e)
         {
-
             foreach (string entry in Traits)
             {
                 TraitsCB.Items.Add(entry);
@@ -366,8 +353,8 @@ namespace Victoria_3_Modding_Tool
 
             foreach (ClassGoods entry in GoodsData)
             {
-                if(entry.Category== "luxury")
-                TaboosCB.Items.Add(entry.Name);
+                if (entry.Category == "luxury")
+                    TaboosCB.Items.Add(entry.Name);
             }
 
             if (local != null)
@@ -378,9 +365,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save
@@ -411,7 +396,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(RedTB.Texts, out i) && i >= 0 && i <= 255)
                 {
                     canSave[3] = true;
@@ -420,14 +404,12 @@ namespace Victoria_3_Modding_Tool
                 {
                     canSave[3] = false;
                 }
-
             }
 
-            if (canSave[3]==true && canSave[4] == true && canSave[5] == true)
+            if (canSave[3] == true && canSave[4] == true && canSave[5] == true)
             {
-                ColorP.BackColor= Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
+                ColorP.BackColor = Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
             }
-
         }
 
         private void GreenTB_CustomTextBox_TextChanged(object sender, EventArgs e)
@@ -440,7 +422,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(GreenTB.Texts, out i) && i >= 0 && i <= 255)
                 {
                     canSave[4] = true;
@@ -449,7 +430,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     canSave[4] = false;
                 }
-
             }
 
             if (canSave[3] == true && canSave[4] == true && canSave[5] == true)
@@ -468,7 +448,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(RedTB.Texts, out i) && i >= 0 && i <= 255)
                 {
                     canSave[5] = true;
@@ -477,7 +456,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     canSave[5] = false;
                 }
-
             }
 
             if (canSave[3] == true && canSave[4] == true && canSave[5] == true)
@@ -485,7 +463,5 @@ namespace Victoria_3_Modding_Tool
                 ColorP.BackColor = Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
             }
         }
-
-       
     }
 }

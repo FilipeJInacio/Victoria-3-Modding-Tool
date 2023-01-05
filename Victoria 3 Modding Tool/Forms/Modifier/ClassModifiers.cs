@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-
     public class ClassModifiers : IType, ITexture
     {
         public string Name { get; set; }
@@ -12,9 +11,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public string Texture { get; set; }
         public List<string> Modifiers { get; set; }
 
-        public ClassModifiers() { }
+        public ClassModifiers()
+        { }
 
-        public  ClassModifiers(KeyValuePair<string, object> ParserData , string TrueName, string Desc)
+        public ClassModifiers(KeyValuePair<string, object> ParserData, string TrueName, string Desc)
         {
             this.Name = ParserData.Key;
             this.TrueName = TrueName;
@@ -24,7 +24,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             foreach (KeyValuePair<string, object> entry in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-
                 if (entry.Key == "icon")
                 {
                     this.Texture = entry.Value.ToString();
@@ -58,6 +57,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Modifiers = new List<string>();
         }
     }
+
     public class ClassModifiersType : IType
     {
         public string Name { get; set; }
@@ -71,7 +71,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public string Translate { get; set; }
         public int Ai_value { get; set; }
 
-        public ClassModifiersType() { }
+        public ClassModifiersType()
+        { }
 
         public ClassModifiersType(KeyValuePair<string, object> ParserData)
         {
@@ -149,7 +150,5 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Translate = translate;
             this.Ai_value = ai_value;
         }
-
     }
-
 }

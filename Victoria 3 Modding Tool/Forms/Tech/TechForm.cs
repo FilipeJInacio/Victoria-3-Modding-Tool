@@ -25,13 +25,11 @@ namespace Victoria_3_Modding_Tool
 
         public int sizeOfVicky; // Needed
 
-
         public TechForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
-            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width/4, 0);
-
+            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
         }
 
         public ClassTech ReturnValue()
@@ -41,7 +39,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +69,6 @@ namespace Victoria_3_Modding_Tool
         {
             Color backgroundColor = Color.FromArgb(50, 50, 50);
             Color horizontalColor = Color.FromArgb(100, 100, 100);
-
 
             if (e.Index >= 0)
             {
@@ -121,9 +117,10 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -166,16 +163,11 @@ namespace Victoria_3_Modding_Tool
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
-
-
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-
                     //Get the path of specified file
                     TextureTB.Texts = openFileDialog.FileName;
-
                 }
-
             }
         }
 
@@ -196,14 +188,14 @@ namespace Victoria_3_Modding_Tool
         {
             foreach (string entry in ModifiersLB.Items)
             {
-                if (entry.Split(' ')[0] == name){ return false; }
+                if (entry.Split(' ')[0] == name) { return false; }
             }
             return true;
         }
 
         private void ModifiersAddBT_Click(object sender, EventArgs e)
         {
-            float i=0;
+            float i = 0;
             bool verif;
 
             if (!Regex.Match(NumberTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(NumberTB.Texts))
@@ -214,7 +206,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (float.TryParse(NumberTB.Texts.Replace(".", ","), out i) && i > -2147483647 && i < 2147483647)
                 {
                     NumberTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -227,7 +218,6 @@ namespace Victoria_3_Modding_Tool
                     NumberTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     verif = false;
                 }
-
             }
 
             if (ModifiersCB.SelectedIndex == -1)
@@ -241,10 +231,10 @@ namespace Victoria_3_Modding_Tool
             }
 
             if (verif)
-            { 
+            {
                 if (containsModifier(ModifiersCB.SelectedItem.ToString()))
                 {
-                    ModifiersLB.Items.Add(ModifiersCB.SelectedItem.ToString() + " = " + i.ToString().Replace(',','.'));
+                    ModifiersLB.Items.Add(ModifiersCB.SelectedItem.ToString() + " = " + i.ToString().Replace(',', '.'));
                 }
             }
             SaveStatus = 2;
@@ -258,7 +248,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Load/Save Information
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         private bool SaveVerification()
         {
             if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(TechList.GetRange(sizeOfVicky, TechList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
@@ -279,13 +269,11 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[5] = false; }
 
-
             if (!string.IsNullOrEmpty(TextureTB.Texts) && TextureTB.Texts.EndsWith(".dds"))
             {
                 canSave[3] = true;
             }
             else { canSave[3] = false; }
-
 
             if (canSave[0] == false)
             {
@@ -297,8 +285,6 @@ namespace Victoria_3_Modding_Tool
                 NameTB.BorderColor = Color.FromArgb(66, 66, 66);
                 NameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
-
-
 
             if (canSave[1] == false)
             {
@@ -363,13 +349,9 @@ namespace Victoria_3_Modding_Tool
 
         private void LoadInfoToControls()
         {
-
             NameTB.Texts = local.Name;
 
-
             NameGameTB.Texts = local.TrueName;
-
-            
 
             EraCB.SelectedIndex = local.Era - 1;
 
@@ -377,16 +359,16 @@ namespace Victoria_3_Modding_Tool
 
             DescriptionTB.Texts = local.Desc;
 
-            
-
             switch (local.Category)
             {
                 case "production":
                     CategoryCB.SelectedIndex = 0;
                     break;
+
                 case "military":
                     CategoryCB.SelectedIndex = 1;
                     break;
+
                 case "society":
                     CategoryCB.SelectedIndex = 2;
                     break;
@@ -409,7 +391,6 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-
             foreach (string needTech in local.Restrictions)
             {
                 foreach (ClassTech techsingular in TechList)
@@ -430,16 +411,12 @@ namespace Victoria_3_Modding_Tool
                 ModifiersLB.Items.Add(entry);
             }
 
-
-
             SaveStatus = 0;
-
         }
 
         private void Save_Technology()
         {
-
-            local = new ClassTech(NameTB.Texts, NameGameTB.Texts, (int)EraCB.SelectedItem, TextureTB.Texts, DescriptionTB.Texts, CategoryCB.SelectedItem.ToString().ToLower(), CanResearchCB.Checked? true:false);
+            local = new ClassTech(NameTB.Texts, NameGameTB.Texts, (int)EraCB.SelectedItem, TextureTB.Texts, DescriptionTB.Texts, CategoryCB.SelectedItem.ToString().ToLower(), CanResearchCB.Checked ? true : false);
 
             List<string> words = NeededTechLB.Items.Cast<string>().ToList();
 
@@ -453,7 +430,6 @@ namespace Victoria_3_Modding_Tool
             local.Restrictions = words.Cast<string>().ToList();
 
             local.Modifiers = ModifiersLB.Items.Cast<string>().ToList();
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,26 +438,22 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
                 if (result == DialogResult.OK)
                 {
-                    if (!SaveVerification()){e.Cancel = true;}
+                    if (!SaveVerification()) { e.Cancel = true; }
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
         private void TechForm_Load(object sender, EventArgs e)
         {
-
-
             foreach (ClassEra Era in EraList)
             {
                 EraCB.Items.Add(Era.Era);
@@ -491,17 +463,15 @@ namespace Victoria_3_Modding_Tool
             CategoryCB.Items.Add("Military");
             CategoryCB.Items.Add("Society");
 
-
             NeededTechLB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", "Tech", "Era", "Category"));
             NeededCB.Items.Add("Choose a category.");
-
 
             foreach (ClassModifiersType entry in ModifiersTypes)
             {
                 ModifiersCB.Items.Add(entry.Name);
             }
 
-            if (local != null )
+            if (local != null)
             {
                 LoadInfoToControls();
             }
@@ -509,9 +479,7 @@ namespace Victoria_3_Modding_Tool
             {
                 SaveStatus = 2;
             }
-
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If Text Changed Ask To Save
@@ -548,9 +516,6 @@ namespace Victoria_3_Modding_Tool
                         NeededCB.Items.Add(string.Format("{0,-65}{1,-5 }{2,-10 }", TechEntry.Name, TechEntry.Era, TechEntry.Category.ToUpper()[0] + TechEntry.Category.Substring(1)));
                     }
                 }
-
-
-
             }
             else { canSave[2] = false; }
         }
@@ -574,7 +539,5 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
-
-        
     }
 }

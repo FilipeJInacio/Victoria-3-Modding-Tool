@@ -1,41 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-
     public class ClassProductMethods
     {
         public string name { get; set; }
         public string texture { get; set; }
-        public List<KeyValuePair<string,int>> building_input_add { get; set; }
+        public List<KeyValuePair<string, int>> building_input_add { get; set; }
         public List<KeyValuePair<string, int>> building_output_add { get; set; }
         public List<KeyValuePair<string, int>> building_employment_add { get; set; }
 
-        public ClassProductMethods() { }
+        public ClassProductMethods()
+        { }
 
         public ClassProductMethods(ClassProductMethodsTypes ProductMethodsTypes)
         {
-
         }
 
         public ClassProductMethods(string name, string texture, bool ai_selection)
         {
-
-
         }
 
         public ClassProductMethods(KeyValuePair<string, object> ParserData)
         {
-
-            
-
         }
     }
-
-
-
 
     public class ClassProductMethodsTypes
     {
@@ -44,7 +33,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public bool ai_selection { get; set; } // DEFAULT -> not most productive -> false
         public List<string> production_methods { get; set; }
 
-        public ClassProductMethodsTypes() { }
+        public ClassProductMethodsTypes()
+        { }
 
         public ClassProductMethodsTypes(ClassProductMethodsTypes ProductMethodsTypes)
         {
@@ -64,18 +54,15 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.texture = texture;
             this.ai_selection = ai_selection;
             production_methods = new List<string>();
-
         }
 
         public ClassProductMethodsTypes(KeyValuePair<string, object> ParserData)
         {
-
             this.ai_selection = false;
             production_methods = new List<string>();
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
-
                 switch (element.Key)
                 {
                     case "texture":
@@ -91,11 +78,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                         continue;
                     default:
                         continue;
-
                 }
-
             }
-
         }
 
         // Not DONE
@@ -131,7 +115,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             return -1;
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Merge TechClass list
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,8 +138,5 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             return result;
         }
-
-
     }
-
 }

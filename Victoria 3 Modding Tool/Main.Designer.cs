@@ -84,7 +84,7 @@ namespace Victoria_3_Modding_Tool
             this.HelpBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(126)))), ((int)(((byte)(255)))));
             this.HelpBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(131)))), ((int)(((byte)(255)))));
             this.HelpBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.HelpBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.HelpBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.HelpBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.HelpBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.HelpBT.Location = new System.Drawing.Point(1776, 0);
@@ -107,7 +107,7 @@ namespace Victoria_3_Modding_Tool
             this.MinimiseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(202)))), ((int)(((byte)(211)))));
             this.MinimiseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(207)))), ((int)(((byte)(216)))));
             this.MinimiseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.MinimiseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.MinimiseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.MinimiseBT.Location = new System.Drawing.Point(1812, 0);
@@ -131,7 +131,7 @@ namespace Victoria_3_Modding_Tool
             this.ChangeSizeBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(61)))), ((int)(((byte)(155)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ChangeSizeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ChangeSizeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ChangeSizeBT.Location = new System.Drawing.Point(1848, 0);
@@ -153,7 +153,7 @@ namespace Victoria_3_Modding_Tool
             this.CloseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(39)))), ((int)(((byte)(58)))));
             this.CloseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(44)))), ((int)(((byte)(63)))));
             this.CloseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CloseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.CloseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CloseBT.Location = new System.Drawing.Point(1884, 0);
@@ -230,7 +230,7 @@ namespace Victoria_3_Modding_Tool
             // MainL
             // 
             this.MainL.AutoSize = true;
-            this.MainL.Font = new System.Drawing.Font("Cascadia Mono", 15F);
+            this.MainL.Font = new System.Drawing.Font("Cascadia Mono", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.MainL.Location = new System.Drawing.Point(109, 55);
             this.MainL.Name = "MainL";
             this.MainL.Size = new System.Drawing.Size(60, 27);
@@ -240,7 +240,7 @@ namespace Victoria_3_Modding_Tool
             // VickyL
             // 
             this.VickyL.AutoSize = true;
-            this.VickyL.Font = new System.Drawing.Font("Cascadia Mono", 15F);
+            this.VickyL.Font = new System.Drawing.Font("Cascadia Mono", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.VickyL.Location = new System.Drawing.Point(300, 53);
             this.VickyL.Name = "VickyL";
             this.VickyL.Size = new System.Drawing.Size(132, 27);
@@ -250,7 +250,7 @@ namespace Victoria_3_Modding_Tool
             // ModL
             // 
             this.ModL.AutoSize = true;
-            this.ModL.Font = new System.Drawing.Font("Cascadia Mono", 15F);
+            this.ModL.Font = new System.Drawing.Font("Cascadia Mono", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ModL.Location = new System.Drawing.Point(828, 50);
             this.ModL.Name = "ModL";
             this.ModL.Size = new System.Drawing.Size(48, 27);
@@ -260,7 +260,7 @@ namespace Victoria_3_Modding_Tool
             // ProjectL
             // 
             this.ProjectL.AutoSize = true;
-            this.ProjectL.Font = new System.Drawing.Font("Cascadia Mono", 15F);
+            this.ProjectL.Font = new System.Drawing.Font("Cascadia Mono", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ProjectL.Location = new System.Drawing.Point(1413, 46);
             this.ProjectL.Name = "ProjectL";
             this.ProjectL.Size = new System.Drawing.Size(96, 27);
@@ -312,7 +312,7 @@ namespace Victoria_3_Modding_Tool
             this.AddModBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.AddModBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(77)))), ((int)(((byte)(77)))), ((int)(((byte)(77)))));
             this.AddModBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddModBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.AddModBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.AddModBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.AddModBT.Image = global::Victoria_3_Modding_Tool.Properties.Resources.addmod;
             this.AddModBT.Location = new System.Drawing.Point(1257, 175);
@@ -335,7 +335,7 @@ namespace Victoria_3_Modding_Tool
             this.DeleteBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.DeleteBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(77)))), ((int)(((byte)(77)))), ((int)(((byte)(77)))));
             this.DeleteBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.DeleteBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.DeleteBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.DeleteBT.Image = global::Victoria_3_Modding_Tool.Properties.Resources.delete;
             this.DeleteBT.Location = new System.Drawing.Point(1257, 593);
@@ -358,7 +358,7 @@ namespace Victoria_3_Modding_Tool
             this.SaveBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.SaveBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(77)))), ((int)(((byte)(77)))), ((int)(((byte)(77)))));
             this.SaveBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SaveBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.SaveBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.SaveBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.SaveBT.Image = global::Victoria_3_Modding_Tool.Properties.Resources.save;
             this.SaveBT.Location = new System.Drawing.Point(1257, 516);
@@ -381,7 +381,7 @@ namespace Victoria_3_Modding_Tool
             this.AddBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.AddBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(77)))), ((int)(((byte)(77)))), ((int)(((byte)(77)))));
             this.AddBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.AddBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.AddBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.AddBT.Image = global::Victoria_3_Modding_Tool.Properties.Resources.add;
             this.AddBT.Location = new System.Drawing.Point(1257, 442);
@@ -418,7 +418,7 @@ namespace Victoria_3_Modding_Tool
             this.ModSearchBarTB.Name = "ModSearchBarTB";
             this.ModSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.ModSearchBarTB.ReadOnly = false;
-            this.ModSearchBarTB.Size = new System.Drawing.Size(390, 24);
+            this.ModSearchBarTB.Size = new System.Drawing.Size(390, 30);
             this.ModSearchBarTB.TabIndex = 67;
             this.ModSearchBarTB.Texts = "";
             this.ModSearchBarTB.UnderlinedStyle = false;
@@ -437,7 +437,7 @@ namespace Victoria_3_Modding_Tool
             this.ProjSearchBarTB.Name = "ProjSearchBarTB";
             this.ProjSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.ProjSearchBarTB.ReadOnly = false;
-            this.ProjSearchBarTB.Size = new System.Drawing.Size(240, 24);
+            this.ProjSearchBarTB.Size = new System.Drawing.Size(240, 30);
             this.ProjSearchBarTB.TabIndex = 68;
             this.ProjSearchBarTB.Texts = "";
             this.ProjSearchBarTB.UnderlinedStyle = false;
@@ -456,7 +456,7 @@ namespace Victoria_3_Modding_Tool
             this.VickySearchBarTB.Name = "VickySearchBarTB";
             this.VickySearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.VickySearchBarTB.ReadOnly = false;
-            this.VickySearchBarTB.Size = new System.Drawing.Size(240, 24);
+            this.VickySearchBarTB.Size = new System.Drawing.Size(240, 30);
             this.VickySearchBarTB.TabIndex = 66;
             this.VickySearchBarTB.Texts = "";
             this.VickySearchBarTB.UnderlinedStyle = false;
@@ -475,7 +475,7 @@ namespace Victoria_3_Modding_Tool
             this.MainSearchBarTB.Name = "MainSearchBarTB";
             this.MainSearchBarTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.MainSearchBarTB.ReadOnly = false;
-            this.MainSearchBarTB.Size = new System.Drawing.Size(240, 24);
+            this.MainSearchBarTB.Size = new System.Drawing.Size(240, 30);
             this.MainSearchBarTB.TabIndex = 65;
             this.MainSearchBarTB.Texts = "";
             this.MainSearchBarTB.UnderlinedStyle = false;
@@ -508,7 +508,7 @@ namespace Victoria_3_Modding_Tool
             this.Controls.Add(this.VickyLB);
             this.Controls.Add(this.MainLB);
             this.Controls.Add(this.HotBarP);
-            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

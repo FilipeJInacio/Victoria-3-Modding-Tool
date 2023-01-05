@@ -1,15 +1,15 @@
-﻿using System.Windows.Forms;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool.Custom_Controls
 {
     internal class CustomCheckBox : CheckBox
     {
-
         //Fields
         private Color onBackColor = Color.MediumSlateBlue;
+
         private Color onToggleColor = Color.WhiteSmoke;
         private Color offBackColor = Color.Gray;
         private Color offToggleColor = Color.Gainsboro;
@@ -20,7 +20,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
         {
             this.MinimumSize = new Size(45, 22);
         }
-
 
         //Properties
         [Category("Custom")]
@@ -86,7 +85,6 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
             }
         }
 
-
         //Methods
         private GraphicsPath GetFigurePath()
         {
@@ -127,7 +125,5 @@ namespace Victoria_3_Modding_Tool.Custom_Controls
                   new Rectangle(2, 2, toggleSize, toggleSize));
             }
         }
-
-
     }
 }

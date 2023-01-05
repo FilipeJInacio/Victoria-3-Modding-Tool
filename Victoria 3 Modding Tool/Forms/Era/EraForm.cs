@@ -9,7 +9,7 @@ namespace Victoria_3_Modding_Tool
 {
     public partial class EraForm : Form
     {
-        public ClassEra local; 
+        public ClassEra local;
 
         public int SaveStatus; // 0 -> Just openned  / 1 -> Saved / 2 -> Not saved
 
@@ -18,7 +18,6 @@ namespace Victoria_3_Modding_Tool
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 2, Screen.PrimaryScreen.WorkingArea.Height * 1 / 4);
-
         }
 
         public ClassEra ReturnValue()
@@ -28,7 +27,6 @@ namespace Victoria_3_Modding_Tool
                 return local;
             }
             else { return null; }  // No save
-            
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +65,10 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -80,7 +79,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Button Events
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
+
         private void SaveBT_Click(object sender, EventArgs e)
         {
             SaveVerification();
@@ -101,7 +100,6 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-
                 if (int.TryParse(EraTB.Texts, out number) && number > 0 && number < 2147483647)
                 {
                     EraTB.BorderColor = Color.FromArgb(66, 66, 66);
@@ -113,7 +111,6 @@ namespace Victoria_3_Modding_Tool
                     EraTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
                     return false;
                 }
-
             }
 
             // Is int? Era Cost
@@ -154,7 +151,6 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (SaveStatus == 2)
             {
                 DialogResult result = MessageBox.ClassMessageBox.Show();
@@ -169,7 +165,6 @@ namespace Victoria_3_Modding_Tool
                 {
                     e.Cancel = true;
                 }
-               
             }
         }
 
@@ -180,7 +175,7 @@ namespace Victoria_3_Modding_Tool
 
         private void EraCostTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SaveStatus= 2;
+            SaveStatus = 2;
         }
 
         private void EraForm_Load(object sender, EventArgs e)

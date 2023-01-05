@@ -4,7 +4,6 @@ namespace Victoria_3_Modding_Tool.MessageBox
 {
     public class ClassMessageBox
     {
-
         public static DialogResult Show()
         {
             DialogResult result;
@@ -20,8 +19,5 @@ namespace Victoria_3_Modding_Tool.MessageBox
                 result = msgForm.ShowDialog();
             return result;
         }
-
-
-
     }
 }

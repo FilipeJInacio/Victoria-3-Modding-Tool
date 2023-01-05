@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
-using System.Web;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
@@ -11,10 +9,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public float weight { get; set; }
         public float minWeight { get; set; }
         public float maxWeight { get; set; }
-
-
- 
-
     }
 
     public class ClassPopTypesQualifications
@@ -23,8 +17,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public float weight { get; set; }
         public float minWeight { get; set; }
         public float maxWeight { get; set; }
-
-
     }
 
     public class ClassPopTypes
@@ -55,8 +47,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public int portrait_pose { get; set; } // NEEDED
         public bool portrait_is_female { get; set; } // NEEDED
 
-
-        public ClassPopTypes() { }
+        public ClassPopTypes()
+        { }
 
         public ClassPopTypes(ClassPopTypes PopTypes)
         {
@@ -85,10 +77,9 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             portrait_age_max = PopTypes.portrait_age_max;
             portrait_pose = PopTypes.portrait_pose;
             portrait_is_female = PopTypes.portrait_is_female;
-
         }
 
-        public ClassPopTypes(string name, string texture, Color color, string strata, bool subsistence_income, bool is_slave, float start_quality_of_life, bool can_always_hire, bool ignores_employment_proportionality, float working_adult_ratio, float wage_weight, float consumption_mult ,float literacy_target,float education_access,float dependent_wage,bool unemployment, float political_engagement_base , float political_engagement_literacy_factor , ClassPopTypesPolitical political_engagement_mult,string qualifications_growth_desc, ClassPopTypesQualifications qualifications,int portrait_age_min,int portrait_age_max,int portrait_pose,bool portrait_is_female)
+        public ClassPopTypes(string name, string texture, Color color, string strata, bool subsistence_income, bool is_slave, float start_quality_of_life, bool can_always_hire, bool ignores_employment_proportionality, float working_adult_ratio, float wage_weight, float consumption_mult, float literacy_target, float education_access, float dependent_wage, bool unemployment, float political_engagement_base, float political_engagement_literacy_factor, ClassPopTypesPolitical political_engagement_mult, string qualifications_growth_desc, ClassPopTypesQualifications qualifications, int portrait_age_min, int portrait_age_max, int portrait_pose, bool portrait_is_female)
         {
             this.name = name;
             this.texture = texture;
@@ -116,13 +107,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.portrait_pose = portrait_pose;
             this.portrait_is_female = portrait_is_female;
         }
-
-     
-
-
-
-
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Has name in list
@@ -155,7 +139,6 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             return -1;
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Merge TechClass list
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,8 +162,5 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
 
             return result;
         }
-
-
     }
-
 }

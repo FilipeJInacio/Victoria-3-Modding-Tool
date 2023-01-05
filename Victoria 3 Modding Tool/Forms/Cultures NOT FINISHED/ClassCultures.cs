@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Victoria_3_Modding_Tool.Forms.Tech
 {
-    public class ClassTech : IType, ITexture
+    public class ClassCultures : IType, ITexture
     {
         public string Name { get; set; }
         public string TrueName { get; set; }
@@ -15,10 +15,10 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
         public List<string> Modifiers { get; set; }
         public List<string> Restrictions { get; set; }
 
-        public ClassTech()
+        public ClassCultures()
         { }
 
-        public ClassTech(ClassTech tech)
+        public ClassCultures(ClassTech tech)
         {
             this.Name = tech.Name;
             this.TrueName = tech.TrueName;
@@ -40,7 +40,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             }
         }
 
-        public ClassTech(string name, string TrueName, int era, string texture, string desc, string category, bool canResearch)
+        public ClassCultures(string name, string TrueName, int era, string texture, string desc, string category, bool canResearch)
         {
             this.Name = name;
             this.TrueName = TrueName;
@@ -53,7 +53,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             Restrictions = new List<string>();
         }
 
-        public ClassTech(KeyValuePair<string, object> ParserData, string TrueName, string Desc)
+        public ClassCultures(KeyValuePair<string, object> ParserData, string TrueName, string Desc)
         {
             Modifiers = new List<string>();
             Restrictions = new List<string>();

@@ -10,8 +10,7 @@ namespace Victoria_3_Modding_Tool
     public partial class PathForm : Form
     {
         public bool newProj; // True -> its a new project
-        public bool[] canMake = { false , false , false , false, false }; // -> name / projpath / language / Vickypath / Mod (Not needed)
-
+        public bool[] canMake = { false, false, false, false, false }; // -> name / projpath / language / Vickypath / Mod (Not needed)
 
         public PathForm()
         {
@@ -19,8 +18,6 @@ namespace Victoria_3_Modding_Tool
             this.Padding = new Padding(1);//Border size
             LoadLanguages();
         }
-
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Border
@@ -47,7 +44,6 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,9 +51,10 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
+
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void HotBarP_MouseDown(object sender, MouseEventArgs e)
         {
@@ -66,7 +63,7 @@ namespace Victoria_3_Modding_Tool
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 
+        //
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private void LoadProject()
@@ -76,7 +73,7 @@ namespace Victoria_3_Modding_Tool
             ProjPathTB.Texts = Properties.Settings.Default.ProjPath;
 
             for (int i = 0; i < LanguageCB.Items.Count; ++i)
-            { 
+            {
                 if (LanguageCB.Items[i].ToString() == Properties.Settings.Default.Language) { LanguageCB.SelectedIndex = i; }
             }
 
@@ -94,10 +91,9 @@ namespace Victoria_3_Modding_Tool
 
         private void CreateBT_Click(object sender, EventArgs e)
         {
-
             if (Regex.Match(PNameTB.Texts, "^([a-z]||_)+$").Success)
             {
-                canMake[0]=true;
+                canMake[0] = true;
                 PNameTB.BorderColor = Color.FromArgb(66, 66, 66);
                 PNameTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
@@ -105,17 +101,16 @@ namespace Victoria_3_Modding_Tool
             {
                 PNameTB.BorderColor = Color.FromArgb(255, 39, 58);
                 PNameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                canMake[0]=false;
+                canMake[0] = false;
             }
 
             if (canMake[0] == true && canMake[1] == true && canMake[2] == true && canMake[3] == true)
             {
-
                 Properties.Settings.Default.ProjName = PNameTB.Texts;
                 Properties.Settings.Default.ProjPath = ProjPathTB.Texts;
                 Properties.Settings.Default.Language = LanguageCB.SelectedItem.ToString();
                 Properties.Settings.Default.Victoria3Path = VickyPathTB.Texts;
-                if(canMake[4] == true) { Properties.Settings.Default.ModPath = ModPathTB.Texts; }
+                if (canMake[4] == true) { Properties.Settings.Default.ModPath = ModPathTB.Texts; }
                 Properties.Settings.Default.Save();
 
                 this.Hide();
@@ -125,14 +120,13 @@ namespace Victoria_3_Modding_Tool
                     form.VickyPath = VickyPathTB.Texts;
                     form.ProjPath = ProjPathTB.Texts;
                     form.ProjName = PNameTB.Texts;
-                    if (canMake[4] == true){ form.ModPath = ModPathTB.Texts; } else { form.ModPath = null; }
-                        form.ShowDialog();
+                    if (canMake[4] == true) { form.ModPath = ModPathTB.Texts; } else { form.ModPath = null; }
+                    form.ShowDialog();
                 }
                 this.Close();
             }
 
-
-            if(canMake[0] == false)
+            if (canMake[0] == false)
             {
                 PNameTB.BorderColor = Color.FromArgb(255, 39, 58);
                 PNameTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -167,14 +161,12 @@ namespace Victoria_3_Modding_Tool
             {
                 VickyPathTB.BorderColor = Color.FromArgb(255, 39, 58);
                 VickyPathTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-
             }
             else
             {
                 VickyPathTB.BorderColor = Color.FromArgb(66, 66, 66);
                 VickyPathTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
             }
-
         }
 
         private void BackBT_Click(object sender, EventArgs e)
@@ -186,7 +178,6 @@ namespace Victoria_3_Modding_Tool
         {
             using (FolderBrowserDialog FBD = new FolderBrowserDialog())
             {
-
                 if (FBD.ShowDialog() == DialogResult.OK)
                 {
                     ProjPathTB.Texts = FBD.SelectedPath;  //selected folder path
@@ -202,7 +193,6 @@ namespace Victoria_3_Modding_Tool
         {
             using (FolderBrowserDialog FBD = new FolderBrowserDialog())
             {
-
                 if (FBD.ShowDialog() == DialogResult.OK)
                 {
                     VickyPathTB.Texts = FBD.SelectedPath;  //selected folder path
@@ -218,7 +208,6 @@ namespace Victoria_3_Modding_Tool
         {
             using (FolderBrowserDialog FBD = new FolderBrowserDialog())
             {
-
                 if (FBD.ShowDialog() == DialogResult.OK)
                 {
                     ModPathTB.Texts = FBD.SelectedPath;  //selected folder path
@@ -246,7 +235,6 @@ namespace Victoria_3_Modding_Tool
             LanguageCB.Items.Add("simp_chinise");
             LanguageCB.Items.Add("spanish");
             LanguageCB.Items.Add("turkish");
-
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,12 +242,12 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void PNameTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(PNameTB.Texts)) { canMake[0] = true; } else { canMake[0] = false; }
+            if (!string.IsNullOrEmpty(PNameTB.Texts)) { canMake[0] = true; } else { canMake[0] = false; }
         }
 
         private void ProjPathTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Directory.Exists(ProjPathTB.Texts)){ canMake[1] = true; } else { canMake[1] = false; }
+            if (Directory.Exists(ProjPathTB.Texts)) { canMake[1] = true; } else { canMake[1] = false; }
         }
 
         private void LanguageCB_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -269,7 +257,7 @@ namespace Victoria_3_Modding_Tool
 
         private void VickyPathTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Directory.Exists(VickyPathTB.Texts) && Directory.Exists(VickyPathTB.Texts+"\\binaries")) { canMake[3] = true; } else { canMake[3] = false; }
+            if (Directory.Exists(VickyPathTB.Texts) && Directory.Exists(VickyPathTB.Texts + "\\binaries")) { canMake[3] = true; } else { canMake[3] = false; }
         }
 
         private void ModPathTB_CustomTextBox_TextChanged(object sender, EventArgs e)
@@ -284,7 +272,5 @@ namespace Victoria_3_Modding_Tool
         {
             if (newProj == false) { LoadProject(); }
         }
-
-        
     }
 }

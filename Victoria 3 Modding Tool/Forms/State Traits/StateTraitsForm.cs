@@ -10,17 +10,18 @@ using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
-    public partial class ModifiersForm : Form
+    public partial class StateTraitsForm : Form
     {
+        public List<ClassTech> TechData;
         public List<ClassModifiersType> ModifiersTypes;
-        public List<ClassModifiers> ModifiersData;
-        public ClassModifiers local;
+        public List<ClassStateTraits> StateTraitsData;
+        public ClassStateTraits local;
 
-        public bool[] canSave = { false, false, false, false }; // name - truename - icon - desc    false -> cant save
+        public bool[] canSave = { false, false, false, false, false }; // name - truename - icon - disable - equired    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
         public int sizeOfVicky; // Needed
 
-        public ModifiersForm()
+        public StateTraitsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
@@ -29,7 +30,7 @@ namespace Victoria_3_Modding_Tool
             this.Location = new Point(rect.Width / 2, 0);
         }
 
-        public ClassModifiers ReturnValue()
+        public ClassStateTraits ReturnValue()
         {
             if (SaveStatus == 1) // saved
             {
@@ -215,13 +216,41 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void LoadInfoToControls()
         {
+            int i;
+
             NameTB.Texts = local.Name;
 
             NameGameTB.Texts = local.TrueName;
 
-            DescriptionTB.Texts = local.Description;
-
             IconTB.Texts = local.Texture;
+
+            if(local.DisablingTechnologies == string.Empty)
+            {
+                DisablesCB.Checked= false;
+            }
+            else
+            {
+                i = new Functions().hasNameIndex(TechData, local.DisablingTechnologies);
+                if (i != -1)
+                {
+                    DisableCB.SelectedIndex = i;
+                }
+            }
+
+
+            if (local.RequiredTechsForColonization == string.Empty)
+            {
+                RequiresCB.Checked = false;
+            }
+            else
+            {
+                i = new Functions().hasNameIndex(TechData, local.RequiredTechsForColonization);
+                if (i != -1)
+                {
+                    RequiredCB.SelectedIndex = i;
+                }
+            }
+
 
             foreach (string entry in local.Modifiers)
             {
@@ -233,7 +262,7 @@ namespace Victoria_3_Modding_Tool
 
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ModifiersData.GetRange(sizeOfVicky, ModifiersData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(StateTraitsData.GetRange(sizeOfVicky, StateTraitsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -251,11 +280,24 @@ namespace Victoria_3_Modding_Tool
             }
             else { canSave[2] = false; }
 
-            if (Regex.Match(DescriptionTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(DescriptionTB.Texts))
+            if (DisablesCB.Checked == true && DisableCB.SelectedIndex == -1)
+            {
+                canSave[3] = false;
+            }
+            else
             {
                 canSave[3] = true;
             }
-            else { canSave[3] = false; }
+
+            if (RequiresCB.Checked == true && RequiredCB.SelectedIndex == -1)
+            {
+                canSave[4] = false;
+            }
+            else
+            {
+                canSave[4] = true;
+            }
+
 
             if (canSave[0] == false)
             {
@@ -292,16 +334,23 @@ namespace Victoria_3_Modding_Tool
 
             if (canSave[3] == false)
             {
-                DescriptionTB.BorderColor = Color.FromArgb(255, 39, 58);
-                DescriptionTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
+                DisableCB.BorderColor = Color.FromArgb(255, 39, 58);
             }
             else
             {
-                DescriptionTB.BorderColor = Color.FromArgb(66, 66, 66);
-                DescriptionTB.BorderFocusColor = Color.FromArgb(153, 153, 153);
+                DisableCB.BorderColor = Color.FromArgb(66, 66, 66);
             }
 
-            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true)
+            if (canSave[4] == false)
+            {
+                RequiredCB.BorderColor = Color.FromArgb(255, 39, 58);
+            }
+            else
+            {
+                RequiredCB.BorderColor = Color.FromArgb(66, 66, 66);
+            }
+
+            if (canSave[0] == true && canSave[1] == true && canSave[2] == true && canSave[3] == true && canSave[4] == true)
             {
                 Save_Goods();
                 SaveStatus = 1;
@@ -313,7 +362,25 @@ namespace Victoria_3_Modding_Tool
 
         private void Save_Goods()
         {
-            local = new ClassModifiers(NameTB.Texts, NameGameTB.Texts, DescriptionTB.Texts, IconTB.Texts)
+            string i, j;
+            if (DisablesCB.Checked == false)
+            {
+                i = string.Empty;
+            }
+            else
+            {
+                i = DisableCB.SelectedItem.ToString();
+            }
+            if (RequiresCB.Checked == false)
+            {
+                j = string.Empty;
+            }
+            else
+            {
+                j = RequiredCB.SelectedItem.ToString();
+            }
+
+            local = new ClassStateTraits(NameTB.Texts, NameGameTB.Texts, IconTB.Texts, i, j)
             {
                 Modifiers = ModifiersLB.Items.Cast<string>().ToList()
             };
@@ -341,6 +408,12 @@ namespace Victoria_3_Modding_Tool
 
         private void TechForm_Load(object sender, EventArgs e)
         {
+            foreach (ClassTech entry in TechData)
+            {
+                DisableCB.Items.Add(entry.Name);
+                RequiredCB.Items.Add(entry.Name);
+            }
+
             foreach (ClassModifiersType entry in ModifiersTypes)
             {
                 ModifiersCB.Items.Add(entry.Name);
@@ -375,7 +448,12 @@ namespace Victoria_3_Modding_Tool
             SaveStatus = 2;
         }
 
-        private void DescriptionTB_CustomTextBox_TextChanged(object sender, EventArgs e)
+        private void DisableCB_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            SaveStatus = 2;
+        }
+
+        private void RequiredCB_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             SaveStatus = 2;
         }

@@ -13,7 +13,9 @@ namespace Victoria_3_Modding_Tool.Forms.Era
         public int Era { get; set; }
         public int Cost { get; set; }
 
-        public ClassEra() { }
+        public ClassEra()
+        { }
+
         public ClassEra(int era, int cost)
         {
             this.Era = era;
@@ -28,8 +30,5 @@ namespace Victoria_3_Modding_Tool.Forms.Era
                 this.Cost = Convert.ToInt32(element.Value);
             }
         }
-
-
-
     }
 }
