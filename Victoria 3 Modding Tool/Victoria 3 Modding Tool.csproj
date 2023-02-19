@@ -147,7 +147,4 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Text Editor\AutoCompleteMenu\" />
-  </ItemGroup>
 </Project>

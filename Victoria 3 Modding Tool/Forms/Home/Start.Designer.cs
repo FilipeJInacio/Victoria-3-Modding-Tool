@@ -234,7 +234,7 @@ namespace Victoria_3_Modding_Tool
             // VertionL
             // 
             this.VertionL.AutoSize = true;
-            this.VertionL.Location = new System.Drawing.Point(754, 380);
+            this.VertionL.Location = new System.Drawing.Point(750, 375);
             this.VertionL.Name = "VertionL";
             this.VertionL.Size = new System.Drawing.Size(46, 21);
             this.VertionL.TabIndex = 37;
