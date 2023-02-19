@@ -149,5 +149,32 @@ namespace Victoria_3_Modding_Tool.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+
+        internal static System.Drawing.Bitmap V3small
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("V3small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap braces
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("braces", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap error
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

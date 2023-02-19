@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Victoria_3_Modding_Tool.Forms.Tech
+namespace Victoria_3_Modding_Tool
 {
     public class ClassReligions : IType, ITexture
     {

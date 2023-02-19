@@ -16,6 +16,10 @@ namespace Victoria_3_Modding_Tool
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             LoadLanguages();
         }
 
@@ -112,6 +116,8 @@ namespace Victoria_3_Modding_Tool
                 Properties.Settings.Default.Victoria3Path = VickyPathTB.Texts;
                 if (canMake[4] == true) { Properties.Settings.Default.ModPath = ModPathTB.Texts; }
                 Properties.Settings.Default.Save();
+
+                Functions.IniciateLanguage(LanguageCB.SelectedItem.ToString());
 
                 this.Hide();
                 using (Main form = new Main())

@@ -11,6 +11,10 @@ namespace Victoria_3_Modding_Tool
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             if (Properties.Settings.Default.Victoria3Path == "Not Set") { LoadEditorButton.Enabled = false; }
         }
 
@@ -82,9 +86,8 @@ namespace Victoria_3_Modding_Tool
         private void AboutBT_Click(object sender, EventArgs e)
         {
             this.Hide();
-            using (CodeEditorForm form = new CodeEditorForm())
+            using (CodeEditorPathForm form = new CodeEditorPathForm())
             {
-                form.text = null;
                 form.ShowDialog();
             }
             this.Show();

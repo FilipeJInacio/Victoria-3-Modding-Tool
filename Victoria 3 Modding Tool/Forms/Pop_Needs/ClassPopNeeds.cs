@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 
-namespace Victoria_3_Modding_Tool.Forms.Tech
+namespace Victoria_3_Modding_Tool
 {
     public class ClassPopNeedsEntry : IType
     {

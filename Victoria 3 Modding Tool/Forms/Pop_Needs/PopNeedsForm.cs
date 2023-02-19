@@ -6,27 +6,27 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class PopNeedsForm : Form
     {
         public List<ClassGoods> GoodsList; // Needed   (Victoria 3 + Project)
-        public List<ClassPopNeeds> PopNeedsList; // Needed   (Victoria 3 + Project)
-
+        public List<ClassPopNeeds> PopNeedsListP;
         public ClassPopNeeds local;  // null if new   information if to change
         public List<ClassPopNeedsEntry> localEntry;  // local mem
 
         public bool[] canSave = { false, false, false, false }; // Name - Default Good - at least 1 weight - TrueName  false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved   2 -> is not
 
-        public int sizeOfVicky; // Needed
-
         public PopNeedsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
         }
 
@@ -98,6 +98,71 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
+        }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Pop Needs";
+                s = local.Name + " = {\n" +
+                    "\tdefault = " + local.Defaultgood + "\n";
+
+                foreach (ClassPopNeedsEntry entry in local.Entries)
+                {
+                    s += "\n\tentry = {\n";
+                    s += "\t\tgoods = " + entry.Name + "\n";
+
+                    s += "\n\t\tweight = " + entry.Weight.ToString().Replace(",", ".") + "\n";
+                    s += "\t\tmax_weight = " + entry.MaxWeight.ToString().Replace(",", ".") + "\n";
+                    s += "\t\tmin_weight = " + entry.MinWeight.ToString().Replace(",", ".") + "\n";
+                    s += "\t}\n";
+
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassPopNeeds(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0], local.TrueName);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+            }
+
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +249,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
-            if (EntryCB.SelectedIndex != -1 && !new Functions().hasName(localEntry, EntryCB.SelectedItem.ToString()))
+            if (EntryCB.SelectedIndex != -1 && !Functions.hasName(localEntry, EntryCB.SelectedItem.ToString()))
             {
                 EntryCB.BorderColor = Color.FromArgb(66, 66, 66);
                 verif[3] = true;
@@ -260,7 +325,7 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(PopNeedsList.GetRange(sizeOfVicky, PopNeedsList.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(PopNeedsListP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -269,7 +334,7 @@ namespace Victoria_3_Modding_Tool
             if (localEntry.Count == 0) { canSave[2] = false; }
             else
             {
-                if (new Functions().hasName(localEntry, DefaultCB.SelectedItem.ToString())) { canSave[2] = true; }
+                if (Functions.hasName(localEntry, DefaultCB.SelectedItem.ToString())) { canSave[2] = true; }
                 else { canSave[2] = false; }
             }
 
@@ -335,8 +400,10 @@ namespace Victoria_3_Modding_Tool
 
             NameGameTB.Texts = local.TrueName;
 
-            DefaultCB.SelectedIndex = new Functions().hasNameIndex(GoodsList, local.Defaultgood);
-
+            DefaultCB.SelectedIndex = Functions.hasNameIndex(GoodsList, local.Defaultgood);
+            
+            EntryLB.Items.Clear();
+            EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", "Good", "Weight", "Min", "Max"));
             foreach (ClassPopNeedsEntry entry in local.Entries)
             {
                 EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", entry.Name, entry.Weight.ToString().Replace(",", "."), entry.MinWeight.ToString().Replace(",", "."), entry.MaxWeight.ToString().Replace(",", ".")));
@@ -385,8 +452,6 @@ namespace Victoria_3_Modding_Tool
                 EntryCB.Items.Add(entry.Name);
             }
 
-            EntryLB.Items.Add(string.Format("{0,-55}{1,-8 }{2,-8 }{3,-8 }", "Good", "Weight", "Min", "Max"));
-
             if (local != null)
             {
                 LoadInfoToControls();
@@ -421,5 +486,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
+
     }
 }

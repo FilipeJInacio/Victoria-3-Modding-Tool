@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Victoria_3_Modding_Tool
 {
@@ -90,6 +92,7 @@ namespace Victoria_3_Modding_Tool
         2 -> procure value
         */
 
+        // Method 1 - File
         public List<object> ParseFiles(string directoryPath)
         {
             Tokens = new List<string>();
@@ -138,6 +141,65 @@ namespace Victoria_3_Modding_Tool
             Index = 0;
             return ParseTokens();
         }
+
+
+
+        // Method 2 - Text
+        public object ParseText(string text)
+        {
+            Tokens = new List<string>();
+            return ParseObject(text);
+        }
+
+        public object ParseObject(string text)
+        {
+            string ln;
+            string[] words;
+            int i = 0;
+            string[] textSplit = text.Split('\n');
+            Match m;
+
+            void NextLine()
+            {
+                if (i < textSplit.Count())
+                { ln = textSplit[i]; i++; }
+                else { ln = null; }
+            }
+
+            NextLine();
+
+            while (ln != null)
+            {
+                ln = StripComments(ln.Replace("\t", ""));
+
+                if ((m = Regex.Match(ln, "^([a-zA-Z_]+) = \"(.*)\"$")).Success)
+                {
+                    Tokens.Add(m.Groups[1].Value);
+                    Tokens.Add("=");
+                    Tokens.Add("\"" + m.Groups[2].Value + "\"");
+                }
+                else
+                {
+                    words = ln.Split(' ', (char)System.StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string entry in words)
+                    {
+                        if (!string.IsNullOrEmpty(entry.Trim(' ')))
+                        {
+                            Tokens.Add(entry);
+                        }
+                    }
+                }
+
+                NextLine();
+
+            }
+
+            Index = 0;
+            return ParseTokens();
+        }
+
+
 
         public object ParseTokens()
         {
@@ -202,7 +264,8 @@ namespace Victoria_3_Modding_Tool
             return parsedObject;
         }
 
-        public string StripComments(string line)
+
+        static public string StripComments(string line)
         {
             int i;
             if ((i = line.IndexOf("#")) == -1)
@@ -216,4 +279,169 @@ namespace Victoria_3_Modding_Tool
             else { return line.Substring(0, i); }
         }
     }
+
+    public class NoParse : IParser
+    {
+        public int Status { get; set; }
+
+        // Method 1 - File
+        public List<object> ParseFiles(string directoryPath)
+        {
+            string[] paths = Directory.GetFiles(directoryPath, "*.txt");
+
+            List<object> rawResults = new List<object>();
+
+            foreach (string filePath in paths)
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    Status = 0;
+                    rawResults.Add(ParseObject(sr));
+                }
+            }
+
+            return rawResults;
+        }
+
+        public object ParseObject(StreamReader sr)
+        {
+            List<KeyValuePair<string, object>> parsedObject = new List<KeyValuePair<string, object>>();
+
+            string ln;
+            string temp = "";
+            string name = "";
+            int a, b;
+
+            void NextLine() { ln = sr.ReadLine(); }
+            NextLine();
+
+            while (ln != null)
+            {
+
+                if (Status != 0)
+                {
+                    temp += ln + "\n";
+                }
+
+                ln = Parser.StripComments(ln.Replace("\t", ""));
+
+                if (ln.Contains("{")) { a = ln.Count(c => c == '{'); } else { a = 0; }
+                if (ln.Contains("}")) { b = ln.Count(c => c == '}'); } else { b = 0; }
+
+
+                if (a == b)
+                {
+
+                }
+                else if (a > b)
+                {
+                    if (Status == 0)
+                    {
+                        temp += ln + "\n";
+                        name = ln.Split('=')[0].Trim('\t').Trim(' ');
+                    }
+                    Status += a - b;
+                }
+                else if (a < b)
+                {
+                    Status += a - b;
+                    if (Status == 0)
+                    {
+                        parsedObject.Add(new KeyValuePair<string, object>(name, temp));
+                        temp = "";
+                    }
+                }
+
+                NextLine();
+
+            }
+
+
+            return parsedObject;
+        }
+
+
+
+        // Method 2 - Text
+        public object ParseText(string text)
+        {
+            return ParseObject(text);
+        }
+
+        public object ParseObject(string text)
+        {
+            List<KeyValuePair<string, object>> parsedObject = new List<KeyValuePair<string, object>>();
+
+            string ln;
+            string temp = "";
+            string name = "";
+            int a, b;
+            int i = 0;
+            List<string> textSplit = new List<string>();
+
+            if (text.Contains("\n")) {
+                textSplit.AddRange(text.Split('\n'));
+            }
+            else
+            {
+                textSplit.Add(text);
+            }
+
+
+            void NextLine()
+            {
+                if (i < textSplit.Count())
+                { ln = textSplit[i]; i++; }
+                else { ln = null; }
+            }
+
+            NextLine();
+
+            while (ln != null)
+            {
+
+                if (Status != 0)
+                {
+                    temp += ln + "\n";
+                }
+
+                ln = Parser.StripComments(ln.Replace("\t", ""));
+
+                if (ln.Contains("{")) { a = ln.Count(c => c == '{'); } else { a = 0; }
+                if (ln.Contains("}")) { b = ln.Count(c => c == '}'); } else { b = 0; }
+               
+
+                if (a == b)
+                {
+
+                }
+                else if (a > b)
+                {
+                    if (Status == 0)
+                    {
+                        temp += ln + "\n";
+                        name = ln.Split('=')[0].Trim('\t').Trim(' ');
+                    }
+                    Status += a - b;
+                }
+                else if (a < b)
+                {
+                    Status += a - b;
+                    if (Status == 0)
+                    {
+                        parsedObject.Add(new KeyValuePair<string, object>(name, temp));
+                        temp = "";
+                    }
+                }
+
+                NextLine();
+
+            }
+
+
+            return parsedObject;
+        }
+
+    }
+
 }

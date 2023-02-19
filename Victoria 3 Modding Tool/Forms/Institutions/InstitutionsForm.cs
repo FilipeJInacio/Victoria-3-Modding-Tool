@@ -6,24 +6,26 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class InstitutionsForm : Form
     {
         public List<ClassModifiersType> ModifiersTypes;
-        public List<ClassInstitutions> InstitutionsData;
+        public List<ClassInstitutions> InstitutionsDataP;
         public ClassInstitutions local;
 
         public bool[] canSave = { false, false, false, false }; // name - truename - icon - background    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
-        public int sizeOfVicky; // Needed
 
         public InstitutionsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             this.Location = new Point(rect.Width / 2, 0);
@@ -73,6 +75,70 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
+        }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Institutions";
+                s = local.Name + " = {\n" +
+                    "\ticon = \"" + local.Texture + "\"\n" +
+                    "\tbackground_texture = \"" + local.BackTexture + "\"\n";
+
+                if (local.Modifiers.Count != 0)
+                {
+                    s+= "\tmodifier = {\n";
+                    foreach (string modifier in local.Modifiers)
+                    {
+                        s += "\t\t" + modifier + "\n";
+                    }
+                    s+= "\t}\n";
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassInstitutions(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0], local.TrueName);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+            }
+
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +306,7 @@ namespace Victoria_3_Modding_Tool
 
             IconTB.Texts = local.Texture;
 
+            ModifiersLB.Items.Clear();
             foreach (string entry in local.Modifiers)
             {
                 ModifiersLB.Items.Add(entry);
@@ -250,7 +317,7 @@ namespace Victoria_3_Modding_Tool
 
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(InstitutionsData.GetRange(sizeOfVicky, InstitutionsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(InstitutionsDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -396,5 +463,6 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
     }
 }

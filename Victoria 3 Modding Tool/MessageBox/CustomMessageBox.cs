@@ -11,6 +11,10 @@ namespace Victoria_3_Modding_Tool
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////

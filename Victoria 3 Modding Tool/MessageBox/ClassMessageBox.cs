@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Victoria_3_Modding_Tool.MessageBox
+namespace Victoria_3_Modding_Tool.MessageBox    
 {
     public class ClassMessageBox
     {

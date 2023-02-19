@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Victoria_3_Modding_Tool.Custom_Controls
+namespace Victoria_3_Modding_Tool
 {
     internal class CustomButton : Button
     {

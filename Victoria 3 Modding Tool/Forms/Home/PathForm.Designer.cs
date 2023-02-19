@@ -341,7 +341,6 @@ namespace Victoria_3_Modding_Tool
             this.LanguageCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
             this.LanguageCB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.LanguageCB.BorderSize = 1;
-            this.LanguageCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.LanguageCB.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LanguageCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
             this.LanguageCB.FormattingEnabled = false;

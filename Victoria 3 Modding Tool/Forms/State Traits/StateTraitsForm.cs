@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
@@ -14,17 +13,20 @@ namespace Victoria_3_Modding_Tool
     {
         public List<ClassTech> TechData;
         public List<ClassModifiersType> ModifiersTypes;
-        public List<ClassStateTraits> StateTraitsData;
+        public List<ClassStateTraits> StateTraitsDataP;
         public ClassStateTraits local;
 
         public bool[] canSave = { false, false, false, false, false }; // name - truename - icon - disable - equired    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
-        public int sizeOfVicky; // Needed
 
         public StateTraitsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             this.Location = new Point(rect.Width / 2, 0);
@@ -74,6 +76,78 @@ namespace Victoria_3_Modding_Tool
 
         private void HelpBT_Click(object sender, EventArgs e)
         {
+        }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "State Traits";
+                s = local.Name + " = {\n" +
+                    "\ticon = \"" + local.Texture + "\"\n";
+
+                if (local.RequiredTechsForColonization != string.Empty)
+                {
+                    s += "\n\trequired_techs_for_colonization = { \"" + local.RequiredTechsForColonization + "\" }\n";
+                }
+                if (local.DisablingTechnologies != string.Empty)
+                {
+                    s += "\n\tdisabling_technologies = { \"" + local.DisablingTechnologies + "\" }\n";
+                }
+
+                if (local.Modifiers.Count != 0)
+                {
+                    s += "\n\tmodifier = {\n";
+                    foreach (string modifier in local.Modifiers)
+                    {
+                        s += "\t\t" + modifier + "\n";
+                    }
+                    s += "\t}\n";
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassStateTraits(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0], local.TrueName);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+            }
+
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +304,7 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-                i = new Functions().hasNameIndex(TechData, local.DisablingTechnologies);
+                i = Functions.hasNameIndex(TechData, local.DisablingTechnologies);
                 if (i != -1)
                 {
                     DisableCB.SelectedIndex = i;
@@ -244,14 +318,14 @@ namespace Victoria_3_Modding_Tool
             }
             else
             {
-                i = new Functions().hasNameIndex(TechData, local.RequiredTechsForColonization);
+                i = Functions.hasNameIndex(TechData, local.RequiredTechsForColonization);
                 if (i != -1)
                 {
                     RequiredCB.SelectedIndex = i;
                 }
             }
 
-
+            ModifiersLB.Items.Clear();
             foreach (string entry in local.Modifiers)
             {
                 ModifiersLB.Items.Add(entry);
@@ -262,7 +336,7 @@ namespace Victoria_3_Modding_Tool
 
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(StateTraitsData.GetRange(sizeOfVicky, StateTraitsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(StateTraitsDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -457,5 +531,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
+
     }
 }

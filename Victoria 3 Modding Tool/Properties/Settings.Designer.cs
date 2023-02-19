@@ -82,5 +82,227 @@ namespace Victoria_3_Modding_Tool.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cascadia Mono, 12pt")]
+        public global::System.Drawing.Font Font {
+            get {
+                return ((global::System.Drawing.Font)(this["Font"]));
+            }
+            set {
+                this["Font"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color Caret {
+            get {
+                return ((global::System.Drawing.Color)(this["Caret"]));
+            }
+            set {
+                this["Caret"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color Selection {
+            get {
+                return ((global::System.Drawing.Color)(this["Selection"]));
+            }
+            set {
+                this["Selection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color Backcolor {
+            get {
+                return ((global::System.Drawing.Color)(this["Backcolor"]));
+            }
+            set {
+                this["Backcolor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color notfinished {
+            get {
+                return ((global::System.Drawing.Color)(this["notfinished"]));
+            }
+            set {
+                this["notfinished"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color Base {
+            get {
+                return ((global::System.Drawing.Color)(this["Base"]));
+            }
+            set {
+                this["Base"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color Number {
+            get {
+                return ((global::System.Drawing.Color)(this["Number"]));
+            }
+            set {
+                this["Number"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color equal {
+            get {
+                return ((global::System.Drawing.Color)(this["equal"]));
+            }
+            set {
+                this["equal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color braces {
+            get {
+                return ((global::System.Drawing.Color)(this["braces"]));
+            }
+            set {
+                this["braces"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color not_closed {
+            get {
+                return ((global::System.Drawing.Color)(this["not_closed"]));
+            }
+            set {
+                this["not_closed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color highlight_fore {
+            get {
+                return ((global::System.Drawing.Color)(this["highlight_fore"]));
+            }
+            set {
+                this["highlight_fore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color highlight_backcolor {
+            get {
+                return ((global::System.Drawing.Color)(this["highlight_backcolor"]));
+            }
+            set {
+                this["highlight_backcolor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color affirmative {
+            get {
+                return ((global::System.Drawing.Color)(this["affirmative"]));
+            }
+            set {
+                this["affirmative"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color logic {
+            get {
+                return ((global::System.Drawing.Color)(this["logic"]));
+            }
+            set {
+                this["logic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color setdelete {
+            get {
+                return ((global::System.Drawing.Color)(this["setdelete"]));
+            }
+            set {
+                this["setdelete"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color commands {
+            get {
+                return ((global::System.Drawing.Color)(this["commands"]));
+            }
+            set {
+                this["commands"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color keywords {
+            get {
+                return ((global::System.Drawing.Color)(this["keywords"]));
+            }
+            set {
+                this["keywords"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool flag {
+            get {
+                return ((bool)(this["flag"]));
+            }
+            set {
+                this["flag"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color text {
+            get {
+                return ((global::System.Drawing.Color)(this["text"]));
+            }
+            set {
+                this["text"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color comment {
+            get {
+                return ((global::System.Drawing.Color)(this["comment"]));
+            }
+            set {
+                this["comment"] = value;
+            }
+        }
     }
 }

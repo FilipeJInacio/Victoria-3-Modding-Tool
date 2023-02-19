@@ -41,6 +41,7 @@ namespace Victoria_3_Modding_Tool
             this.ChangeSizeBT = new System.Windows.Forms.Button();
             this.CloseBT = new System.Windows.Forms.Button();
             this.LogoPB = new System.Windows.Forms.PictureBox();
+            this.VertionL = new System.Windows.Forms.Label();
             this.HotBarP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LogoPB)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +54,7 @@ namespace Victoria_3_Modding_Tool
             this.NewProjectBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(29)))), ((int)(((byte)(70)))));
             this.NewProjectBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(34)))), ((int)(((byte)(75)))));
             this.NewProjectBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NewProjectBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NewProjectBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.NewProjectBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.NewProjectBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.NewProjectBT.Location = new System.Drawing.Point(493, 73);
@@ -74,7 +75,7 @@ namespace Victoria_3_Modding_Tool
             this.LoadEditorButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(29)))), ((int)(((byte)(70)))));
             this.LoadEditorButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(34)))), ((int)(((byte)(75)))));
             this.LoadEditorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LoadEditorButton.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.LoadEditorButton.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LoadEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.LoadEditorButton.Location = new System.Drawing.Point(493, 148);
             this.LoadEditorButton.Name = "LoadEditorButton";
@@ -90,12 +91,11 @@ namespace Victoria_3_Modding_Tool
             // OpenCodeEditorBT
             // 
             this.OpenCodeEditorBT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
-            this.OpenCodeEditorBT.Enabled = false;
             this.OpenCodeEditorBT.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.OpenCodeEditorBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(29)))), ((int)(((byte)(70)))));
             this.OpenCodeEditorBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(34)))), ((int)(((byte)(75)))));
             this.OpenCodeEditorBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenCodeEditorBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.OpenCodeEditorBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.OpenCodeEditorBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.OpenCodeEditorBT.Location = new System.Drawing.Point(493, 223);
             this.OpenCodeEditorBT.Name = "OpenCodeEditorBT";
@@ -115,7 +115,7 @@ namespace Victoria_3_Modding_Tool
             this.CreditBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(29)))), ((int)(((byte)(70)))));
             this.CreditBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(34)))), ((int)(((byte)(75)))));
             this.CreditBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CreditBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.CreditBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CreditBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.CreditBT.Location = new System.Drawing.Point(493, 298);
             this.CreditBT.Name = "CreditBT";
@@ -160,7 +160,7 @@ namespace Victoria_3_Modding_Tool
             this.MinimiseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(202)))), ((int)(((byte)(211)))));
             this.MinimiseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(207)))), ((int)(((byte)(216)))));
             this.MinimiseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.MinimiseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.MinimiseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.MinimiseBT.Location = new System.Drawing.Point(692, 0);
@@ -184,7 +184,7 @@ namespace Victoria_3_Modding_Tool
             this.ChangeSizeBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(61)))), ((int)(((byte)(155)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ChangeSizeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ChangeSizeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ChangeSizeBT.Location = new System.Drawing.Point(728, 0);
@@ -206,7 +206,7 @@ namespace Victoria_3_Modding_Tool
             this.CloseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(39)))), ((int)(((byte)(58)))));
             this.CloseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(44)))), ((int)(((byte)(63)))));
             this.CloseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CloseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.CloseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CloseBT.Location = new System.Drawing.Point(764, 0);
@@ -231,18 +231,28 @@ namespace Victoria_3_Modding_Tool
             this.LogoPB.TabIndex = 33;
             this.LogoPB.TabStop = false;
             // 
+            // VertionL
+            // 
+            this.VertionL.AutoSize = true;
+            this.VertionL.Location = new System.Drawing.Point(754, 380);
+            this.VertionL.Name = "VertionL";
+            this.VertionL.Size = new System.Drawing.Size(46, 21);
+            this.VertionL.TabIndex = 37;
+            this.VertionL.Text = "V2.0";
+            // 
             // Start
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.ClientSize = new System.Drawing.Size(800, 400);
+            this.Controls.Add(this.VertionL);
             this.Controls.Add(this.LogoPB);
             this.Controls.Add(this.HotBarP);
             this.Controls.Add(this.CreditBT);
             this.Controls.Add(this.OpenCodeEditorBT);
             this.Controls.Add(this.LoadEditorButton);
             this.Controls.Add(this.NewProjectBT);
-            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -257,6 +267,7 @@ namespace Victoria_3_Modding_Tool
             this.HotBarP.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LogoPB)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -272,6 +283,7 @@ namespace Victoria_3_Modding_Tool
         private Button CloseBT;
         private Label Title;
         private PictureBox LogoPB;
+        private Label VertionL;
     }
 }
 

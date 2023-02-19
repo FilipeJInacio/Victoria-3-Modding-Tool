@@ -5,27 +5,28 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class GoodsForm : Form
     {
-        public List<ClassGoods> GoodsData;  // Needed
+        public List<ClassGoods> GoodsDataP;
 
         public ClassGoods local;
 
         public bool[] canSave = { false, false, false, false, false, false, false, false, false, false }; // Name - Cost - Category - Texture - Obsession - Prestige - Convoy - Quantity - Tax - True Name    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
-        public int sizeOfVicky; // Needed
 
         public GoodsForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
-
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-            this.Location = new Point(rect.Width / 2, 0);
+            this.Location = new Point(rect.Width / 3, 0);
         }
 
         public ClassGoods ReturnValue()
@@ -67,6 +68,68 @@ namespace Victoria_3_Modding_Tool
                 form.ShowDialog();
             }
         }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Goods";
+                s = local.Name + " = {\n" +
+                    "\ttexture = \"" + local.Texture + "\"\n" +
+                    "\tcost = " + local.Cost + "\n" +
+                    "\tcategory = " + local.Category + "\n\n" +
+                    "\tprestige_factor = " + local.Prestige.ToString().Replace(",", ".") + "\n";
+                if (local.TradedQuantity != -1) { s += "\ttraded_quantity = " + local.TradedQuantity + "\n"; }
+                if (local.Convoy_cost != -1) { s += "\tconvoy_cost_multiplier = " + local.Convoy_cost.ToString().Replace(",", ".") + "\n"; }
+                if (local.Consumption != -1) { s += "\tconsumption_tax_cost = " + local.Consumption + "\n"; }
+                if (local.Obsession != -1) { s += "\tobsession_chance = " + local.Obsession.ToString().Replace(",", ".") + "\n\n"; }
+                if (local.Tradeable == false) { s += "\ttradeable = no\n"; }
+                if (local.Fixed_price == true) { s += "\tfixed_price = yes\n"; }
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassGoods(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0],local.TrueName);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+            }
+
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
@@ -174,24 +237,28 @@ namespace Victoria_3_Modding_Tool
             float i;
             int j;
 
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(GoodsData.GetRange(sizeOfVicky, GoodsData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            // Name
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(GoodsDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
             else { canSave[0] = false; }
 
+            // True Name
             if (Regex.Match(NameGameTB.Texts, "^[\\u0000-\\u007E]+$").Success || string.IsNullOrEmpty(NameGameTB.Texts))
             {
                 canSave[9] = true;
             }
             else { canSave[9] = false; }
 
+            // Texture
             if (!string.IsNullOrEmpty(TextureTB.Texts) && TextureTB.Texts.EndsWith(".dds"))
             {
                 canSave[3] = true;
             }
             else { canSave[3] = false; }
 
+            // Cost
             if (!Regex.Match(CostTB.Texts, "^([0-9])+$").Success || string.IsNullOrEmpty(CostTB.Texts))
             {
                 CostTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -214,6 +281,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            // Obsession
             if (!Regex.Match(ObsessionTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ObsessionTB.Texts))
             {
                 ObsessionTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -236,6 +304,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            // Traded Quantity
             if (!Regex.Match(TradedTB.Texts, "^([-])?([0-9])+$").Success || string.IsNullOrEmpty(TradedTB.Texts))
             {
                 TradedTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -247,12 +316,6 @@ namespace Victoria_3_Modding_Tool
                 if (int.TryParse(TradedTB.Texts, out j) && ((j > 0 && j < 2147483647) || j == -1))
                 {
                     if (TradeableCB.Checked == false && j != -1)
-                    {
-                        TradedTB.BorderColor = Color.FromArgb(255, 39, 58);
-                        TradedTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                        canSave[7] = false;
-                    }
-                    else if (TradeableCB.Checked == true && j == -1)
                     {
                         TradedTB.BorderColor = Color.FromArgb(255, 39, 58);
                         TradedTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -273,6 +336,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            // Convoy
             if (!Regex.Match(ConvoyTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(ConvoyTB.Texts))
             {
                 ConvoyTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -284,12 +348,6 @@ namespace Victoria_3_Modding_Tool
                 if (float.TryParse(ConvoyTB.Texts.Replace(".", ","), out i) && ((i > 0 && i < 2147483647) || i == -1))
                 {
                     if (TradeableCB.Checked == false && i != -1)
-                    {
-                        ConvoyTB.BorderColor = Color.FromArgb(255, 39, 58);
-                        ConvoyTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
-                        canSave[6] = false;
-                    }
-                    else if (TradeableCB.Checked == true && i == -1)
                     {
                         ConvoyTB.BorderColor = Color.FromArgb(255, 39, 58);
                         ConvoyTB.BorderFocusColor = Color.FromArgb(255, 94, 108);
@@ -310,6 +368,7 @@ namespace Victoria_3_Modding_Tool
                 }
             }
 
+            // Prestige
             if (!Regex.Match(PrestigeTB.Texts, "^([-])?([0-9])+([.][0-9]{1,3})?$").Success || string.IsNullOrEmpty(PrestigeTB.Texts))
             {
                 PrestigeTB.BorderColor = Color.FromArgb(255, 39, 58);
@@ -506,5 +565,6 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
     }
 }

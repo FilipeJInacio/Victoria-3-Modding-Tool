@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Victoria_3_Modding_Tool.Forms.Tech
+namespace Victoria_3_Modding_Tool
 {
     public class ClassStateTraits : IType, ITexture
     {
@@ -39,7 +39,7 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                     case "required_techs_for_colonization":
                         foreach (KeyValuePair<string, object> entry2 in (List<KeyValuePair<string, object>>)entry.Value)
                         {
-                            this.DisablingTechnologies = entry2.Value.ToString().Trim('"');
+                            this.RequiredTechsForColonization = entry2.Value.ToString().Trim('"');
                         }
                         continue;
                     case "modifier":

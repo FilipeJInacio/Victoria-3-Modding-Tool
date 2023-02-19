@@ -6,26 +6,28 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class ReligionForm : Form
     {
         public List<ClassGoods> GoodsData; // Needed
-        public List<ClassReligions> ReligionData; // Needed
+        public List<ClassReligions> ReligionDataP;
         public List<string> Traits; // Not Needed
 
         public ClassReligions local;  // null if new   information if to change
 
         public bool[] canSave = { false, false, false, false, false, false }; // Name - TrueName - Texture - Red - Green - Blue    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved   2 -> is not
-        public int sizeOfVicky;
 
         public ReligionForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
         }
 
@@ -104,6 +106,80 @@ namespace Victoria_3_Modding_Tool
         private void HelpBT_Click(object sender, EventArgs e)
         {
         }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Religions";
+                s = local.Name + " = {\n" +
+                    "\ttexture = \"" + local.Texture + "\"\n";
+
+                if (local.Traits.Count != 0)
+                {
+                    s += "\ttraits = {\n";
+                    foreach (string traits in local.Traits)
+                    {
+                        s += "\t\t" + traits + "\n";
+                    }
+                    s += "\t}\n";
+                }
+                s += "\tcolor = { " + Math.Round((double)local.Red / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)local.Green / 255, 2).ToString().Replace(",", ".") + " " + Math.Round((double)local.Blue / 255, 2).ToString().Replace(",", ".") + " }\n";
+                if (local.Taboos.Count != 0)
+                {
+                    s += "\ttaboos = {\n";
+                    foreach (string taboos in local.Taboos)
+                    {
+                        s += "\t\t" + taboos + "\n";
+                    }
+                    s += "\t}\n";
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassReligions(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0], local.Truename);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+            }
+
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
@@ -198,7 +274,7 @@ namespace Victoria_3_Modding_Tool
 
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ReligionData.GetRange(sizeOfVicky, ReligionData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(ReligionDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -304,11 +380,12 @@ namespace Victoria_3_Modding_Tool
             GreenTB.Texts = local.Green.ToString();
             BlueTB.Texts = local.Blue.ToString();
 
+            TraitsLB.Items.Clear();
             foreach (string entry in local.Traits)
             {
                 TraitsLB.Items.Add(entry);
             }
-
+            TaboosLB.Items.Clear();
             foreach (string entry in local.Taboos)
             {
                 TaboosLB.Items.Add(entry);
@@ -463,5 +540,6 @@ namespace Victoria_3_Modding_Tool
                 ColorP.BackColor = Color.FromArgb(Int32.Parse(RedTB.Texts), Int32.Parse(GreenTB.Texts), Int32.Parse(BlueTB.Texts));
             }
         }
+
     }
 }

@@ -4,23 +4,26 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class ModifiersTypesForm : Form
     {
-        public List<ClassModifiersType> ModifiersData;
+        public List<ClassModifiersType> ModifiersDataP;
         public ClassModifiersType local;
 
         public bool[] canSave = { false, false, false, false, false, false, false, false, false, false }; // name - nOfDecimals - Ai - Translate - Postfix - Good - Percentage - Invert - Neutral - Boolean    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
-        public int sizeOfVicky; // Needed
+
 
         public ModifiersTypesForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             rect.Width = rect.Width / 2;
@@ -63,6 +66,140 @@ namespace Victoria_3_Modding_Tool
         {
         }
 
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Modifier Types";
+                s = local.Name + " = {\n";
+
+                if (local.Neutral != -1)
+                {
+                    if (local.Neutral == 1)
+                    {
+                        s += "\tneutral = yes\n";
+                    }
+                    else
+                    {
+                        s += "\tneutral = no\n";
+                    }
+                }
+
+                if (local.Good != -1)
+                {
+                    if (local.Good == 1)
+                    {
+                        s += "\tgood = yes\n";
+                    }
+                    else
+                    {
+                        s += "\tgood = no\n";
+                    }
+                }
+
+                if (local.Boolean != -1)
+                {
+                    if (local.Boolean == 1)
+                    {
+                        s += "\tboolean = yes\n";
+                    }
+                    else
+                    {
+                        s += "\tboolean = no\n";
+                    }
+                }
+
+                if (local.Percent != -1)
+                {
+                    if (local.Percent == 1)
+                    {
+                        s += "\tpercent = yes\n";
+                    }
+                    else
+                    {
+                        s += "\tpercent = no\n";
+                    }
+                }
+
+                if (local.Invert != -1)
+                {
+                    if (local.Invert == 1)
+                    {
+                        s += "\tinvert = yes\n";
+                    }
+                    else
+                    {
+                        s += "\tinvert = no\n";
+                    }
+                }
+
+                if (local.Num_decimals != -1)
+                {
+                    s += "\tnum_decimals = " + local.Num_decimals + "\n";
+                }
+
+                if (!string.IsNullOrEmpty(local.Translate))
+                {
+                    s += "\ttranslate = " + local.Translate + "\n";
+                }
+
+                if (!string.IsNullOrEmpty(local.Postfix))
+                {
+                    s += "\tpostfix = \"" + local.Postfix + "\"\n";
+                }
+
+                if (local.Ai_value != -1)
+                {
+                    s += "\tai_value = " + local.Ai_value + "\n";
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassModifiersType(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0]);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+
+            }
+
+        }
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Hot Bar Drag Motion
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,12 +236,12 @@ namespace Victoria_3_Modding_Tool
 
             AIValueTB.Texts = local.Ai_value.ToString();
 
-            if (local.Translate != null)
+            if (!string.IsNullOrEmpty(local.Translate))
             {
                 TranslateTB.Texts = local.Translate.ToString();
             }
 
-            if (local.Postfix != null)
+            if (!string.IsNullOrEmpty(local.Postfix))
             {
                 PostfixTB.Texts = local.Postfix.ToString();
             }
@@ -122,7 +259,7 @@ namespace Victoria_3_Modding_Tool
         {
             int j;
 
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ModifiersData.GetRange(sizeOfVicky, ModifiersData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(ModifiersDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -427,5 +564,7 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
+
     }
 }

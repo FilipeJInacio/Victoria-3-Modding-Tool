@@ -52,6 +52,11 @@
     <ManifestKeyFile>Victoria 3 Modding Tool_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Forms\Events\**" />
+    <EmbeddedResource Remove="Forms\Events\**" />
+    <None Remove="Forms\Events\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Custom Controls\CustomContextMenuStrip\DropdownMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -70,6 +75,47 @@
     <Compile Update="Custom Controls\CustomTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Forms\Buildings\BuildingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Buildings\BuildingGroupsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Canals\CanalsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Cultures\CulturesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Decisions\DecisionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Decrees\DecreesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Home\CodeEditorPathForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Law\LawsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Law\LawGroupsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Pop_Types\PopTypesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Production_Methods\ProductionMethodsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Text Editor\FontColorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -85,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Scintilla.NET" Version="5.3.2.4" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
       <PrivateAssets>all</PrivateAssets>
@@ -92,14 +139,15 @@
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Forms\Cultures NOT FINISHED\ClassCultures.cs" />
-    <Compile Remove="Forms\Cultures NOT FINISHED\CultureForm.cs" />
-    <Compile Remove="Forms\Cultures NOT FINISHED\CultureForm.Designer.cs" />
-    <Compile Remove="Forms\Pop_Types NOT FINISHED\ClassPopNeeds.cs" />
-    <Compile Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.cs" />
-    <Compile Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.Designer.cs" />
-    <Compile Remove="Forms\Production_Methods NOT FINISHED\ClassProductMethodsTypes.cs" />
-    <EmbeddedResource Remove="Forms\Cultures NOT FINISHED\CultureForm.resx" />
-    <EmbeddedResource Remove="Forms\Pop_Types NOT FINISHED\PopTypesForm.resx" />
+    <Compile Remove="Custom Controls\CustomMenuStrip.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Text Editor\AutoCompleteMenu\" />
   </ItemGroup>
 </Project>

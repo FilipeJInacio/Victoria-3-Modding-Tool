@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Victoria_3_Modding_Tool.Custom_Controls.CustomContextMenuStrip
+namespace Victoria_3_Modding_Tool
 {
     public class DropdownMenu : ContextMenuStrip
     {

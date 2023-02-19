@@ -247,6 +247,7 @@ namespace Victoria_3_Modding_Tool
             cmbList.BackColor = listBackColor;
             cmbList.Font = new Font(this.Font.Name, 10F);
             cmbList.ForeColor = listTextColor;
+            cmbList.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbList.SelectedIndexChanged += new EventHandler(ComboBox_SelectedIndexChanged);//Default event
             cmbList.TextChanged += new EventHandler(ComboBox_TextChanged);//Refresh text
 

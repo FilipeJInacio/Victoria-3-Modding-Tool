@@ -58,6 +58,7 @@ namespace Victoria_3_Modding_Tool
             this.InvertTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.BooleanTB = new Victoria_3_Modding_Tool.CustomTextBox();
             this.NumDeciTB = new Victoria_3_Modding_Tool.CustomTextBox();
+            this.ChangeBT = new System.Windows.Forms.Button();
             this.HotBarP.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,7 +71,7 @@ namespace Victoria_3_Modding_Tool
             this.SaveBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.SaveBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(77)))), ((int)(((byte)(77)))), ((int)(((byte)(77)))));
             this.SaveBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SaveBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.SaveBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.SaveBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.SaveBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.SaveBT.Location = new System.Drawing.Point(547, 216);
@@ -87,6 +88,7 @@ namespace Victoria_3_Modding_Tool
             // HotBarP
             // 
             this.HotBarP.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.HotBarP.Controls.Add(this.ChangeBT);
             this.HotBarP.Controls.Add(this.HelpBT);
             this.HotBarP.Controls.Add(this.TitleL);
             this.HotBarP.Controls.Add(this.MinimiseBT);
@@ -108,7 +110,7 @@ namespace Victoria_3_Modding_Tool
             this.HelpBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(126)))), ((int)(((byte)(255)))));
             this.HelpBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(131)))), ((int)(((byte)(255)))));
             this.HelpBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.HelpBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.HelpBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.HelpBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.HelpBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.HelpBT.Location = new System.Drawing.Point(476, 0);
@@ -125,7 +127,7 @@ namespace Victoria_3_Modding_Tool
             // TitleL
             // 
             this.TitleL.AutoSize = true;
-            this.TitleL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.TitleL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.TitleL.Location = new System.Drawing.Point(12, 6);
             this.TitleL.Name = "TitleL";
             this.TitleL.Size = new System.Drawing.Size(199, 21);
@@ -141,7 +143,7 @@ namespace Victoria_3_Modding_Tool
             this.MinimiseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(202)))), ((int)(((byte)(211)))));
             this.MinimiseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(207)))), ((int)(((byte)(216)))));
             this.MinimiseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.MinimiseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.MinimiseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.MinimiseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.MinimiseBT.Location = new System.Drawing.Point(512, 0);
@@ -165,7 +167,7 @@ namespace Victoria_3_Modding_Tool
             this.ChangeSizeBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(61)))), ((int)(((byte)(155)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.ChangeSizeBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.ChangeSizeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ChangeSizeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ChangeSizeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ChangeSizeBT.Location = new System.Drawing.Point(548, 0);
@@ -187,7 +189,7 @@ namespace Victoria_3_Modding_Tool
             this.CloseBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(39)))), ((int)(((byte)(58)))));
             this.CloseBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(44)))), ((int)(((byte)(63)))));
             this.CloseBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.CloseBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CloseBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.CloseBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CloseBT.Location = new System.Drawing.Point(584, 0);
@@ -204,7 +206,7 @@ namespace Victoria_3_Modding_Tool
             // NameL
             // 
             this.NameL.AutoSize = true;
-            this.NameL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NameL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.NameL.Location = new System.Drawing.Point(12, 43);
             this.NameL.Name = "NameL";
             this.NameL.Size = new System.Drawing.Size(55, 21);
@@ -214,7 +216,7 @@ namespace Victoria_3_Modding_Tool
             // NumDeciL
             // 
             this.NumDeciL.AutoSize = true;
-            this.NumDeciL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NumDeciL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.NumDeciL.Location = new System.Drawing.Point(431, 43);
             this.NumDeciL.Name = "NumDeciL";
             this.NumDeciL.Size = new System.Drawing.Size(181, 21);
@@ -224,7 +226,7 @@ namespace Victoria_3_Modding_Tool
             // GoodL
             // 
             this.GoodL.AutoSize = true;
-            this.GoodL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.GoodL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GoodL.Location = new System.Drawing.Point(85, 181);
             this.GoodL.Name = "GoodL";
             this.GoodL.Size = new System.Drawing.Size(46, 21);
@@ -234,7 +236,7 @@ namespace Victoria_3_Modding_Tool
             // PercentageL
             // 
             this.PercentageL.AutoSize = true;
-            this.PercentageL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.PercentageL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.PercentageL.Location = new System.Drawing.Point(85, 221);
             this.PercentageL.Name = "PercentageL";
             this.PercentageL.Size = new System.Drawing.Size(100, 21);
@@ -254,7 +256,7 @@ namespace Victoria_3_Modding_Tool
             this.NameTB.Name = "NameTB";
             this.NameTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NameTB.ReadOnly = false;
-            this.NameTB.Size = new System.Drawing.Size(413, 32);
+            this.NameTB.Size = new System.Drawing.Size(413, 30);
             this.NameTB.TabIndex = 40;
             this.NameTB.Texts = "";
             this.NameTB.UnderlinedStyle = false;
@@ -263,7 +265,7 @@ namespace Victoria_3_Modding_Tool
             // NeutralL
             // 
             this.NeutralL.AutoSize = true;
-            this.NeutralL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.NeutralL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.NeutralL.Location = new System.Drawing.Point(315, 221);
             this.NeutralL.Name = "NeutralL";
             this.NeutralL.Size = new System.Drawing.Size(73, 21);
@@ -273,7 +275,7 @@ namespace Victoria_3_Modding_Tool
             // InvertL
             // 
             this.InvertL.AutoSize = true;
-            this.InvertL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.InvertL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.InvertL.Location = new System.Drawing.Point(315, 181);
             this.InvertL.Name = "InvertL";
             this.InvertL.Size = new System.Drawing.Size(64, 21);
@@ -283,7 +285,7 @@ namespace Victoria_3_Modding_Tool
             // BooleanL
             // 
             this.BooleanL.AutoSize = true;
-            this.BooleanL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.BooleanL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.BooleanL.Location = new System.Drawing.Point(518, 181);
             this.BooleanL.Name = "BooleanL";
             this.BooleanL.Size = new System.Drawing.Size(73, 21);
@@ -293,7 +295,7 @@ namespace Victoria_3_Modding_Tool
             // PostfixL
             // 
             this.PostfixL.AutoSize = true;
-            this.PostfixL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.PostfixL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.PostfixL.Location = new System.Drawing.Point(357, 102);
             this.PostfixL.Name = "PostfixL";
             this.PostfixL.Size = new System.Drawing.Size(82, 21);
@@ -313,7 +315,7 @@ namespace Victoria_3_Modding_Tool
             this.PostfixTB.Name = "PostfixTB";
             this.PostfixTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.PostfixTB.ReadOnly = false;
-            this.PostfixTB.Size = new System.Drawing.Size(246, 32);
+            this.PostfixTB.Size = new System.Drawing.Size(246, 30);
             this.PostfixTB.TabIndex = 71;
             this.PostfixTB.Texts = "";
             this.PostfixTB.UnderlinedStyle = false;
@@ -322,7 +324,7 @@ namespace Victoria_3_Modding_Tool
             // TranslateL
             // 
             this.TranslateL.AutoSize = true;
-            this.TranslateL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.TranslateL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.TranslateL.Location = new System.Drawing.Point(106, 105);
             this.TranslateL.Name = "TranslateL";
             this.TranslateL.Size = new System.Drawing.Size(100, 21);
@@ -342,7 +344,7 @@ namespace Victoria_3_Modding_Tool
             this.TranslateTB.Name = "TranslateTB";
             this.TranslateTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.TranslateTB.ReadOnly = false;
-            this.TranslateTB.Size = new System.Drawing.Size(245, 32);
+            this.TranslateTB.Size = new System.Drawing.Size(245, 30);
             this.TranslateTB.TabIndex = 73;
             this.TranslateTB.Texts = "";
             this.TranslateTB.UnderlinedStyle = false;
@@ -351,7 +353,7 @@ namespace Victoria_3_Modding_Tool
             // AIValueL
             // 
             this.AIValueL.AutoSize = true;
-            this.AIValueL.Font = new System.Drawing.Font("Cascadia Mono", 12F);
+            this.AIValueL.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.AIValueL.Location = new System.Drawing.Point(12, 105);
             this.AIValueL.Name = "AIValueL";
             this.AIValueL.Size = new System.Drawing.Size(91, 21);
@@ -371,7 +373,7 @@ namespace Victoria_3_Modding_Tool
             this.AIValueTB.Name = "AIValueTB";
             this.AIValueTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.AIValueTB.ReadOnly = false;
-            this.AIValueTB.Size = new System.Drawing.Size(88, 32);
+            this.AIValueTB.Size = new System.Drawing.Size(88, 30);
             this.AIValueTB.TabIndex = 75;
             this.AIValueTB.Texts = "";
             this.AIValueTB.UnderlinedStyle = false;
@@ -390,7 +392,7 @@ namespace Victoria_3_Modding_Tool
             this.GoodTB.Name = "GoodTB";
             this.GoodTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.GoodTB.ReadOnly = false;
-            this.GoodTB.Size = new System.Drawing.Size(57, 32);
+            this.GoodTB.Size = new System.Drawing.Size(57, 30);
             this.GoodTB.TabIndex = 77;
             this.GoodTB.Texts = "";
             this.GoodTB.UnderlinedStyle = false;
@@ -409,7 +411,7 @@ namespace Victoria_3_Modding_Tool
             this.PercentageTB.Name = "PercentageTB";
             this.PercentageTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.PercentageTB.ReadOnly = false;
-            this.PercentageTB.Size = new System.Drawing.Size(57, 32);
+            this.PercentageTB.Size = new System.Drawing.Size(57, 30);
             this.PercentageTB.TabIndex = 78;
             this.PercentageTB.Texts = "";
             this.PercentageTB.UnderlinedStyle = false;
@@ -428,7 +430,7 @@ namespace Victoria_3_Modding_Tool
             this.NeutralTB.Name = "NeutralTB";
             this.NeutralTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NeutralTB.ReadOnly = false;
-            this.NeutralTB.Size = new System.Drawing.Size(57, 32);
+            this.NeutralTB.Size = new System.Drawing.Size(57, 30);
             this.NeutralTB.TabIndex = 80;
             this.NeutralTB.Texts = "";
             this.NeutralTB.UnderlinedStyle = false;
@@ -447,7 +449,7 @@ namespace Victoria_3_Modding_Tool
             this.InvertTB.Name = "InvertTB";
             this.InvertTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.InvertTB.ReadOnly = false;
-            this.InvertTB.Size = new System.Drawing.Size(57, 32);
+            this.InvertTB.Size = new System.Drawing.Size(57, 30);
             this.InvertTB.TabIndex = 79;
             this.InvertTB.Texts = "";
             this.InvertTB.UnderlinedStyle = false;
@@ -466,7 +468,7 @@ namespace Victoria_3_Modding_Tool
             this.BooleanTB.Name = "BooleanTB";
             this.BooleanTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.BooleanTB.ReadOnly = false;
-            this.BooleanTB.Size = new System.Drawing.Size(57, 32);
+            this.BooleanTB.Size = new System.Drawing.Size(57, 30);
             this.BooleanTB.TabIndex = 81;
             this.BooleanTB.Texts = "";
             this.BooleanTB.UnderlinedStyle = false;
@@ -485,11 +487,34 @@ namespace Victoria_3_Modding_Tool
             this.NumDeciTB.Name = "NumDeciTB";
             this.NumDeciTB.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
             this.NumDeciTB.ReadOnly = false;
-            this.NumDeciTB.Size = new System.Drawing.Size(172, 32);
+            this.NumDeciTB.Size = new System.Drawing.Size(172, 30);
             this.NumDeciTB.TabIndex = 82;
             this.NumDeciTB.Texts = "";
             this.NumDeciTB.UnderlinedStyle = false;
             this.NumDeciTB.CustomTextBox_TextChanged += new System.EventHandler(this.NumDeciTB_CustomTextBox_TextChanged);
+            // 
+            // ChangeBT
+            // 
+            this.ChangeBT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            this.ChangeBT.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.ChangeBT.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ChangeBT.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.ChangeBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(126)))), ((int)(((byte)(255)))));
+            this.ChangeBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(131)))), ((int)(((byte)(255)))));
+            this.ChangeBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChangeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.ChangeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.ChangeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ChangeBT.Location = new System.Drawing.Point(440, 0);
+            this.ChangeBT.Name = "ChangeBT";
+            this.ChangeBT.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.ChangeBT.Size = new System.Drawing.Size(36, 32);
+            this.ChangeBT.TabIndex = 40;
+            this.ChangeBT.Text = "⇌";
+            this.ChangeBT.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ChangeBT.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ChangeBT.UseVisualStyleBackColor = false;
+            this.ChangeBT.Click += new System.EventHandler(this.ChangeBT_Click);
             // 
             // ModifiersTypesForm
             // 
@@ -518,7 +543,7 @@ namespace Victoria_3_Modding_Tool
             this.Controls.Add(this.NameTB);
             this.Controls.Add(this.HotBarP);
             this.Controls.Add(this.SaveBT);
-            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -568,6 +593,7 @@ namespace Victoria_3_Modding_Tool
         private CustomTextBox InvertTB;
         private CustomTextBox BooleanTB;
         private CustomTextBox NumDeciTB;
+        private Button ChangeBT;
     }
 }
 

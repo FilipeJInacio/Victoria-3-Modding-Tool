@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Victoria_3_Modding_Tool.Forms.Tech
+namespace Victoria_3_Modding_Tool
 {
     public class ClassGoods : IType, ITexture
     {
@@ -62,8 +62,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.TrueName = TrueName;
             this.Obsession = -1;
             this.Prestige = -1;
-            this.TradedQuantity = 1;
-            this.Convoy_cost = 1;
+            this.TradedQuantity = -1;
+            this.Convoy_cost = -1;
             this.Consumption = -1;
 
             foreach (KeyValuePair<string, object> element in (List<KeyValuePair<string, object>>)ParserData.Value)
@@ -97,7 +97,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
                 }
             }
 
-            if (this.Tradeable == false) { this.TradedQuantity = -1; this.Convoy_cost = -1; }
+
         }
+
     }
 }

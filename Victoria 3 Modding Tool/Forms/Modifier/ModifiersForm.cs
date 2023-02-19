@@ -6,24 +6,27 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Tech;
 
 namespace Victoria_3_Modding_Tool
 {
     public partial class ModifiersForm : Form
     {
         public List<ClassModifiersType> ModifiersTypes;
-        public List<ClassModifiers> ModifiersData;
+        public List<ClassModifiers> ModifiersDataP;
         public ClassModifiers local;
 
         public bool[] canSave = { false, false, false, false }; // name - truename - icon - desc    false -> cant save
         public int SaveStatus = 0;    // 0 -> opened just now   1 -> is saved 2 -> is not
-        public int sizeOfVicky; // Needed
+
 
         public ModifiersForm()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
 
             Rectangle rect = Screen.PrimaryScreen.WorkingArea;
             this.Location = new Point(rect.Width / 2, 0);
@@ -74,6 +77,73 @@ namespace Victoria_3_Modding_Tool
         private void HelpBT_Click(object sender, EventArgs e)
         {
         }
+
+        private void GoToCodeEditor()
+        {
+            string s;
+            this.Hide();
+            using (CodeEditorForm form = new CodeEditorForm())
+            {
+                form.currentMode = "Modifiers";
+                s = local.Name + " = {\n";
+
+                if (local.Texture != string.Empty)
+                {
+                    s += "\ticon = \"" + local.Texture + "\"\n";
+                }
+
+                if (local.Modifiers.Count != 0)
+                {
+                    foreach (string modifier in local.Modifiers)
+                    {
+                        s += "\t" + modifier + "\n";
+                    }
+                }
+
+                s += "}";
+                form.text = s;
+                form.DebugOptionsMono = true;
+                form.GoodCode = true;
+                form.ShowDialog();
+                s = form.ReturnValue();
+            }
+            if (s != string.Empty)
+            {
+                local = new ClassModifiers(((List<KeyValuePair<string, object>>)(new Parser().ParseText(s)))[0], local.TrueName,local.Description);
+                LoadInfoToControls();
+            }
+            SaveStatus = 2;
+            this.Show();
+
+
+        }
+
+        private void ChangeBT_Click(object sender, EventArgs e)
+        {
+
+            if (SaveStatus == 2)
+            {
+                DialogResult result = MessageBox.ClassMessageBox.Show();
+                if (result == DialogResult.OK)
+                {
+                    if (SaveVerification())
+                    {
+                        GoToCodeEditor();
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+
+                }
+            }
+            else
+            {
+                GoToCodeEditor();
+
+            }
+
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LB Styling
@@ -223,6 +293,7 @@ namespace Victoria_3_Modding_Tool
 
             IconTB.Texts = local.Texture;
 
+            ModifiersLB.Items.Clear();
             foreach (string entry in local.Modifiers)
             {
                 ModifiersLB.Items.Add(entry);
@@ -233,7 +304,7 @@ namespace Victoria_3_Modding_Tool
 
         private bool SaveVerification()
         {
-            if (!string.IsNullOrEmpty(NameTB.Texts) && !new Functions().hasName(ModifiersData.GetRange(sizeOfVicky, ModifiersData.Count - sizeOfVicky), NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
+            if (!string.IsNullOrEmpty(NameTB.Texts) && !Functions.hasName(ModifiersDataP, NameTB.Texts) && Regex.Match(NameTB.Texts, "^([a-z]||_)+$").Success)
             {
                 canSave[0] = true;
             }
@@ -379,5 +450,6 @@ namespace Victoria_3_Modding_Tool
         {
             SaveStatus = 2;
         }
+
     }
 }

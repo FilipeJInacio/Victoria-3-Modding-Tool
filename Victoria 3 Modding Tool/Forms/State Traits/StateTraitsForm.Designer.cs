@@ -52,12 +52,13 @@ namespace Victoria_3_Modding_Tool
             this.IconPathBT = new System.Windows.Forms.Button();
             this.DisableCB = new Victoria_3_Modding_Tool.CustomComboBox();
             this.RequiredCB = new Victoria_3_Modding_Tool.CustomComboBox();
-            this.DisablesCB = new Victoria_3_Modding_Tool.Custom_Controls.CustomCheckBox();
+            this.DisablesCB = new Victoria_3_Modding_Tool.CustomCheckBox();
             this.DisableL = new System.Windows.Forms.Label();
             this.DisableCBL = new System.Windows.Forms.Label();
             this.RequiredL = new System.Windows.Forms.Label();
             this.RequiredCBL = new System.Windows.Forms.Label();
-            this.RequiresCB = new Victoria_3_Modding_Tool.Custom_Controls.CustomCheckBox();
+            this.RequiresCB = new Victoria_3_Modding_Tool.CustomCheckBox();
+            this.ChangeBT = new System.Windows.Forms.Button();
             this.HotBarP.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,6 +88,7 @@ namespace Victoria_3_Modding_Tool
             // HotBarP
             // 
             this.HotBarP.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.HotBarP.Controls.Add(this.ChangeBT);
             this.HotBarP.Controls.Add(this.HelpBT);
             this.HotBarP.Controls.Add(this.TitleL);
             this.HotBarP.Controls.Add(this.MinimiseBT);
@@ -268,7 +270,6 @@ namespace Victoria_3_Modding_Tool
             this.ModifiersCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
             this.ModifiersCB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.ModifiersCB.BorderSize = 1;
-            this.ModifiersCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.ModifiersCB.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ModifiersCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
             this.ModifiersCB.FormattingEnabled = false;
@@ -396,7 +397,6 @@ namespace Victoria_3_Modding_Tool
             this.DisableCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
             this.DisableCB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.DisableCB.BorderSize = 1;
-            this.DisableCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.DisableCB.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.DisableCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
             this.DisableCB.FormattingEnabled = false;
@@ -417,7 +417,6 @@ namespace Victoria_3_Modding_Tool
             this.RequiredCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
             this.RequiredCB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
             this.RequiredCB.BorderSize = 1;
-            this.RequiredCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.RequiredCB.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.RequiredCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
             this.RequiredCB.FormattingEnabled = false;
@@ -505,6 +504,29 @@ namespace Victoria_3_Modding_Tool
             this.RequiresCB.TabIndex = 81;
             this.RequiresCB.UseVisualStyleBackColor = true;
             // 
+            // ChangeBT
+            // 
+            this.ChangeBT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            this.ChangeBT.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.ChangeBT.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ChangeBT.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+            this.ChangeBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(126)))), ((int)(((byte)(255)))));
+            this.ChangeBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(131)))), ((int)(((byte)(255)))));
+            this.ChangeBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChangeBT.Font = new System.Drawing.Font("Cascadia Mono", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.ChangeBT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.ChangeBT.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ChangeBT.Location = new System.Drawing.Point(720, 0);
+            this.ChangeBT.Name = "ChangeBT";
+            this.ChangeBT.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.ChangeBT.Size = new System.Drawing.Size(36, 32);
+            this.ChangeBT.TabIndex = 40;
+            this.ChangeBT.Text = "⇌";
+            this.ChangeBT.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ChangeBT.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ChangeBT.UseVisualStyleBackColor = false;
+            this.ChangeBT.Click += new System.EventHandler(this.ChangeBT_Click);
+            // 
             // StateTraitsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -576,12 +598,13 @@ namespace Victoria_3_Modding_Tool
         private Button IconPathBT;
         private CustomComboBox DisableCB;
         private CustomComboBox RequiredCB;
-        private Custom_Controls.CustomCheckBox DisablesCB;
+        private CustomCheckBox DisablesCB;
         private Label DisableL;
         private Label DisableCBL;
         private Label RequiredL;
         private Label RequiredCBL;
-        private Custom_Controls.CustomCheckBox RequiresCB;
+        private CustomCheckBox RequiresCB;
+        private Button ChangeBT;
     }
 }
 

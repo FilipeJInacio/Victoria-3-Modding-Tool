@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Victoria_3_Modding_Tool.Forms.Era;
-using Victoria_3_Modding_Tool.Forms.Tech;
+
 
 namespace Victoria_3_Modding_Tool
 {
@@ -16,13 +14,27 @@ namespace Victoria_3_Modding_Tool
 
     To do:
 
+
+
+    wait to finish to open
+
     dic same error
 
     form position
 
     Help
 
-    CodeEditor ->make spellcheck, end custom colors, make autocomplete
+    Add focus when leaving page
+
+    open form
+
+
+
+
+    To improve:
+
+    -Debugger
+
 
     */
 
@@ -39,8 +51,25 @@ namespace Victoria_3_Modding_Tool
     // - Pop_Needs -> localization
     // - Religion -> not working
 
+
+    /*
+    Code Types:
+    - Building Groups
+    - Buildings
+    - Canals
+    - Cultures
+    - Decisions
+    - Decrees
+    - Law Groups
+    - Laws
+    - Pop Types
+    - Production Methods
+    */
+
     public partial class Main : Form
     {
+        // *
+        #region Variables
         public int SaveStatus = 0;  // 0 -> just entered // 1 -> saved // 2 -> unsaved
 
         public string language;
@@ -61,9 +90,33 @@ namespace Victoria_3_Modding_Tool
 
         public List<string> MainData = new List<string>();
 
-        public List<ClassEra> EraDataP;
-        public List<ClassEra> EraDataV;
-        public List<ClassEra> EraDataM;
+        public List<ClassBuildingGroups> BuildingGroupsDataP;
+        public List<ClassBuildingGroups> BuildingGroupsDataV;
+        public List<ClassBuildingGroups> BuildingGroupsDataM;
+
+        public List<ClassBuildings> BuildingsDataP;
+        public List<ClassBuildings> BuildingsDataV;
+        public List<ClassBuildings> BuildingsDataM;
+
+        public List<ClassCanals> CanalsDataP;
+        public List<ClassCanals> CanalsDataV;
+        public List<ClassCanals> CanalsDataM;
+
+        public List<ClassCultures> CulturesDataP;
+        public List<ClassCultures> CulturesDataV;
+        public List<ClassCultures> CulturesDataM;
+
+        public List<ClassDecisions> DecisionsDataP;
+        public List<ClassDecisions> DecisionsDataV;
+        public List<ClassDecisions> DecisionsDataM;
+
+        public List<ClassDecrees> DecreesDataP;
+        public List<ClassDecrees> DecreesDataV;
+        public List<ClassDecrees> DecreesDataM;
+
+        public List<ClassEras> ErasDataP;
+        public List<ClassEras> ErasDataV;
+        public List<ClassEras> ErasDataM;
 
         public List<ClassGoods> GoodsDataP;
         public List<ClassGoods> GoodsDataV;
@@ -72,6 +125,14 @@ namespace Victoria_3_Modding_Tool
         public List<ClassInstitutions> InstitutionsDataP;
         public List<ClassInstitutions> InstitutionsDataV;
         public List<ClassInstitutions> InstitutionsDataM;
+
+        public List<ClassLawGroups> LawGroupsDataP;
+        public List<ClassLawGroups> LawGroupsDataV;
+        public List<ClassLawGroups> LawGroupsDataM;
+
+        public List<ClassLaws> LawsDataP;
+        public List<ClassLaws> LawsDataV;
+        public List<ClassLaws> LawsDataM;
 
         public List<ClassModifiers> ModifierDataP;
         public List<ClassModifiers> ModifierDataV;
@@ -84,6 +145,18 @@ namespace Victoria_3_Modding_Tool
         public List<ClassPopNeeds> PopNeedsDataP;
         public List<ClassPopNeeds> PopNeedsDataV;
         public List<ClassPopNeeds> PopNeedsDataM;
+
+        public List<ClassPopTypes> PopTypesDataP;
+        public List<ClassPopTypes> PopTypesDataV;
+        public List<ClassPopTypes> PopTypesDataM;
+
+        public List<ClassProductionMethodGroups> ProductionMethodGroupsDataP;
+        public List<ClassProductionMethodGroups> ProductionMethodGroupsDataV;
+        public List<ClassProductionMethodGroups> ProductionMethodGroupsDataM;
+
+        public List<ClassProductionMethods> ProductionMethodsDataP;
+        public List<ClassProductionMethods> ProductionMethodsDataV;
+        public List<ClassProductionMethods> ProductionMethodsDataM;
 
         public List<ClassReligions> ReligionsDataP;
         public List<ClassReligions> ReligionsDataV;
@@ -98,16 +171,21 @@ namespace Victoria_3_Modding_Tool
         public List<ClassTech> TechDataV;
         public List<ClassTech> TechDataM;
 
-        
+        #endregion Variables
 
         public Main()
         {
             InitializeComponent();
             this.Padding = new Padding(1);//Border size
+            this.SetStyle(
+                        ControlStyles.AllPaintingInWmPaint |
+                        ControlStyles.UserPaint |
+                        ControlStyles.DoubleBuffer, true);
             SizeObjects();
             LoadMainLB();
         }
 
+        #region Form Stuff
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Form
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,9 +266,9 @@ namespace Victoria_3_Modding_Tool
 
         private void Main_Load(object sender, EventArgs e)
         {
-            LocalizationDataV = LocalizationSetup(VickyPath + "\\game");
-            LocalizationDataP = LocalizationSetup(ProjPath);
-            LocalizationDataM = LocalizationSetup(ModPath);
+            LocalizationDataV = Functions.LocalizationSetup(VickyPath + "\\game");
+            LocalizationDataP = Functions.LocalizationSetup(ProjPath);
+            LocalizationDataM = Functions.LocalizationSetup(ModPath);
         }
 
 
@@ -292,6 +370,8 @@ namespace Victoria_3_Modding_Tool
             LB_DrawItem(sender, e, ModLB);
         }
 
+        #endregion Form Stuff
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LB Search Bar *
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,25 +379,47 @@ namespace Victoria_3_Modding_Tool
         //*
         private void LoadMainLB()
         {
-            MainData.Add("Era");
+            MainData.Add("Building Groups");
+            MainData.Add("Buildings");
+            MainData.Add("Canals");
+            MainData.Add("Cultures");
+            MainData.Add("Decisions");
+            MainData.Add("Decrees");
+            MainData.Add("Eras");
             MainData.Add("Goods");
             MainData.Add("Institutions");
+            MainData.Add("Law Groups");
+            MainData.Add("Laws");
             MainData.Add("Modifiers");
             MainData.Add("Modifier Types");
             MainData.Add("Pop Needs");
+            MainData.Add("Pop Types");
+            MainData.Add("Production Method Groups");
+            MainData.Add("Production Methods");
             MainData.Add("Religions");
             MainData.Add("State Traits");
-            MainData.Add("Technology");
+            MainData.Add("Technologies");
 
-            MainLB.Items.Add("Era");
+            MainLB.Items.Add("Building Groups");
+            MainLB.Items.Add("Buildings");
+            MainLB.Items.Add("Canals");
+            MainLB.Items.Add("Cultures");
+            MainLB.Items.Add("Decisions");
+            MainLB.Items.Add("Decrees");
+            MainLB.Items.Add("Eras");
             MainLB.Items.Add("Goods");
             MainLB.Items.Add("Institutions");
+            MainLB.Items.Add("Law Groups");
+            MainLB.Items.Add("Laws");
             MainLB.Items.Add("Modifiers");
             MainLB.Items.Add("Modifier Types");
             MainLB.Items.Add("Pop Needs");
+            MainLB.Items.Add("Pop Types");
+            MainLB.Items.Add("Production Method Groups");
+            MainLB.Items.Add("Production Methods");
             MainLB.Items.Add("Religions");
             MainLB.Items.Add("State Traits");
-            MainLB.Items.Add("Technology");
+            MainLB.Items.Add("Technologies");
         }
 
         private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
@@ -348,252 +450,119 @@ namespace Victoria_3_Modding_Tool
         //*
         private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(VickySearchBarTB, VickyLB, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV,  StateTraitsDataV, TechDataV);
+            SearchBarConfigs(VickySearchBarTB, VickyLB,BuildingGroupsDataM , BuildingsDataM,CanalsDataM,CulturesDataM,DecisionsDataV,DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV, LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV,  StateTraitsDataV, TechDataV);
         }
 
         //*
         private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ProjSearchBarTB, ProjectLB, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
+            SearchBarConfigs(ProjSearchBarTB, ProjectLB,BuildingGroupsDataP,BuildingsDataP,CanalsDataP,CulturesDataP,DecisionsDataP,DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
         private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ModSearchBarTB, ModLB, EraDataM, GoodsDataM, InstitutionsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
+            SearchBarConfigs(ModSearchBarTB, ModLB,BuildingGroupsDataV,BuildingsDataV,CanalsDataV,CulturesDataV,DecisionsDataM,DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataM, LawGroupsDataM, LawsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM,ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         // *
-        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData,List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
+        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassBuildingGroups> BuildingGroupsData, List<ClassBuildings> BuildingsData, List<ClassCanals> CanalsData, List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData,List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData, List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData,List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
             if (mainSelectedIndex == -1) { return; }
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-                case "Era":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraData)
-                        {
-                            if (entry.Era.ToString().StartsWith(TB.Texts))
-                            { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-
-                        foreach (ClassEra entry in EraData)
-                        {
-                            if (entry.Era.ToString().StartsWith(TB.Texts))
-                            { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
-                        }
-                    }
-
+                case "Building Groups":
+                    Functions.SearchBarSimpleConfig(BuildingGroupsData, TB, LB);
                     break;
+                case "Buildings":
+                    Functions.SearchBarSimpleConfig(BuildingsData, TB, LB);
+                    break;
+                case "Canals":
+                    Functions.SearchBarSimpleConfig(CanalsData, TB, LB);
+                    break;
+                case "Cultures":
+                    Functions.SearchBarSimpleConfig(CulturesData, TB, LB);
+                    break;
+                case "Decisions":
+                    Functions.SearchBarSimpleConfig(DecisionsData, TB, LB);
+                    break;
+                case "Decrees":
+                    Functions.SearchBarSimpleConfig(DecreesData, TB, LB);
+                    break;
+                case "Eras":
+                    {
+                        if (string.IsNullOrEmpty(TB.Texts) == false)
+                        {
+                            LB.Items.Clear();
+                            LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
 
+                            foreach (ClassEras entry in ErasData)
+                            {
+                                if (entry.Era.ToString().StartsWith(TB.Texts))
+                                { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+                            }
+                        }
+                        else if (TB.Texts == "")
+                        {
+                            LB.Items.Clear();
+                            LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+
+                            foreach (ClassEras entry in ErasData)
+                            {
+                                if (entry.Era.ToString().StartsWith(TB.Texts))
+                                { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+                            }
+                        }
+
+                        break;
+                    }
                 case "Goods":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassGoods str in GoodsData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassGoods str in GoodsData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(GoodsData, TB, LB);
                     break;
-
                 case "Institutions":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassInstitutions str in InstitutionData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassInstitutions str in InstitutionData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(InstitutionData, TB, LB);
                     break;
-
+                case "Law Groups":
+                    Functions.SearchBarSimpleConfig(LawGroupsData, TB, LB);
+                    break;
+                case "Laws":
+                    Functions.SearchBarSimpleConfig(LawsData, TB, LB);
+                    break;
                 case "Modifiers":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassModifiers str in ModifierData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassModifiers str in ModifierData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(ModifierData, TB, LB);
                     break;
-
                 case "Modifier Types":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassModifiersType str in ModifierTypeData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(ModifierTypeData, TB, LB);
                     break;
-
                 case "Pop Needs":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassPopNeeds str in PopNeedsData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(PopNeedsData, TB, LB);
                     break;
-
+                case "Pop Types":
+                    Functions.SearchBarSimpleConfig(PopTypesData, TB, LB);
+                    break;
+                case "Production Method Groups":
+                    Functions.SearchBarSimpleConfig(ProductionMethodGroupsData, TB, LB);
+                    break;
+                case "Production Methods":
+                    Functions.SearchBarSimpleConfig(ProductionMethodsData, TB, LB);
+                    break;
                 case "Religions":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassReligions str in ReligionsData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(ReligionsData, TB, LB);
                     break;
-
                 case "State Traits":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassStateTraits str in StateTraitsData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassStateTraits str in StateTraitsData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                    Functions.SearchBarSimpleConfig(StateTraitsData, TB, LB);
                     break;
-
-                case "Technology":
-
-                    if (string.IsNullOrEmpty(TB.Texts) == false)
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassTech str in TechData)
-                        {
-                            if (str.Name.StartsWith(TB.Texts))
-                            {
-                                LB.Items.Add(str.Name);
-                            }
-                        }
-                    }
-                    else if (TB.Texts == "")
-                    {
-                        LB.Items.Clear();
-                        foreach (ClassTech str in TechData)
-                        {
-                            LB.Items.Add(str.Name);
-                        }
-                    }
-
+                case "Technologies":
+                    Functions.SearchBarSimpleConfig(TechData, TB, LB);
                     break;
-
                 default:
                     MainLB.Items.Add("Error");
                     break;
             }
         }
+
+ 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LB data *
@@ -607,88 +576,208 @@ namespace Victoria_3_Modding_Tool
             {
                 switch (MainData[mainSelectedIndex].ToString())
                 {
-                    case "Era":
+                    case "Building Groups":
+                        {
+                            BuildingGroupsDataM = new List<ClassBuildingGroups>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\building_groups", BuildingGroupsDataM, new NoParse(), s => new ClassBuildingGroups(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassBuildingGroups entry in BuildingGroupsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        EraDataM = new List<ClassEra>();
-                        ReadFilesCommon(ModPath + "\\common\\technology\\eras", EraDataM, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
-                        ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                        foreach (ClassEra eraEntry in EraDataM) { ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                            break;
+                        }
+                    case "Buildings":
+                        {
+                            BuildingsDataM = new List<ClassBuildings>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\buildings", BuildingsDataM, new NoParse(), s => new ClassBuildings(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_lens_option", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassBuildings entry in BuildingsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        break;
+                            break;
+                        }
+                    case "Canals":
+                        {
+                            CanalsDataM = new List<ClassCanals>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\canals", CanalsDataM, new NoParse(), s => new ClassCanals(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassCanals entry in CanalsDataM) { ModLB.Items.Add(entry.Name); }
 
+                            break;
+                        }
+                    case "Cultures":
+                        {
+                            CulturesDataM = new List<ClassCultures>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\cultures", CulturesDataM, new NoParse(), s => new ClassCultures(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassCultures entry in CulturesDataM) { ModLB.Items.Add(entry.Name); }
+
+                            break;
+                        }
+                    case "Decisions":
+                        {
+                            DecisionsDataM = new List<ClassDecisions>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\decisions", DecisionsDataM, new NoParse(), s => new ClassDecisions(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_tooltip", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassDecisions entry in DecisionsDataM) { ModLB.Items.Add(entry.Name); }
+
+                            break;
+                        }
+                    case "Decrees":
+                        {
+                            DecreesDataM = new List<ClassDecrees>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\decrees", DecreesDataM, new NoParse(), s => new ClassDecrees(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassDecrees entry in DecreesDataM) { ModLB.Items.Add(entry.Name); }
+
+                            break;
+                        }
+                    case "Eras":
+                        {
+                            ErasDataM = new List<ClassEras>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\technology\\eras", ErasDataM, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
+                            ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                            foreach (ClassEras eraEntry in ErasDataM) { ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+
+                            break;
+                        }
                     case "Goods":
+                        {
+                            GoodsDataM = new List<ClassGoods>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\goods", GoodsDataM, new Parser(), s => new ClassGoods(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        GoodsDataM = new List<ClassGoods>();
-                        ReadFilesCommon(ModPath + "\\common\\goods", GoodsDataM, new Parser(), s => new ClassGoods(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
-
-                        break;
-
+                            break;
+                        }
                     case "Institutions":
+                        {
+                            InstitutionsDataM = new List<ClassInstitutions>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\institutions", InstitutionsDataM, new Parser(), s => new ClassInstitutions(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        InstitutionsDataM = new List<ClassInstitutions>();
-                        ReadFilesCommon(ModPath + "\\common\\institutions", InstitutionsDataM, new Parser(), s => new ClassInstitutions(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Items.Add(entry.Name); }
+                            break;
+                        }
+                    case "Law Groups":
+                        {
+                            LawGroupsDataM = new List<ClassLawGroups>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\law_groups", LawGroupsDataM, new NoParse(), s => new ClassLawGroups(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key+"_desc", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassLawGroups entry in LawGroupsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        break;
+                            break;
+                        }
+                    case "Law":
+                        {
+                            LawsDataM = new List<ClassLaws>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\laws", LawsDataM, new NoParse(), s => new ClassLaws(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassLaws entry in LawsDataM) { ModLB.Items.Add(entry.Name); }
 
+                            break;
+                        }
                     case "Modifiers":
+                        {
+                            ModifierDataM = new List<ClassModifiers>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\modifiers", ModifierDataM, new Parser(), s => new ClassModifiers(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
 
-                        ModifierDataM = new List<ClassModifiers>();
-                        ReadFilesCommon(ModPath + "\\common\\modifiers", ModifierDataM, new Parser(), s => new ClassModifiers(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
-
-                        break;
-
+                            break;
+                        }
                     case "Modifier Types":
+                        {
+                            ModifierTypeDataM = new List<ClassModifiersType>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\modifier_types", ModifierTypeDataM, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                            foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.Name); }
 
-                        ModifierTypeDataM = new List<ClassModifiersType>();
-                        ReadFilesCommon(ModPath + "\\common\\modifier_types", ModifierTypeDataM, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                        foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.Name); }
-
-                        break;
-
+                            break;
+                        }
                     case "Pop Needs":
+                        {
+                            PopNeedsDataM = new List<ClassPopNeeds>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        PopNeedsDataM = new List<ClassPopNeeds>();
-                        ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
+                            break;
+                        }
+                    case "Pop Types":
+                        {
+                            PopTypesDataM = new List<ClassPopTypes>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\pop_types", PopTypesDataM, new NoParse(), s => new ClassPopTypes(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_only_icon", out x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_no_icon", out x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key.ToUpper() + "_QUALIFICATIONS_DESC", out x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassPopTypes entry in PopTypesDataM) { ModLB.Items.Add(entry.Name); }
 
-                        break;
+                            break;
+                        }
+                    case "Production Method Groups":
+                        {
+                            ProductionMethodGroupsDataM = new List<ClassProductionMethodGroups>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\production_method_groups", ProductionMethodGroupsDataM, new Parser(), s => new ClassProductionMethodGroups(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataM) { ModLB.Items.Add(entry.Name); }
 
+                            break;
+                        }
+                    case "Production Methods":
+                        {
+                            ProductionMethodsDataM = new List<ClassProductionMethods>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\production_methods", ProductionMethodsDataM, new NoParse(), s => new ClassProductionMethods(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                                ), t => t.Name);
+                            foreach (ClassProductionMethods entry in ProductionMethodsDataM) { ModLB.Items.Add(entry.Name); }
+
+                            break;
+                        }
                     case "Religions":
+                        {
+                            ReligionsDataM = new List<ClassReligions>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser(), s => new ClassReligions(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        ReligionsDataM = new List<ClassReligions>();
-                        ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser(), s => new ClassReligions(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
-
-                        break;
-
+                            break;
+                        }
                     case "State Traits":
+                        {
+                            StateTraitsDataM = new List<ClassStateTraits>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\state_traits", StateTraitsDataM, new Parser(), s => new ClassStateTraits(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassStateTraits entry in StateTraitsDataM) { ModLB.Items.Add(entry.Name); }
 
-                        StateTraitsDataM = new List<ClassStateTraits>();
-                        ReadFilesCommon(ModPath + "\\common\\state_traits", StateTraitsDataM, new Parser(), s => new ClassStateTraits(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassStateTraits entry in StateTraitsDataM) { ModLB.Items.Add(entry.Name); }
+                            break;
+                        }
+                    case "Technologies":
+                        {
+                            TechDataM = new List<ClassTech>();
+                            Functions.ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                            foreach (ClassTech entry in TechDataM) { ModLB.Items.Add(entry.Name); }
 
-                        break;
-
-                    case "Technology":
-
-                        TechDataM = new List<ClassTech>();
-                        ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                            LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                        foreach (ClassTech entry in TechDataM) { ModLB.Items.Add(entry.Name); }
-
-                        break;
-
+                            break;
+                        }
                     default:
                         break;
                 }
@@ -738,251 +827,516 @@ namespace Victoria_3_Modding_Tool
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-                case "Era":
+                case "Building Groups":
+                    {
+                        BuildingGroupsDataP = new List<ClassBuildingGroups>();
+                        BuildingGroupsDataV = new List<ClassBuildingGroups>();
 
-                    EraDataP = new List<ClassEra>();
-                    EraDataV = new List<ClassEra>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\building_groups", BuildingGroupsDataV, new NoParse(), s => new ClassBuildingGroups(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\building_groups", BuildingGroupsDataP, new NoParse(), s => new ClassBuildingGroups(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", EraDataV, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
-                    ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
-                    VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataV) { VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        break;
+                    }
+                case "Buildings":
+                    {
+                        BuildingsDataP = new List<ClassBuildings>();
+                        BuildingsDataV = new List<ClassBuildings>();
 
-                    break;
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\buildings", BuildingsDataV, new NoParse(), s => new ClassBuildings(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_lens_option", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\buildings", BuildingsDataP, new NoParse(), s => new ClassBuildings(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_lens_option", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
 
-                case "Institutions":
-                    ModifierTypeDataP = new List<ClassModifiersType>();
-                    ModifierTypeDataV = new List<ClassModifiersType>();
+                        foreach (ClassBuildings Entry in BuildingsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassBuildings Entry in BuildingsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    InstitutionsDataP = new List<ClassInstitutions>();
-                    InstitutionsDataV = new List<ClassInstitutions>();
+                        break;
+                    }
+                case "Canals":
+                    {
+                        CanalsDataP = new List<ClassCanals>();
+                        CanalsDataV = new List<ClassCanals>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\institutions", InstitutionsDataV, new Parser(), s => new ClassInstitutions(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\institutions", InstitutionsDataP, new Parser(), s => new ClassInstitutions(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\canals", CanalsDataV, new NoParse(), s => new ClassCanals(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\canals", CanalsDataP, new NoParse(), s => new ClassCanals(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", InstitutionsDataP);
-                    new Functions().BackTextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
-                    new Functions().BackTextureMerger(ProjPath + "\\", InstitutionsDataP);
+                        foreach (ClassCanals Entry in CanalsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassCanals Entry in CanalsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
-                    foreach (ClassInstitutions entry in InstitutionsDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        break;
+                    }
+                case "Cultures":
+                    {
+                        CulturesDataP = new List<ClassCultures>();
+                        CulturesDataV = new List<ClassCultures>();
 
-                    break;
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\cultures", CulturesDataV, new NoParse(), s => new ClassCultures(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\Cultures", CulturesDataP, new NoParse(), s => new ClassCultures(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
 
+                        foreach (ClassCultures Entry in CulturesDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassCultures Entry in CulturesDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Decisions":
+                    {
+                        DecisionsDataP = new List<ClassDecisions>();
+                        DecisionsDataV = new List<ClassDecisions>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\decisions", DecisionsDataV, new NoParse(), s => new ClassDecisions(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_tooltip", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\decisions", DecisionsDataP, new NoParse(), s => new ClassDecisions(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_tooltip", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassDecisions Entry in DecisionsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassDecisions Entry in DecisionsDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Decrees":
+                    {
+                        DecreesDataP = new List<ClassDecrees>();
+                        DecreesDataV = new List<ClassDecrees>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\decrees", DecreesDataV, new NoParse(), s => new ClassDecrees(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\decrees", DecreesDataP, new NoParse(), s => new ClassDecrees(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassDecrees Entry in DecreesDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassDecrees Entry in DecreesDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Eras":
+                    {
+                        ErasDataP = new List<ClassEras>();
+                        ErasDataV = new List<ClassEras>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", ErasDataV, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\technology\\eras", ErasDataP, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
+
+                        VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataV) { VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+
+                        if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
                 case "Goods":
-                    GoodsDataP = new List<ClassGoods>();
-                    GoodsDataV = new List<ClassGoods>();
+                    {
+                        GoodsDataP = new List<ClassGoods>();
+                        GoodsDataV = new List<ClassGoods>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", GoodsDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", GoodsDataP);
+                        Functions.TextureMerger(VickyPath + "\\game\\", GoodsDataV);
+                        Functions.TextureMerger(ProjPath + "\\", GoodsDataP);
 
-                    foreach (ClassGoods entry in GoodsDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassGoods entry in GoodsDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    break;
+                        break;
+                    }
+                case "Institutions":
+                    {
+                        ModifierTypeDataP = new List<ClassModifiersType>();
+                        ModifierTypeDataV = new List<ClassModifiersType>();
 
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+
+                        InstitutionsDataP = new List<ClassInstitutions>();
+                        InstitutionsDataV = new List<ClassInstitutions>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\institutions", InstitutionsDataV, new Parser(), s => new ClassInstitutions(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\institutions", InstitutionsDataP, new Parser(), s => new ClassInstitutions(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+
+                        Functions.TextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
+                        Functions.TextureMerger(ProjPath + "\\", InstitutionsDataP);
+                        Functions.BackTextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
+                        Functions.BackTextureMerger(ProjPath + "\\", InstitutionsDataP);
+
+                        foreach (ClassInstitutions entry in InstitutionsDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Law Groups":
+                    {
+                        LawGroupsDataP = new List<ClassLawGroups>();
+                        LawGroupsDataV = new List<ClassLawGroups>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\law_groups", LawGroupsDataV, new NoParse(), s => new ClassLawGroups(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\law_groups", LawGroupsDataP, new NoParse(), s => new ClassLawGroups(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassLawGroups Entry in LawGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassLawGroups Entry in LawGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Laws":
+                    {
+                        LawsDataP = new List<ClassLaws>();
+                        LawsDataV = new List<ClassLaws>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\laws", LawsDataV, new NoParse(), s => new ClassLaws(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\laws", LawsDataP, new NoParse(), s => new ClassLaws(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassLaws Entry in LawsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassLaws Entry in LawsDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
                 case "Modifiers":
-                    ModifierTypeDataP = new List<ClassModifiersType>();
-                    ModifierTypeDataV = new List<ClassModifiersType>();
+                    {
+                        ModifierTypeDataP = new List<ClassModifiersType>();
+                        ModifierTypeDataV = new List<ClassModifiersType>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                    ModifierDataP = new List<ClassModifiers>();
-                    ModifierDataV = new List<ClassModifiers>();
+                        ModifierDataP = new List<ClassModifiers>();
+                        ModifierDataV = new List<ClassModifiers>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifiers", ModifierDataV, new Parser(), s => new ClassModifiers(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifiers", ModifierDataP, new Parser(), s => new ClassModifiers(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", ModifierDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", ModifierDataP);
+                        Functions.TextureMerger(VickyPath + "\\game\\", ModifierDataV);
+                        Functions.TextureMerger(ProjPath + "\\", ModifierDataP);
 
-                    foreach (ClassModifiers entry in ModifierDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiers entry in ModifierDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    break;
-
+                        break;
+                    }
                 case "Modifier Types":
-                    ModifierTypeDataP = new List<ClassModifiersType>();
-                    ModifierTypeDataV = new List<ClassModifiersType>();
+                    {
+                        ModifierTypeDataP = new List<ClassModifiersType>();
+                        ModifierTypeDataV = new List<ClassModifiersType>();
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                    //new ExtraFunctions().Modifi(ModifierTypeDataV);
+                        //new ExtraFunctions().Modifi(ModifierTypeDataV);
 
-                    foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    break;
-
+                        break;
+                    }
                 case "Pop Needs":
+                    {
+                        GoodsDataP = new List<ClassGoods>();
+                        GoodsDataV = new List<ClassGoods>();
 
-                    GoodsDataP = new List<ClassGoods>();
-                    GoodsDataV = new List<ClassGoods>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        PopNeedsDataP = new List<ClassPopNeeds>();
+                        PopNeedsDataV = new List<ClassPopNeeds>();
 
-                    PopNeedsDataP = new List<ClassPopNeeds>();
-                    PopNeedsDataV = new List<ClassPopNeeds>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\pop_needs", PopNeedsDataV, new Parser(), s => new ClassPopNeeds(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
-                    foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
-                    foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        break;
+                    }
+                case "Pop Types":
+                    {
+                        PopTypesDataP = new List<ClassPopTypes>();
+                        PopTypesDataV = new List<ClassPopTypes>();
 
-                    break;
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\pop_types", PopTypesDataV, new NoParse(), s => new ClassPopTypes(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_only_icon", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_no_icon", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key.ToUpper() + "_QUALIFICATIONS_DESC", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\pop_types", PopTypesDataP, new NoParse(), s => new ClassPopTypes(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_only_icon", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_no_icon", out x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key.ToUpper() + "_QUALIFICATIONS_DESC", out x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
 
+                        foreach (ClassPopTypes Entry in PopTypesDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassPopTypes Entry in PopTypesDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Production Method Groups":
+                    {
+                        ProductionMethodsDataP = new List<ClassProductionMethods>();
+                        ProductionMethodsDataV = new List<ClassProductionMethods>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\production_methods", ProductionMethodsDataV, new NoParse(), s => new ClassProductionMethods(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\production_methods", ProductionMethodsDataP, new NoParse(), s => new ClassProductionMethods(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        ProductionMethodGroupsDataP = new List<ClassProductionMethodGroups>();
+                        ProductionMethodGroupsDataV = new List<ClassProductionMethodGroups>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\production_method_groups", ProductionMethodGroupsDataV, new Parser(), s => new ClassProductionMethodGroups(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\production_method_groups", ProductionMethodGroupsDataP, new Parser(), s => new ClassProductionMethodGroups(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
+                case "Production Methods":
+                    {
+                        ProductionMethodsDataP = new List<ClassProductionMethods>();
+                        ProductionMethodsDataV = new List<ClassProductionMethods>();
+
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\production_methods", ProductionMethodsDataV, new NoParse(), s => new ClassProductionMethods(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\production_methods", ProductionMethodsDataP, new NoParse(), s => new ClassProductionMethods(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
+                            ), t => t.Name);
+
+                        foreach (ClassProductionMethods Entry in ProductionMethodsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassProductionMethods Entry in ProductionMethodsDataP) { ProjectLB.Items.Add(Entry.Name); }
+
+                        if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
+
+                        break;
+                    }
                 case "Religions":
+                    {
+                        GoodsDataP = new List<ClassGoods>();
+                        GoodsDataV = new List<ClassGoods>();
 
-                    GoodsDataP = new List<ClassGoods>();
-                    GoodsDataV = new List<ClassGoods>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\goods", GoodsDataV, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\goods", GoodsDataP, new Parser(), s => new ClassGoods(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        ReligionsDataP = new List<ClassReligions>();
+                        ReligionsDataV = new List<ClassReligions>();
 
-                    ReligionsDataP = new List<ClassReligions>();
-                    ReligionsDataV = new List<ClassReligions>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser(), s => new ClassReligions(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser(), s => new ClassReligions(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\religions", ReligionsDataV, new Parser(), s => new ClassReligions(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\religions", ReligionsDataP, new Parser(), s => new ClassReligions(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.TextureMerger(VickyPath + "\\game\\", ReligionsDataV);
+                        Functions.TextureMerger(ProjPath + "\\", ReligionsDataP);
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", ReligionsDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", ReligionsDataP);
+                        TraitsAdder(); // temp
 
-                    TraitsAdder(); // temp
+                        foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.Name); }
+                        foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.Name); }
 
-                    foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.Name); }
-                    foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
-
-                    break;
-
+                        break;
+                    }
                 case "State Traits":
+                    {
+                        TechDataP = new List<ClassTech>();
+                        TechDataV = new List<ClassTech>();
+                        ModifierTypeDataP = new List<ClassModifiersType>();
+                        ModifierTypeDataV = new List<ClassModifiersType>();
+                        StateTraitsDataP = new List<ClassStateTraits>();
+                        StateTraitsDataV = new List<ClassStateTraits>();
 
-                    TechDataP = new List<ClassTech>();
-                    TechDataV = new List<ClassTech>();
-                    ModifierTypeDataP = new List<ClassModifiersType>();
-                    ModifierTypeDataV = new List<ClassModifiersType>();
-                    StateTraitsDataP = new List<ClassStateTraits>();
-                    StateTraitsDataV = new List<ClassStateTraits>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\state_traits", StateTraitsDataV, new Parser(), s => new ClassStateTraits(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\state_traits", StateTraitsDataP, new Parser(), s => new ClassStateTraits(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\state_traits", StateTraitsDataV, new Parser(), s => new ClassStateTraits(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\state_traits", StateTraitsDataP, new Parser(), s => new ClassStateTraits(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.TextureMerger(VickyPath + "\\game\\", StateTraitsDataV);
+                        Functions.TextureMerger(ProjPath + "\\", StateTraitsDataP);
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", StateTraitsDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", StateTraitsDataP);
+                        foreach (ClassStateTraits entry in StateTraitsDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    foreach (ClassStateTraits entry in StateTraitsDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
+                        break;
+                    }
+                case "Technologies":
+                    {
+                        TechDataP = new List<ClassTech>();
+                        TechDataV = new List<ClassTech>();
+                        ErasDataP = new List<ClassEras>();
+                        ErasDataV = new List<ClassEras>();
+                        ModifierTypeDataP = new List<ClassModifiersType>();
+                        ModifierTypeDataV = new List<ClassModifiersType>();
 
-                    break;
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
 
-                case "Technology":
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", ErasDataV, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\technology\\eras", ErasDataP, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
 
-                    TechDataP = new List<ClassTech>();
-                    TechDataV = new List<ClassTech>();
-                    EraDataP = new List<ClassEra>();
-                    EraDataV = new List<ClassEra>();
-                    ModifierTypeDataP = new List<ClassModifiersType>();
-                    ModifierTypeDataV = new List<ClassModifiersType>();
+                        Functions.ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        Functions.ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
+                            LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\modifier_types", ModifierTypeDataV, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\modifier_types", ModifierTypeDataP, new Parser(), s => new ClassModifiersType(s), t => t.Name);
+                        Functions.TextureMerger(VickyPath + "\\game\\", TechDataV);
+                        Functions.TextureMerger(ProjPath + "\\", TechDataP);
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", EraDataV, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
-                    ReadFilesCommon(ProjPath + "\\common\\technology\\eras", EraDataP, new Parser(), s => new ClassEra(s), t => t.Era.ToString());
+                        foreach (ClassTech entry in TechDataV) { VickyLB.Items.Add(entry.Name); }
+                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    ReadFilesCommon(VickyPath + "\\game\\common\\technology\\technologies", TechDataV, new Parser(), s => new ClassTech(s,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataV != null ? (LocalizationDataV.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                    ReadFilesCommon(ProjPath + "\\common\\technology\\technologies", TechDataP, new Parser(), s => new ClassTech(s,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                        LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
+                        if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+                        Mod();
 
-                    new Functions().TextureMerger(VickyPath + "\\game\\", TechDataV);
-                    new Functions().TextureMerger(ProjPath + "\\", TechDataP);
-
-                    foreach (ClassTech entry in TechDataV) { VickyLB.Items.Add(entry.Name); }
-                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
-
-                    if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-                    Mod();
-
-                    break;
-
+                        break;
+                    }
                 default:
                     MainLB.Items.Add("Error");
                     break;
@@ -992,23 +1346,23 @@ namespace Victoria_3_Modding_Tool
         //*
         private void VickyLB_Click(object sender, EventArgs e)
         {
-            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, EraDataV, GoodsDataV, InstitutionsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
+            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex,BuildingGroupsDataV,BuildingsDataV,CanalsDataV,CulturesDataV,DecisionsDataV,DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV,LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
         }
 
         //*
         private void ProjectLB_Click(object sender, EventArgs e)
         {
-            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, EraDataP, GoodsDataP, InstitutionsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
+            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, BuildingGroupsDataP, BuildingsDataP, CanalsDataP, CulturesDataP, DecisionsDataP,DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
         private void ModLB_DoubleClick(object sender, EventArgs e)
         {
-            DoubleClickList(ModLB, ModPath, modSelectedIndex, EraDataM, GoodsDataM, InstitutionsDataP, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
+            DoubleClickList(ModLB, ModPath, modSelectedIndex, BuildingGroupsDataM, BuildingsDataM, CanalsDataM, CulturesDataM, DecisionsDataM,DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataM, ModifierTypeDataM,  PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM, ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         //*
-        private void DoubleClickList(ListBox ListBox, string path, int selectedIndex, List<ClassEra> EraData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
+        private void DoubleClickList(ListBox ListBox, string path, int selectedIndex,List<ClassBuildingGroups> BuildingGroupsData,List<ClassBuildings> BuildingsData,List<ClassCanals> CanalsData,List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData,List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData,List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
             if (mainSelectedIndex == -1) { return; }
             SaveStatus = 2;
@@ -1017,403 +1371,848 @@ namespace Victoria_3_Modding_Tool
             {
                 switch (MainData[mainSelectedIndex].ToString())
                 {
-                    case "Era":
-
-                        if (ListBox.SelectedIndex == 0) { return; }
-
-                        if (ListBox.Items.Count == 1) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 1; ListBox.SelectedIndex = 1; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (EraForm form = new EraForm())
+                    case "Building Groups":
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(EraData,int.Parse( ListBox.Items[selectedIndex].ToString().Substring(0, 20)).ToString());
-                            form.local = new ClassEra(EraData[i].Era, EraData[i].Cost);
-                            form.ShowDialog();
-                            ClassEra j = form.ReturnValue();
-                            if (j != null)
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (BuildingGroupsForm form = new BuildingGroupsForm())
                             {
-                                i = new Functions().hasNameIndex(EraDataP, j.Era.ToString()); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(BuildingGroupsData, ListBox.Items[selectedIndex].ToString());
+                                form.BuildingGroupsListP = BuildingGroupsDataP;
+                                form.local = new ClassBuildingGroups(BuildingGroupsData[i]);
+                                form.ShowDialog();
+                                ClassBuildingGroups j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    EraDataP.Add(new ClassEra(j.Era, j.Cost));
-                                    EraDataP.Sort(delegate (ClassEra t1, ClassEra t2)
+                                    i = Functions.hasNameIndex(BuildingGroupsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Era.CompareTo(t2.Era));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                                }
-                                else
-                                {
-                                    EraDataP[i].Cost = j.Cost;
-                                    ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                        BuildingGroupsDataP.Add(new ClassBuildingGroups(j));
+                                        BuildingGroupsDataP.Sort(delegate (ClassBuildingGroups t1, ClassBuildingGroups t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        BuildingGroupsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
+                    case "Buildings":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
 
-                        if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                        break;
+                            using (BuildingsForm form = new BuildingsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(BuildingsData, ListBox.Items[selectedIndex].ToString());
+                                form.BuildingsListP = BuildingsDataP;
+                                form.local = new ClassBuildings(BuildingsData[i]);
+                                form.ShowDialog();
+                                ClassBuildings j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(BuildingsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        BuildingsDataP.Add(new ClassBuildings(j));
+                                        BuildingsDataP.Sort(delegate (ClassBuildings t1, ClassBuildings t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        BuildingsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
 
+                            if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Canals":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (CanalsForm form = new CanalsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(CanalsData, ListBox.Items[selectedIndex].ToString());
+                                form.CanalsListP = CanalsDataP;
+                                form.local = new ClassCanals(CanalsData[i]);
+                                form.ShowDialog();
+                                ClassCanals j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(CanalsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        CanalsDataP.Add(new ClassCanals(j));
+                                        CanalsDataP.Sort(delegate (ClassCanals t1, ClassCanals t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        CanalsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Cultures":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (CulturesForm form = new CulturesForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(CulturesData, ListBox.Items[selectedIndex].ToString());
+                                form.CulturesListP = CulturesDataP;
+                                form.local = new ClassCultures(CulturesData[i]);
+                                form.ShowDialog();
+                                ClassCultures j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(CulturesDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        CulturesDataP.Add(new ClassCultures(j));
+                                        CulturesDataP.Sort(delegate (ClassCultures t1, ClassCultures t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        CulturesDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Decisions":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (DecisionsForm form = new DecisionsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(DecisionsData, ListBox.Items[selectedIndex].ToString());
+                                form.DecisionsListP = DecisionsDataP;
+                                form.local = new ClassDecisions(DecisionsData[i]);
+                                form.ShowDialog();
+                                ClassDecisions j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(DecisionsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        DecisionsDataP.Add(new ClassDecisions(j));
+                                        DecisionsDataP.Sort(delegate (ClassDecisions t1, ClassDecisions t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        DecisionsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Decrees":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (DecreesForm form = new DecreesForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(DecreesData, ListBox.Items[selectedIndex].ToString());
+                                form.DecreesListP = DecreesDataP;
+                                form.local = new ClassDecrees(DecreesData[i]);
+                                form.ShowDialog();
+                                ClassDecrees j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(DecreesDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        DecreesDataP.Add(new ClassDecrees(j));
+                                        DecreesDataP.Sort(delegate (ClassDecrees t1, ClassDecrees t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        DecreesDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Eras":
+                        {
+                            if (ListBox.SelectedIndex == 0) { return; }
+
+                            if (ListBox.Items.Count == 1) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 1; ListBox.SelectedIndex = 1; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (EraForm form = new EraForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(ErasData, int.Parse(ListBox.Items[selectedIndex].ToString().Substring(0, 20)).ToString());
+                                form.local = new ClassEras(ErasData[i].Era, ErasData[i].Cost);
+                                form.ShowDialog();
+                                ClassEras j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(ErasDataP, j.Era.ToString()); // Index to change
+                                    if (i == -1)
+                                    {
+                                        ErasDataP.Add(new ClassEras(j.Era, j.Cost));
+                                        ErasDataP.Sort(delegate (ClassEras t1, ClassEras t2)
+                                        {
+                                            return (t1.Era.CompareTo(t2.Era));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    }
+                                    else
+                                    {
+                                        ErasDataP[i].Cost = j.Cost;
+                                        ProjectLB.Items.Clear();
+                                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    }
+                                }
+                            }
+
+                            if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
                     case "Goods":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (GoodsForm form = new GoodsForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(GoodsData, ListBox.Items[selectedIndex].ToString());
+                            if (ListBox.Items.Count == 0) { return; }
 
-                            form.sizeOfVicky = GoodsDataV.Count;
-                            form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                            form.local = new ClassGoods(GoodsData[i]);
-                            form.ShowDialog();
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                            ClassGoods j = form.ReturnValue();
-                            if (j != null)
+                            using (GoodsForm form = new GoodsForm())
                             {
-                                i = new Functions().hasNameIndex(GoodsDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(GoodsData, ListBox.Items[selectedIndex].ToString());
+
+                                form.GoodsDataP = GoodsDataP;
+                                form.local = new ClassGoods(GoodsData[i]);
+                                form.ShowDialog();
+
+                                ClassGoods j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    GoodsDataP.Add(new ClassGoods(j));
-                                    GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
+                                    i = Functions.hasNameIndex(GoodsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    GoodsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        GoodsDataP.Add(new ClassGoods(j));
+                                        GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        GoodsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
                     case "Institutions":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (InstitutionsForm form = new InstitutionsForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(InstitutionsData, ListBox.Items[selectedIndex].ToString());
+                            if (ListBox.Items.Count == 0) { return; }
 
-                            form.sizeOfVicky = InstitutionsDataV.Count;
-                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                            form.InstitutionsData = new Functions().MergeClasses(InstitutionsDataP, InstitutionsDataV);
-                            form.local = new ClassInstitutions(InstitutionsData[i]);
-                            form.ShowDialog();
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                            ClassInstitutions j = form.ReturnValue();
-                            if (j != null)
+                            using (InstitutionsForm form = new InstitutionsForm())
                             {
-                                i = new Functions().hasNameIndex(InstitutionsDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(InstitutionsData, ListBox.Items[selectedIndex].ToString());
+
+                                form.InstitutionsDataP = InstitutionsDataP;
+                                form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                                form.local = new ClassInstitutions(InstitutionsData[i]);
+                                form.ShowDialog();
+
+                                ClassInstitutions j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    InstitutionsDataP.Add(new ClassInstitutions(j));
-                                    InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                    i = Functions.hasNameIndex(InstitutionsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    InstitutionsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        InstitutionsDataP.Add(new ClassInstitutions(j));
+                                        InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        InstitutionsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
+                    case "Law Groups":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
 
-                        if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                        break;
+                            using (LawGroupsForm form = new LawGroupsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(LawGroupsData, ListBox.Items[selectedIndex].ToString());
+                                form.LawGroupsListP = LawGroupsDataP;
+                                form.local = new ClassLawGroups(LawGroupsData[i]);
+                                form.ShowDialog();
+                                ClassLawGroups j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(LawGroupsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        LawGroupsDataP.Add(new ClassLawGroups(j));
+                                        LawGroupsDataP.Sort(delegate (ClassLawGroups t1, ClassLawGroups t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        LawGroupsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
 
+                            if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Laws":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (LawsForm form = new LawsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(LawsData, ListBox.Items[selectedIndex].ToString());
+                                form.LawsListP = LawsDataP;
+                                form.local = new ClassLaws(LawsData[i]);
+                                form.ShowDialog();
+                                ClassLaws j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(LawsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        LawsDataP.Add(new ClassLaws(j));
+                                        LawsDataP.Sort(delegate (ClassLaws t1, ClassLaws t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        LawsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
                     case "Modifiers":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (ModifiersForm form = new ModifiersForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(ModifierData, ListBox.Items[selectedIndex].ToString());
+                            if (ListBox.Items.Count == 0) { return; }
 
-                            form.sizeOfVicky = ModifierDataV.Count;
-                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                            form.ModifiersData = new Functions().MergeClasses(ModifierDataP, ModifierDataV);
-                            form.local = new ClassModifiers(ModifierData[i]);
-                            form.ShowDialog();
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                            ClassModifiers j = form.ReturnValue();
-                            if (j != null)
+                            using (ModifiersForm form = new ModifiersForm())
                             {
-                                i = new Functions().hasNameIndex(ModifierDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(ModifierData, ListBox.Items[selectedIndex].ToString());
+
+                                form.ModifiersDataP = ModifierDataP;
+                                form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                                form.local = new ClassModifiers(ModifierData[i]);
+                                form.ShowDialog();
+
+                                ClassModifiers j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    ModifierDataP.Add(new ClassModifiers(j));
-                                    ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                    i = Functions.hasNameIndex(ModifierDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    ModifierDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ModifierDataP.Add(new ClassModifiers(j));
+                                        ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        ModifierDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
                     case "Modifier Types":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (ModifiersTypesForm form = new ModifiersTypesForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(ModifierTypeData, ListBox.Items[selectedIndex].ToString());
+                            if (ListBox.Items.Count == 0) { return; }
 
-                            form.sizeOfVicky = ModifierTypeDataV.Count;
-                            form.ModifiersData = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                            form.local = new ClassModifiersType(ModifierTypeData[i]);
-                            form.ShowDialog();
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                            ClassModifiersType j = form.ReturnValue();
-                            if (j != null)
+                            using (ModifiersTypesForm form = new ModifiersTypesForm())
                             {
-                                i = new Functions().hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(ModifierTypeData, ListBox.Items[selectedIndex].ToString());
+
+                                form.ModifiersDataP = ModifierTypeDataP;
+                                form.local = new ClassModifiersType(ModifierTypeData[i]);
+                                form.ShowDialog();
+
+                                ClassModifiersType j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    ModifierTypeDataP.Add(new ClassModifiersType(j));
-                                    ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                    i = Functions.hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    ModifierTypeDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                        ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        ModifierTypeDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
                     case "Pop Needs":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (PopNeedsForm form = new PopNeedsForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(PopNeedsData, ListBox.Items[selectedIndex].ToString());
-                            form.sizeOfVicky = PopNeedsDataV.Count;
-                            form.GoodsList = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                            form.PopNeedsList = new Functions().MergeClasses(PopNeedsDataP, PopNeedsDataV);
-                            form.local = new ClassPopNeeds(PopNeedsData[i]);
-                            form.ShowDialog();
-                            ClassPopNeeds j = form.ReturnValue();
-                            if (j != null)
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (PopNeedsForm form = new PopNeedsForm())
                             {
-                                i = new Functions().hasNameIndex(PopNeedsDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(PopNeedsData, ListBox.Items[selectedIndex].ToString());
+                                form.PopNeedsListP = PopNeedsDataP;
+                                form.GoodsList = Functions.MergeClasses(GoodsDataP, GoodsDataV);
+                                form.local = new ClassPopNeeds(PopNeedsData[i]);
+                                form.ShowDialog();
+                                ClassPopNeeds j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    PopNeedsDataP.Add(new ClassPopNeeds(j));
-                                    PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
+                                    i = Functions.hasNameIndex(PopNeedsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    PopNeedsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        PopNeedsDataP.Add(new ClassPopNeeds(j));
+                                        PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        PopNeedsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
+                    case "Pop Types":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
 
-                        if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
-                        break;
+                            using (PopTypesForm form = new PopTypesForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(PopTypesData, ListBox.Items[selectedIndex].ToString());
+                                form.PopTypesListP = PopTypesDataP;
+                                form.local = new ClassPopTypes(PopTypesData[i]);
+                                form.ShowDialog();
+                                ClassPopTypes j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(PopTypesDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        PopTypesDataP.Add(new ClassPopTypes(j));
+                                        PopTypesDataP.Sort(delegate (ClassPopTypes t1, ClassPopTypes t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        PopTypesDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
 
+                            if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Production Method Groups":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (ProductionMethodGroupsForm form = new ProductionMethodGroupsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(ProductionMethodGroupsData, ListBox.Items[selectedIndex].ToString());
+                                form.ProductionMethodGroupsListP = ProductionMethodGroupsDataP;
+                                form.ProductionMethodsList = Functions.MergeClasses(ProductionMethodsDataP, ProductionMethodsDataV);
+                                form.local = new ClassProductionMethodGroups(ProductionMethodGroupsData[i]);
+                                form.ShowDialog();
+                                ClassProductionMethodGroups j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(ProductionMethodGroupsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        ProductionMethodGroupsDataP.Add(new ClassProductionMethodGroups(j));
+                                        ProductionMethodGroupsDataP.Sort(delegate (ClassProductionMethodGroups t1, ClassProductionMethodGroups t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        ProductionMethodGroupsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
+                    case "Production Methods":
+                        {
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (ProductionMethodsForm form = new ProductionMethodsForm())
+                            {
+                                int i;
+                                i = Functions.hasNameIndex(ProductionMethodsData, ListBox.Items[selectedIndex].ToString());
+                                form.ProductionMethodsListP = ProductionMethodsDataP;
+                                form.local = new ClassProductionMethods(ProductionMethodsData[i]);
+                                form.ShowDialog();
+                                ClassProductionMethods j = form.ReturnValue();
+                                if (j != null)
+                                {
+                                    i = Functions.hasNameIndex(ProductionMethodsDataP, j.Name); // Index to change
+                                    if (i == -1)
+                                    {
+                                        ProductionMethodsDataP.Add(new ClassProductionMethods(j));
+                                        ProductionMethodsDataP.Sort(delegate (ClassProductionMethods t1, ClassProductionMethods t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        ProductionMethodsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                }
+                            }
+
+                            if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
+                        }
                     case "Religions":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (ReligionForm form = new ReligionForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(ReligionsData, ListBox.Items[selectedIndex].ToString());
-                            form.sizeOfVicky = ReligionsDataV.Count;
-                            form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                            form.ReligionData = new Functions().MergeClasses(ReligionsDataP, ReligionsDataV);
-                            form.local = new ClassReligions(ReligionsData[i]);
-                            form.Traits = TraitsData;
-                            form.ShowDialog();
-                            ClassReligions j = form.ReturnValue();
-                            if (j != null)
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (ReligionForm form = new ReligionForm())
                             {
-                                i = new Functions().hasNameIndex(ReligionsDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(ReligionsData, ListBox.Items[selectedIndex].ToString());
+                                form.ReligionDataP = ReligionsDataP;
+                                form.GoodsData = Functions.MergeClasses(GoodsDataP, GoodsDataV);
+                                form.local = new ClassReligions(ReligionsData[i]);
+                                form.Traits = TraitsData;
+                                form.ShowDialog();
+                                ClassReligions j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    ReligionsDataP.Add(new ClassReligions(j));
-                                    ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                    i = Functions.hasNameIndex(ReligionsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    ReligionsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ReligionsDataP.Add(new ClassReligions(j));
+                                        ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        ReligionsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
                     case "State Traits":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (StateTraitsForm form = new StateTraitsForm())
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(StateTraitsData, ListBox.Items[selectedIndex].ToString());
-                            form.sizeOfVicky = StateTraitsDataV.Count;
-                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                            form.TechData = new Functions().MergeClasses(TechDataP, TechDataV);
-                            form.StateTraitsData = new Functions().MergeClasses(StateTraitsDataP, StateTraitsDataV);
-                            form.local = new ClassStateTraits(StateTraitsData[i]);
-                            form.ShowDialog();
-                            ClassStateTraits j = form.ReturnValue();
-                            if (j != null)
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (StateTraitsForm form = new StateTraitsForm())
                             {
-                                i = new Functions().hasNameIndex(StateTraitsDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(StateTraitsData, ListBox.Items[selectedIndex].ToString());
+                                form.StateTraitsDataP = StateTraitsDataP;
+                                form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                                form.TechData = Functions.MergeClasses(TechDataP, TechDataV);
+                                form.local = new ClassStateTraits(StateTraitsData[i]);
+                                form.ShowDialog();
+                                ClassStateTraits j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    StateTraitsDataP.Add(new ClassStateTraits(j));
-                                    StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                    i = Functions.hasNameIndex(StateTraitsDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    StateTraitsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        StateTraitsDataP.Add(new ClassStateTraits(j));
+                                        StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        StateTraitsDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
-                    case "Technology":
-
-                        if (ListBox.Items.Count == 0) { return; }
-
-                        if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
-
-                        using (TechForm form = new TechForm())
+                    case "Technologies":
                         {
-                            int i;
-                            i = new Functions().hasNameIndex(TechData, ListBox.Items[selectedIndex].ToString());
-                            form.sizeOfVicky = TechDataV.Count;
-                            form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                            form.TechList = new Functions().MergeClasses(TechDataP, TechDataV);
-                            form.EraList = new Functions().MergeClasses(EraDataP, EraDataV);
-                            form.local = new ClassTech(TechData[i]);
-                            form.ShowDialog();
-                            ClassTech j = form.ReturnValue();
-                            if (j != null)
+                            if (ListBox.Items.Count == 0) { return; }
+
+                            if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
+
+                            using (TechForm form = new TechForm())
                             {
-                                i = new Functions().hasNameIndex(TechDataP, j.Name); // Index to change
-                                if (i == -1)
+                                int i;
+                                i = Functions.hasNameIndex(TechData, ListBox.Items[selectedIndex].ToString());
+                                form.TechListP = TechDataP;
+                                form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                                form.TechList = Functions.MergeClasses(TechDataP, TechDataV);
+                                form.EraList = Functions.MergeClasses(ErasDataP, ErasDataV);
+                                form.local = new ClassTech(TechData[i]);
+                                form.ShowDialog();
+                                ClassTech j = form.ReturnValue();
+                                if (j != null)
                                 {
-                                    TechDataP.Add(new ClassTech(j));
-                                    TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
+                                    i = Functions.hasNameIndex(TechDataP, j.Name); // Index to change
+                                    if (i == -1)
                                     {
-                                        return (t1.Name.CompareTo(t2.Name));
-                                    });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
-                                }
-                                else
-                                {
-                                    TechDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        TechDataP.Add(new ClassTech(j));
+                                        TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
+                                        {
+                                            return (t1.Name.CompareTo(t2.Name));
+                                        });
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
+                                    else
+                                    {
+                                        TechDataP[i] = j;
+                                        ProjectLB.Items.Clear();
+                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    }
                                 }
                             }
+
+                            if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
+                            else { DeleteBT.Enabled = true; }
+
+                            break;
                         }
-
-                        if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                        else { DeleteBT.Enabled = true; }
-
-                        break;
-
                     default:
                         MainLB.Items.Add("Error");
                         break;
@@ -1448,356 +2247,746 @@ namespace Victoria_3_Modding_Tool
             SaveStatus = 2;
             switch (MainData[mainSelectedIndex].ToString())
             {
-                case "Era":
-
-                    using (EraForm form = new EraForm())
+                case "Building Groups":
                     {
-                        int i;
-                        form.local = null;
-                        form.ShowDialog();
-                        ClassEra j = form.ReturnValue();
-                        if (j != null)
+                        using (BuildingGroupsForm form = new BuildingGroupsForm())
                         {
-                            i = new Functions().hasNameIndex(EraDataP, j.Era.ToString()); // Index to change
-                            if (i == -1)
+                            int i;
+                            form.BuildingGroupsListP = BuildingGroupsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassBuildingGroups j = form.ReturnValue();
+                            if (j != null)
                             {
-                                EraDataP.Add(new ClassEra(j.Era, j.Cost));
-                                EraDataP.Sort(delegate (ClassEra t1, ClassEra t2)
+                                i = Functions.hasNameIndex(BuildingGroupsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Era.CompareTo(t2.Era));
-                                });
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                            }
-                            else
-                            {
-                                EraDataP[i].Cost = j.Cost;
-                                ProjectLB.Items.Clear();
-                                ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    BuildingGroupsDataP.Add(new ClassBuildingGroups(j));
+                                    BuildingGroupsDataP.Sort(delegate (ClassBuildingGroups t1, ClassBuildingGroups t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    BuildingGroupsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
+                case "Buildings":
+                    {
+                        using (BuildingsForm form = new BuildingsForm())
+                        {
+                            int i;
+                            form.BuildingsListP = BuildingsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassBuildings j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(BuildingsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    BuildingsDataP.Add(new ClassBuildings(j));
+                                    BuildingsDataP.Sort(delegate (ClassBuildings t1, ClassBuildings t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    BuildingsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
-                    if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    break;
+                        break;
+                    }
+                case "Canals":
+                    {
+                        using (CanalsForm form = new CanalsForm())
+                        {
+                            int i;
+                            form.CanalsListP = CanalsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassCanals j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(CanalsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    CanalsDataP.Add(new ClassCanals(j));
+                                    CanalsDataP.Sort(delegate (ClassCanals t1, ClassCanals t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    CanalsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
+                        if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Cultures":
+                    {
+                        using (CulturesForm form = new CulturesForm())
+                        {
+                            int i;
+                            form.CulturesListP = CulturesDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassCultures j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(CulturesDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    CulturesDataP.Add(new ClassCultures(j));
+                                    CulturesDataP.Sort(delegate (ClassCultures t1, ClassCultures t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    CulturesDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
+
+                        if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Decisions":
+                    {
+                        using (DecisionsForm form = new DecisionsForm())
+                        {
+                            int i;
+                            form.DecisionsListP = DecisionsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassDecisions j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(DecisionsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    DecisionsDataP.Add(new ClassDecisions(j));
+                                    DecisionsDataP.Sort(delegate (ClassDecisions t1, ClassDecisions t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    DecisionsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
+
+                        if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Decrees":
+                    {
+                        using (DecreesForm form = new DecreesForm())
+                        {
+                            int i;
+                            form.DecreesListP = DecreesDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassDecrees j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(DecreesDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    DecreesDataP.Add(new ClassDecrees(j));
+                                    DecreesDataP.Sort(delegate (ClassDecrees t1, ClassDecrees t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    DecreesDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
+
+                        if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Eras":
+                    {
+                        using (EraForm form = new EraForm())
+                        {
+                            int i;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassEras j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(ErasDataP, j.Era.ToString()); // Index to change
+                                if (i == -1)
+                                {
+                                    ErasDataP.Add(new ClassEras(j.Era, j.Cost));
+                                    ErasDataP.Sort(delegate (ClassEras t1, ClassEras t2)
+                                    {
+                                        return (t1.Era.CompareTo(t2.Era));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                }
+                                else
+                                {
+                                    ErasDataP[i].Cost = j.Cost;
+                                    ProjectLB.Items.Clear();
+                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                }
+                            }
+                        }
+
+                        if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Goods":
-
-                    using (GoodsForm form = new GoodsForm())
                     {
-                        int i;
-
-                        form.sizeOfVicky = GoodsDataV.Count;
-                        form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                        form.local = null;
-                        form.ShowDialog();
-
-                        ClassGoods j = form.ReturnValue();
-                        if (j != null)
+                        using (GoodsForm form = new GoodsForm())
                         {
-                            i = new Functions().hasNameIndex(GoodsDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+
+                            form.GoodsDataP = GoodsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+
+                            ClassGoods j = form.ReturnValue();
+                            if (j != null)
                             {
-                                GoodsDataP.Add(new ClassGoods(j));
-                                GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
+                                i = Functions.hasNameIndex(GoodsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                GoodsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    GoodsDataP.Add(new ClassGoods(j));
+                                    GoodsDataP.Sort(delegate (ClassGoods t1, ClassGoods t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    GoodsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
                 case "Institutions":
-
-                    using (InstitutionsForm form = new InstitutionsForm())
                     {
-                        int i;
-
-                        form.sizeOfVicky = InstitutionsDataV.Count;
-                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                        form.InstitutionsData = new Functions().MergeClasses(InstitutionsDataP, InstitutionsDataV);
-                        form.local = null;
-                        form.ShowDialog();
-
-                        ClassInstitutions j = form.ReturnValue();
-                        if (j != null)
+                        using (InstitutionsForm form = new InstitutionsForm())
                         {
-                            i = new Functions().hasNameIndex(InstitutionsDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+
+                            form.InstitutionsDataP = InstitutionsDataP;
+                            form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.local = null;
+                            form.ShowDialog();
+
+                            ClassInstitutions j = form.ReturnValue();
+                            if (j != null)
                             {
-                                InstitutionsDataP.Add(new ClassInstitutions(j));
-                                InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                i = Functions.hasNameIndex(InstitutionsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                InstitutionsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    InstitutionsDataP.Add(new ClassInstitutions(j));
+                                    InstitutionsDataP.Sort(delegate (ClassInstitutions t1, ClassInstitutions t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    InstitutionsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
+                case "Law Groups":
+                    {
+                        using (LawGroupsForm form = new LawGroupsForm())
+                        {
+                            int i;
+                            form.LawGroupsListP = LawGroupsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassLawGroups j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(LawGroupsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    LawGroupsDataP.Add(new ClassLawGroups(j));
+                                    LawGroupsDataP.Sort(delegate (ClassLawGroups t1, ClassLawGroups t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    LawGroupsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
-                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    break;
+                        break;
+                    }
+                case "Laws":
+                    {
+                        using (LawsForm form = new LawsForm())
+                        {
+                            int i;
+                            form.LawsListP = LawsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassLaws j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(LawsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    LawsDataP.Add(new ClassLaws(j));
+                                    LawsDataP.Sort(delegate (ClassLaws t1, ClassLaws t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    LawsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
+                        if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Modifiers":
-
-                    using (ModifiersForm form = new ModifiersForm())
                     {
-                        int i;
-
-                        form.sizeOfVicky = ModifierDataV.Count;
-                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                        form.ModifiersData = new Functions().MergeClasses(ModifierDataP, ModifierDataV);
-                        form.local = null;
-                        form.ShowDialog();
-
-                        ClassModifiers j = form.ReturnValue();
-                        if (j != null)
+                        using (ModifiersForm form = new ModifiersForm())
                         {
-                            i = new Functions().hasNameIndex(ModifierDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+
+                            form.ModifiersDataP = ModifierDataP;
+                            form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.local = null;
+                            form.ShowDialog();
+
+                            ClassModifiers j = form.ReturnValue();
+                            if (j != null)
                             {
-                                ModifierDataP.Add(new ClassModifiers(j));
-                                ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                i = Functions.hasNameIndex(ModifierDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                ModifierDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ModifierDataP.Add(new ClassModifiers(j));
+                                    ModifierDataP.Sort(delegate (ClassModifiers t1, ClassModifiers t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ModifierDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
                 case "Modifier Types":
-
-                    using (ModifiersTypesForm form = new ModifiersTypesForm())
                     {
-                        int i;
-
-                        form.sizeOfVicky = ModifierTypeDataV.Count;
-                        form.ModifiersData = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                        form.local = null;
-                        form.ShowDialog();
-
-                        ClassModifiersType j = form.ReturnValue();
-                        if (j != null)
+                        using (ModifiersTypesForm form = new ModifiersTypesForm())
                         {
-                            i = new Functions().hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+
+                            form.ModifiersDataP = ModifierTypeDataP;
+                            form.local = null;
+                            form.ShowDialog();
+
+                            ClassModifiersType j = form.ReturnValue();
+                            if (j != null)
                             {
-                                ModifierTypeDataP.Add(new ClassModifiersType(j));
-                                ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                i = Functions.hasNameIndex(ModifierTypeDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                ModifierTypeDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ModifierTypeDataP.Add(new ClassModifiersType(j));
+                                    ModifierTypeDataP.Sort(delegate (ClassModifiersType t1, ClassModifiersType t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ModifierTypeDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
                 case "Pop Needs":
-
-                    using (PopNeedsForm form = new PopNeedsForm())
                     {
-                        int i;
-                        form.sizeOfVicky = PopNeedsDataV.Count;
-                        form.GoodsList = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                        form.PopNeedsList = new Functions().MergeClasses(PopNeedsDataP, PopNeedsDataV);
-                        form.local = null;
-                        form.ShowDialog();
-                        ClassPopNeeds j = form.ReturnValue();
-                        if (j != null)
+                        using (PopNeedsForm form = new PopNeedsForm())
                         {
-                            i = new Functions().hasNameIndex(PopNeedsDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+                            form.PopNeedsListP = PopNeedsDataP;
+                            form.GoodsList = Functions.MergeClasses(GoodsDataP, GoodsDataV);
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassPopNeeds j = form.ReturnValue();
+                            if (j != null)
                             {
-                                PopNeedsDataP.Add(new ClassPopNeeds(j));
-                                PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
+                                i = Functions.hasNameIndex(PopNeedsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                PopNeedsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    PopNeedsDataP.Add(new ClassPopNeeds(j));
+                                    PopNeedsDataP.Sort(delegate (ClassPopNeeds t1, ClassPopNeeds t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    PopNeedsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
+                case "Pop Types":
+                    {
+                        using (PopTypesForm form = new PopTypesForm())
+                        {
+                            int i;
+                            form.PopTypesListP = PopTypesDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassPopTypes j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(PopTypesDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    PopTypesDataP.Add(new ClassPopTypes(j));
+                                    PopTypesDataP.Sort(delegate (ClassPopTypes t1, ClassPopTypes t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    PopTypesDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
-                    if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    break;
+                        break;
+                    }
+                case "Production Method Groups":
+                    {
+                        using (ProductionMethodGroupsForm form = new ProductionMethodGroupsForm())
+                        {
+                            int i;
+                            form.ProductionMethodGroupsListP = ProductionMethodGroupsDataP;
+                            form.ProductionMethodsList = Functions.MergeClasses(ProductionMethodsDataP, ProductionMethodsDataV);
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassProductionMethodGroups j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(ProductionMethodGroupsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    ProductionMethodGroupsDataP.Add(new ClassProductionMethodGroups(j));
+                                    ProductionMethodGroupsDataP.Sort(delegate (ClassProductionMethodGroups t1, ClassProductionMethodGroups t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ProductionMethodGroupsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
 
+                        if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Production Methods":
+                    {
+                        using (ProductionMethodsForm form = new ProductionMethodsForm())
+                        {
+                            int i;
+                            form.ProductionMethodsListP = ProductionMethodsDataP;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassProductionMethods j = form.ReturnValue();
+                            if (j != null)
+                            {
+                                i = Functions.hasNameIndex(ProductionMethodsDataP, j.Name); // Index to change
+                                if (i == -1)
+                                {
+                                    ProductionMethodsDataP.Add(new ClassProductionMethods(j));
+                                    ProductionMethodsDataP.Sort(delegate (ClassProductionMethods t1, ClassProductionMethods t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ProductionMethodsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                            }
+                        }
+
+                        if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Religions":
-
-                    using (ReligionForm form = new ReligionForm())
                     {
-                        int i;
-                        form.sizeOfVicky = ReligionsDataV.Count;
-                        form.GoodsData = new Functions().MergeClasses(GoodsDataP, GoodsDataV);
-                        form.ReligionData = new Functions().MergeClasses(ReligionsDataP, ReligionsDataV);
-                        form.Traits = TraitsData;
-                        form.local = null;
-                        form.ShowDialog();
-                        ClassReligions j = form.ReturnValue();
-                        if (j != null)
+                        using (ReligionForm form = new ReligionForm())
                         {
-                            i = new Functions().hasNameIndex(ReligionsDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+                            form.ReligionDataP = ReligionsDataP;
+                            form.GoodsData = Functions.MergeClasses(GoodsDataP, GoodsDataV);
+                             form.Traits = TraitsData;
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassReligions j = form.ReturnValue();
+                            if (j != null)
                             {
-                                ReligionsDataP.Add(new ClassReligions(j));
-                                ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                i = Functions.hasNameIndex(ReligionsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                ReligionsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ReligionsDataP.Add(new ClassReligions(j));
+                                    ReligionsDataP.Sort(delegate (ClassReligions t1, ClassReligions t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    ReligionsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
                 case "State Traits":
-
-                    using (StateTraitsForm form = new StateTraitsForm())
                     {
-                        int i;
-                        form.sizeOfVicky = StateTraitsDataV.Count;
-                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                        form.TechData = new Functions().MergeClasses(TechDataP, TechDataV);
-                        form.StateTraitsData = new Functions().MergeClasses(StateTraitsDataP, StateTraitsDataV);
-                        form.local = null;
-                        form.ShowDialog();
-                        ClassStateTraits j = form.ReturnValue();
-                        if (j != null)
+                        using (StateTraitsForm form = new StateTraitsForm())
                         {
-                            i = new Functions().hasNameIndex(StateTraitsDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+                            form.StateTraitsDataP = StateTraitsDataP;
+                            form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.TechData = Functions.MergeClasses(TechDataP, TechDataV);
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassStateTraits j = form.ReturnValue();
+                            if (j != null)
                             {
-                                StateTraitsDataP.Add(new ClassStateTraits(j));
-                                StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                i = Functions.hasNameIndex(StateTraitsDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                StateTraitsDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    StateTraitsDataP.Add(new ClassStateTraits(j));
+                                    StateTraitsDataP.Sort(delegate (ClassStateTraits t1, ClassStateTraits t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    StateTraitsDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
-                case "Technology":
-
-                    using (TechForm form = new TechForm())
+                case "Technologies":
                     {
-                        int i;
-                        form.sizeOfVicky = TechDataV.Count;
-                        form.ModifiersTypes = new Functions().MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
-                        form.TechList = new Functions().MergeClasses(TechDataP, TechDataV);
-                        form.EraList = new Functions().MergeClasses(EraDataP, EraDataV);
-                        form.local = null;
-                        form.ShowDialog();
-                        ClassTech j = form.ReturnValue();
-                        if (j != null)
+                        using (TechForm form = new TechForm())
                         {
-                            i = new Functions().hasNameIndex(TechDataP, j.Name); // Index to change
-                            if (i == -1)
+                            int i;
+                            form.TechListP = TechDataP;
+                            form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
+                            form.TechList = Functions.MergeClasses(TechDataP, TechDataV);
+                            form.EraList = Functions.MergeClasses(ErasDataP, ErasDataV);
+                            form.local = null;
+                            form.ShowDialog();
+                            ClassTech j = form.ReturnValue();
+                            if (j != null)
                             {
-                                TechDataP.Add(new ClassTech(j));
-                                TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
+                                i = Functions.hasNameIndex(TechDataP, j.Name); // Index to change
+                                if (i == -1)
                                 {
-                                    return (t1.Name.CompareTo(t2.Name));
-                                });
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
-                            }
-                            else
-                            {
-                                TechDataP[i] = j;
-                                ProjectLB.Items.Clear();
-                                foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    TechDataP.Add(new ClassTech(j));
+                                    TechDataP.Sort(delegate (ClassTech t1, ClassTech t2)
+                                    {
+                                        return (t1.Name.CompareTo(t2.Name));
+                                    });
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
+                                else
+                                {
+                                    TechDataP[i] = j;
+                                    ProjectLB.Items.Clear();
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                }
                             }
                         }
+
+                        if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
                     }
-
-                    if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
                 default:
                     MainLB.Items.Add("Error");
                     break;
@@ -1816,9 +3005,9 @@ namespace Victoria_3_Modding_Tool
             {
             }
 
-            LocalizationDataV = LocalizationSetup(VickyPath + "\\game");
-            LocalizationDataP = LocalizationSetup(ProjPath);
-            LocalizationDataM = LocalizationSetup(ModPath);
+            LocalizationDataV = Functions.LocalizationSetup(VickyPath + "\\game");
+            LocalizationDataP = Functions.LocalizationSetup(ProjPath);
+            LocalizationDataM = Functions.LocalizationSetup(ModPath);
         }
 
         // *
@@ -1829,135 +3018,289 @@ namespace Victoria_3_Modding_Tool
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-                case "Era":
+                case "Building Groups":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == 0) { return; }
+                        i = Functions.hasNameIndex(BuildingGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        BuildingGroupsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 1; ProjectLB.SelectedIndex = 1; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    i = new Functions().hasNameIndex(EraDataP, ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20));
-                    EraDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                    foreach (ClassEra eraEntry in EraDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        break;
+                    }
+                case "Buildings":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (EraDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        i = Functions.hasNameIndex(BuildingsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        BuildingsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    break;
+                        if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
+                        break;
+                    }
+                case "Canals":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(CanalsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        CanalsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Cultures":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(CulturesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        CulturesDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Decisions":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(DecisionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        DecisionsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Decrees":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(DecreesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        DecreesDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Eras":
+                    {
+                        if (ProjectLB.SelectedIndex == 0) { return; }
+
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 1; ProjectLB.SelectedIndex = 1; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(ErasDataP, ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20));
+                        ErasDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+
+                        if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Goods":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        GoodsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    GoodsDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
+                        break;
+                    }
                 case "Institutions":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(InstitutionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        InstitutionsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(InstitutionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    InstitutionsDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        break;
+                    }
+                case "Law Groups":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    break;
+                        i = Functions.hasNameIndex(LawGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        LawGroupsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
 
+                        if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Laws":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(LawsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        LawsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Modifiers":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(ModifierDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        ModifierDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(ModifierDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    ModifierDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
+                        break;
+                    }
                 case "Modifier Types":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        ModifierTypeDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    ModifierTypeDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
+                        break;
+                    }
                 case "Pop Needs":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        PopNeedsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    PopNeedsDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        break;
+                    }
+                case "Pop Types":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    break;
+                        i = Functions.hasNameIndex(PopTypesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        PopTypesDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
 
+                        if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Production Method Groups":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(ProductionMethodGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        ProductionMethodGroupsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
+                case "Production Methods":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+
+                        i = Functions.hasNameIndex(ProductionMethodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        ProductionMethodsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+
+                        if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
+
+                        break;
+                    }
                 case "Religions":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        ReligionsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    ReligionsDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
+                        break;
+                    }
                 case "State Traits":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
+                        i = Functions.hasNameIndex(StateTraitsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        StateTraitsDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                    i = new Functions().hasNameIndex(StateTraitsDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    StateTraitsDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
+                        break;
+                    }
+                case "Technologies":
+                    {
+                        if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                    break;
+                        i = Functions.hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        TechDataP.RemoveAt(i);
+                        ProjectLB.Items.Clear();
+                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
 
-                case "Technology":
+                        if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
+                        else { DeleteBT.Enabled = true; }
 
-                    if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
-
-                    i = new Functions().hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
-                    TechDataP.RemoveAt(i);
-                    ProjectLB.Items.Clear();
-                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
-
-                    if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
-                    else { DeleteBT.Enabled = true; }
-
-                    break;
-
+                        break;
+                    }
                 default:
                     MainLB.Items.Add("Error");
                     break;
@@ -1965,44 +3308,39 @@ namespace Victoria_3_Modding_Tool
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Important
+        // Extra Local Functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private Dictionary<string, string> LocalizationSetup(string path)
-        {
-            if (Directory.Exists(path + "\\localization\\" + language))
-            {
-                return new LocalizationParser().ParseFiles(path + "\\localization\\" + language);
-            }
-            return null;
-        }
-
-        private void ReadFilesCommon<T>(string path, List<T> Data, IParser Iparser, Func<KeyValuePair<string, object>, T> ClassCreator, Func<T, string> sortBy)
-        {
-            if (Directory.Exists(path))
-            {
-                foreach (List<KeyValuePair<string, object>> entry in Iparser.ParseFiles(path).Cast<List<KeyValuePair<string, object>>>()) // Files
-                {
-                    foreach (KeyValuePair<string, object> entry2 in entry)
-                    {
-                        Data.Add(ClassCreator(entry2));
-                    }
-                }
-
-                Data.Sort(delegate (T t1, T t2)
-                {   // 0.5 s Make more efi
-                    return sortBy(t1).CompareTo(sortBy(t2));
-                });
-            }
-            return;
-        }
 
         // *
         private void ClearClassData()
         {
-            EraDataP?.Clear();
-            EraDataV?.Clear();
-            EraDataM?.Clear();
+            BuildingGroupsDataP?.Clear();
+            BuildingGroupsDataV?.Clear();
+            BuildingGroupsDataM?.Clear();
+
+            BuildingsDataP?.Clear();
+            BuildingsDataV?.Clear();
+            BuildingsDataM?.Clear();
+
+            CanalsDataP?.Clear();
+            CanalsDataV?.Clear();
+            CanalsDataM?.Clear();
+
+            CulturesDataP?.Clear();
+            CulturesDataV?.Clear();
+            CulturesDataM?.Clear();
+
+            DecisionsDataP?.Clear();
+            DecisionsDataV?.Clear();
+            DecisionsDataM?.Clear();
+
+            DecreesDataP?.Clear();
+            DecreesDataV?.Clear();
+            DecreesDataM?.Clear();
+
+            ErasDataP?.Clear();
+            ErasDataV?.Clear();
+            ErasDataM?.Clear();
 
             GoodsDataP?.Clear();
             GoodsDataV?.Clear();
@@ -2011,6 +3349,14 @@ namespace Victoria_3_Modding_Tool
             InstitutionsDataP?.Clear();
             InstitutionsDataV?.Clear();
             InstitutionsDataM?.Clear();
+
+            LawGroupsDataP?.Clear();
+            LawGroupsDataV?.Clear();
+            LawGroupsDataM?.Clear();
+
+            LawsDataP?.Clear();
+            LawsDataV?.Clear();
+            LawsDataM?.Clear();
 
             ModifierDataP?.Clear();
             ModifierDataV?.Clear();
@@ -2023,6 +3369,18 @@ namespace Victoria_3_Modding_Tool
             PopNeedsDataP?.Clear();
             PopNeedsDataV?.Clear();
             PopNeedsDataM?.Clear();
+
+            PopTypesDataP?.Clear();
+            PopTypesDataV?.Clear();
+            PopTypesDataM?.Clear();
+
+            ProductionMethodGroupsDataP?.Clear();
+            ProductionMethodGroupsDataV?.Clear();
+            ProductionMethodGroupsDataM?.Clear();
+
+            ProductionMethodsDataP?.Clear();
+            ProductionMethodsDataV?.Clear();
+            ProductionMethodsDataM?.Clear();
 
             ReligionsDataP?.Clear();
             ReligionsDataV?.Clear();
@@ -2095,9 +3453,260 @@ namespace Victoria_3_Modding_Tool
 
             switch (MainData[mainSelectedIndex].ToString())
             {
-                case "Era":
+                case "Building Groups":
 
-                    if (EraDataP.Count != 0)
+                    if (BuildingGroupsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\building_groups"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\building_groups");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\building_groups\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassBuildingGroups Entry in BuildingGroupsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_building_groups_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassBuildingGroups Entry in BuildingGroupsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+                case "Buildings":
+
+                    if (BuildingsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\buildings"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\buildings");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\buildings\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassBuildings Entry in BuildingsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_buildings_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassBuildings Entry in BuildingsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_lens_option:0 \"" + Entry.LensOption + "\"");
+
+                            }
+                        }
+                    }
+
+                    break;
+                case "Canals":
+
+                    if (CanalsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\canals"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\canals");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\canals\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassCanals Entry in CanalsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_canals_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassCanals Entry in CanalsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+                case "Cultures":
+
+                    if (CulturesDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\cultures"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\cultures");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\cultures\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassCultures Entry in CulturesDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_cultures_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassCultures Entry in CulturesDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Decisions":
+
+                    if (DecisionsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\decisions"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\decisions");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\decisions\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassDecisions Entry in DecisionsDataP)
+                            {
+                                if (Entry.Code!=string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_decisions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassDecisions Entry in DecisionsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_desc:0 \"" + Entry.Description + "\"");
+                                if (Entry.ToolTip != string.Empty)
+                                {
+                                    sw.WriteLine(" " + Entry.Name + "_tooltip:0 \"" + Entry.ToolTip + "\"");
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Decrees":
+
+                    if (DecreesDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\decrees"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\decrees");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\decrees\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassDecrees Entry in DecreesDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_decrees_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassDecrees Entry in DecreesDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_desc:0 \"" + Entry.Description + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Eras":
+
+                    if (ErasDataP.Count != 0)
                     {
                         if (!Directory.Exists(ProjPath + "\\common\\technology"))
                         {
@@ -2111,7 +3720,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\technology\\eras\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            foreach (ClassEra eraEntry in EraDataP)
+                            foreach (ClassEras eraEntry in ErasDataP)
                             {
                                 sw.WriteLine();
                                 sw.WriteLine("era_" + eraEntry.Era + " = {");
@@ -2174,7 +3783,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_goods_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassGoods Entry in GoodsDataP)
                             {
@@ -2229,10 +3838,12 @@ namespace Victoria_3_Modding_Tool
 
                                 if (entry.Modifiers.Count != 0)
                                 {
+                                    sw.WriteLine("\tmodifier = {");
                                     foreach (string modifier in entry.Modifiers)
                                     {
-                                        sw.WriteLine("\t" + modifier);
+                                        sw.WriteLine("\t\t" + modifier);
                                     }
+                                    sw.WriteLine("\t}");
                                 }
 
                                 sw.WriteLine("}");
@@ -2248,7 +3859,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_institutions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassInstitutions entry in InstitutionsDataP)
                             {
@@ -2292,6 +3903,90 @@ namespace Victoria_3_Modding_Tool
                             if (entry.BackTexture != ProjPath + "\\gfx\\interface\\illustrations\\institutions\\" + entry.Name + ".dds")
                             {
                                 File.Copy(entry.BackTexture, ProjPath + "\\gfx\\interface\\illustrations\\institutions\\" + entry.Name + ".dds", true);
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Law Groups":
+
+                    if (LawGroupsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\law_groups"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\law_groups");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\law_groups\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassLawGroups Entry in LawGroupsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_law_groups_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_"+language+":");
+
+                            foreach (ClassLawGroups Entry in LawGroupsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_desc:0 \"" + Entry.Description + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Laws":
+
+                    if (LawsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\laws"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\laws");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\laws\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassLaws Entry in LawsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_laws_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassLaws Entry in LawsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_desc:0 \"" + Entry.Description + "\"");
                             }
                         }
                     }
@@ -2342,7 +4037,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_modifiers_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassModifiers entry in ModifierDataP)
                             {
@@ -2460,12 +4155,12 @@ namespace Victoria_3_Modding_Tool
                                     sw.WriteLine("\tnum_decimals = " + Entry.Num_decimals);
                                 }
 
-                                if (Entry.Translate != null)
+                                if (!string.IsNullOrEmpty(Entry.Translate))
                                 {
                                     sw.WriteLine("\ttranslate = " + Entry.Translate);
                                 }
 
-                                if (Entry.Postfix != null)
+                                if (!string.IsNullOrEmpty(Entry.Postfix))
                                 {
                                     sw.WriteLine("\tpostfix = \"" + Entry.Postfix + "\"");
                                 }
@@ -2525,12 +4220,152 @@ namespace Victoria_3_Modding_Tool
                             Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
                         }
 
-                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_popneeds_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_pop_needs_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassPopNeeds Entry in PopNeedsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Pop Types":
+
+                    if (PopTypesDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\pop_types"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\pop_types");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\pop_types\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassPopTypes Entry in PopTypesDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_pop_types_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassPopTypes Entry in PopTypesDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_only_icon:0 \"" + Entry.OnlyIcon + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_no_icon:0 \"" + Entry.NoIcon + "\"");
+                                sw.WriteLine(" " + Entry.Name + "_desc:0 \"" + Entry.Description + "\"");
+                                if (Entry.QualificationsDesc != string.Empty)
+                                {
+                                    sw.WriteLine(" " + Entry.Name.ToUpper() + "_QUALIFICATIONS_DESC:0 \"" + Entry.QualificationsDesc + "\"");
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Production Method Groups":
+
+                    if (ProductionMethodGroupsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\production_method_groups"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\production_method_groups");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\production_method_groups\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataP)
+                            {
+                                sw.WriteLine(Entry.Name + " = {");
+                                sw.WriteLine("\ttexture = \"" + Entry.Texture + "\"");
+                                if (Entry.Ai_selection) { sw.WriteLine("\tai_selection = most_productive"); }
+                                if (Entry.Is_hidden_when_unavailable) { sw.WriteLine("\tis_hidden_when_unavailable = yes"); }
+                                if (Entry.Production_methods.Count != 0)
+                                {
+                                    sw.WriteLine("\n\tproduction_methods = {");
+                                    foreach (string entry in Entry.Production_methods)
+                                    {
+                                        sw.WriteLine("\t\t" + entry);
+                                    }
+                                    sw.WriteLine("\t}");
+                                }
+                                sw.WriteLine("}");
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_production_method_groups_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataP)
+                            {
+                                sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "Production Methods":
+
+                    if (ProductionMethodsDataP.Count != 0)
+                    {
+                        if (!Directory.Exists(ProjPath + "\\common\\production_methods"))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\common\\production_methods");
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\common\\production_methods\\" + ProjName.ToLower().Replace(" ", "_") + ".txt", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            foreach (ClassProductionMethods Entry in ProductionMethodsDataP)
+                            {
+                                if (Entry.Code != string.Empty)
+                                {
+                                    sw.WriteLine(Entry.Code);
+                                }
+                            }
+                        }
+
+                        // Localization
+                        if (!Directory.Exists(ProjPath + "\\localization\\" + language))
+                        {
+                            Directory.CreateDirectory(ProjPath + "\\localization\\" + language);
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_production_methods_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
+                        {
+                            sw.NewLine = "\n";
+                            sw.WriteLine("l_" + language + ":");
+
+                            foreach (ClassProductionMethods Entry in ProductionMethodsDataP)
                             {
                                 sw.WriteLine(" " + Entry.Name + ":0 \"" + Entry.TrueName + "\"");
                             }
@@ -2591,7 +4426,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_religions_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassReligions Entry in ReligionsDataP)
                             {
@@ -2677,7 +4512,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_state_traits_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassStateTraits entry in StateTraitsDataP)
                             {
@@ -2690,7 +4525,7 @@ namespace Victoria_3_Modding_Tool
 
                     break;
 
-                case "Technology":
+                case "Technologies":
 
                     if (TechDataP.Count != 0)
                     {
@@ -2749,7 +4584,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_tech_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_english:");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassTech techEntry in TechDataP)
                             {

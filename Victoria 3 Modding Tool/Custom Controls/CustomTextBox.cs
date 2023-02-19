@@ -221,5 +221,7 @@ namespace Victoria_3_Modding_Tool
         {
             this.OnKeyPress(e);
         }
+
+        public void SelectAll() => textBox1.SelectAll();
     }
 }

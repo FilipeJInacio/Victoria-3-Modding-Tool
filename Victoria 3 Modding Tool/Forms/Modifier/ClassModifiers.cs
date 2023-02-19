@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Victoria_3_Modding_Tool.Forms.Tech
+namespace Victoria_3_Modding_Tool
 {
     public class ClassModifiers : IType, ITexture
     {
@@ -84,8 +84,8 @@ namespace Victoria_3_Modding_Tool.Forms.Tech
             this.Neutral = -1;
             this.Boolean = -1;
             this.Ai_value = -1;
-            this.Translate = null;
-            this.Postfix = null;
+            this.Translate = string.Empty;
+            this.Postfix = string.Empty;
 
             foreach (KeyValuePair<string, object> entry in (List<KeyValuePair<string, object>>)ParserData.Value)
             {
