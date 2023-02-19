@@ -2,24 +2,24 @@
 
 
 
-| Content  | Type |
-| ------------- | ------------- |
-| Building Groups  | Code  |
-| Buildings  | Code  |
-| Canals  | Code  |
-| Cultures  | Code  |
-| Decrees  | Code  |
-| Eras  | Form/Code  |
-| Goods  | Form/Code  |
-| Institutions  | Form/Code  |
-| Law Groups  | Code  |
-| Laws  | Code  |
-| Modifier Types  | Form/Code  |
-| Modifiers  | Form/Code  |
-| Pop Needs  | Form/Code  |
-| Pop Types  | Code  |
-| Production Method Groups  | Form/Code  |
-| Production Methods  | Code  |
-| Religions  | Form/Code  |
-| State Traits  | Form/Code  |
-| Technologies  | Form/Code  |
+| Content  | Type | Guide Status |
+| ------------- | ------------- | ------------- |
+| Building Groups  | Code  | No Guide  |
+| Buildings  | Code  | No Guide  |
+| Canals  | Code  | No Guide  |
+| Cultures  | Code  | No Guide  |
+| Decrees  | Code  | No Guide  |
+| Eras  | Form/Code  | Meh Guide |
+| Goods  | Form/Code  | No Guide  |
+| Institutions  | Form/Code  | No Guide  |
+| Law Groups  | Code  | No Guide  |
+| Laws  | Code  | No Guide  |
+| Modifier Types  | Form/Code  | No Guide  |
+| Modifiers  | Form/Code  | No Guide  |
+| Pop Needs  | Form/Code  | No Guide  |
+| Pop Types  | Code  | No Guide  |
+| Production Method Groups  | Form/Code  | No Guide  |
+| Production Methods  | Code  | No Guide  |
+| Religions  | Form/Code  | No Guide  |
+| State Traits  | Form/Code  | No Guide  |
+| Technologies  | Form/Code  | Meh Guide  |
