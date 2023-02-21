@@ -96,7 +96,11 @@ Welcome to Victoria 3 Modding Tool, a form like application that helps making mo
 
 ### Installation
 
+[Download](https://mega.nz/file/imRlwRjS#jPWO054AMQE-eyQzi5DuAR1ldBejulYRhXNtcBXFVD8)
 
+Inside the folder should be the Victoria 3 Modding Tool .exe.
+
+(Might trigger your anti-virus)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -122,9 +126,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+[Discord](https://discord.com/invite/jkkMGVmUuz)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
