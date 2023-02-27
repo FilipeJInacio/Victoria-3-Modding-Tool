@@ -181,7 +181,6 @@ namespace Victoria_3_Modding_Tool
                         ControlStyles.AllPaintingInWmPaint |
                         ControlStyles.UserPaint |
                         ControlStyles.DoubleBuffer, true);
-            SizeObjects();
             LoadMainLB();
         }
 
@@ -189,57 +188,6 @@ namespace Victoria_3_Modding_Tool
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Form
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private void SizeObjects()
-        {
-            Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-
-            this.Size = new Size(rect.Width, rect.Height);
-            this.MaximumSize = new Size(rect.Width, rect.Height);
-            this.MinimumSize = new Size(rect.Width, rect.Height);
-
-            MainLB.Size = new Size(rect.Width / 8, rect.Height - 160);
-            VickyLB.Size = new Size(rect.Width / 5, rect.Height - 160);
-            ModLB.Size = new Size(rect.Width / 5, rect.Height - 160);
-            ProjectLB.Size = new Size(rect.Width / 5, rect.Height - 160);
-
-            MainLB.Location = new Point(32, 128);
-            VickyLB.Location = new Point(124 + rect.Width / 8, 128);
-            ModLB.Location = new Point(156 + rect.Width * 13 / 40, 128);
-            ProjectLB.Location = new Point(rect.Width * 4 / 5 - 32, 128);
-
-            MainSearchBarTB.Size = new Size(rect.Width / 8 + 4, 32);
-            VickySearchBarTB.Size = new Size(rect.Width / 5 + 4, 32);
-            ModSearchBarTB.Size = new Size(rect.Width / 5 + 4, 32);
-            ProjSearchBarTB.Size = new Size(rect.Width / 5 + 4, 32);
-
-            MainSearchBarTB.Location = new Point(30, 86);
-            VickySearchBarTB.Location = new Point(122 + rect.Width / 8, 86);
-            ModSearchBarTB.Location = new Point(154 + rect.Width * 13 / 40, 86);
-            ProjSearchBarTB.Location = new Point(rect.Width * 4 / 5 - 34, 86);
-
-            MainL.Location = new Point(32 + rect.Width / 16 - MainL.Width / 2, 44);
-            VickyL.Location = new Point(124 + rect.Width * 9 / 40 - VickyL.Width / 2, 44);
-            ModL.Location = new Point(154 + rect.Width * 17 / 40 - ModL.Width / 2, 44);
-            ProjectL.Location = new Point(rect.Width * 9 / 10 - 16 - ProjectL.Width / 2, 44);
-
-            AddModBT.Size = new Size(100, 100);
-            AddBT.Size = new Size(100, 100);
-            SaveBT.Size = new Size(100, 100);
-            DeleteBT.Size = new Size(100, 100);
-
-            AddModBT.Location = new Point(rect.Width * 53 / 80 + 62 - AddModBT.Width / 2, 230);
-            AddBT.Location = new Point(rect.Width * 53 / 80 + 62 - AddBT.Width / 2, 380);
-            SaveBT.Location = new Point(rect.Width * 53 / 80 + 62 - SaveBT.Size.Width / 2, 390 + SaveBT.Size.Height);
-            DeleteBT.Location = new Point(rect.Width * 53 / 80 + 62 - DeleteBT.Size.Width / 2, 400 + SaveBT.Size.Height + DeleteBT.Size.Height);
-
-            AddModL.Location = new Point(rect.Width * 53 / 80 + 62 - AddBT.Width / 2, 230);
-            NewL.Location = new Point(rect.Width * 53 / 80 + 62 - AddBT.Width / 2, 380);
-            SaveL.Location = new Point(rect.Width * 53 / 80 + 62 - SaveBT.Size.Width / 2, 390 + SaveBT.Size.Height);
-            DeleteL.Location = new Point(rect.Width * 53 / 80 + 62 - DeleteBT.Size.Width / 2, 400 + SaveBT.Size.Height + DeleteBT.Size.Height);
-
-            XL.Location = new Point(rect.Width * 53 / 80 + 62 + AddModBT.Width / 2 - XL.Width, 230);
-        }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -281,20 +229,6 @@ namespace Victoria_3_Modding_Tool
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(61, 61, 61), ButtonBorderStyle.Solid);
 
             base.OnPaint(e);
-            Graphics graph = e.Graphics;
-            //Draw border
-
-            using (Pen penBorder = new Pen(Color.FromArgb(66, 66, 66), 2))
-            {
-                penBorder.Alignment = PenAlignment.Inset;
-                graph.DrawLine(penBorder, MainLB.Width + 78, 54, MainLB.Width + 78, MainLB.Height + 130);
-                graph.DrawLine(penBorder, MainLB.Width + VickyLB.Width + ModLB.Width + 188, 350, Screen.PrimaryScreen.WorkingArea.Width - 64 - ProjectLB.Width, 350);
-                graph.DrawLine(penBorder, MainLB.Width + VickyLB.Width + ModLB.Width + 188, 360, Screen.PrimaryScreen.WorkingArea.Width - 64 - ProjectLB.Width, 360);
-                graph.DrawRectangle(penBorder, MainLB.Location.X - 2, MainLB.Location.Y - 2, MainLB.Width + 4F, MainLB.Height + 4F);
-                graph.DrawRectangle(penBorder, VickyLB.Location.X - 2, VickyLB.Location.Y - 2, VickyLB.Width + 4F, VickyLB.Height + 4F);
-                graph.DrawRectangle(penBorder, ProjectLB.Location.X - 2, ProjectLB.Location.Y - 2, ProjectLB.Width + 4F, ProjectLB.Height + 4F);
-                graph.DrawRectangle(penBorder, ModLB.Location.X - 2, ModLB.Location.Y - 2, ModLB.Width + 4F, ModLB.Height + 4F);
-            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,44 +265,6 @@ namespace Victoria_3_Modding_Tool
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // LB Styling
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private void LB_DrawItem(object sender, DrawItemEventArgs e, ListBox LB)
-        {
-            Color backgroundColor = Color.FromArgb(50, 50, 50);
-            Color horizontalColor = Color.FromArgb(100, 100, 100);
-
-            if (e.Index >= 0)
-            {
-                SolidBrush sb = new SolidBrush(((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? horizontalColor : backgroundColor);
-                e.Graphics.FillRectangle(sb, e.Bounds);
-                string text = LB.Items[e.Index].ToString();
-                SolidBrush tb = new SolidBrush(e.ForeColor);
-                e.Graphics.DrawString(text, e.Font, tb, LB.GetItemRectangle(e.Index).Location);
-            }
-        }
-
-        private void MainLB_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            LB_DrawItem(sender, e, MainLB);
-        }
-
-        private void VickyLB_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            LB_DrawItem(sender, e, VickyLB);
-        }
-
-        private void ProjectLB_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            LB_DrawItem(sender, e, ProjectLB);
-        }
-
-        private void ModLB_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            LB_DrawItem(sender, e, ModLB);
-        }
 
         #endregion Form Stuff
 
@@ -400,26 +296,26 @@ namespace Victoria_3_Modding_Tool
             MainData.Add("State Traits");
             MainData.Add("Technologies");
 
-            MainLB.Items.Add("Building Groups");
-            MainLB.Items.Add("Buildings");
-            MainLB.Items.Add("Canals");
-            MainLB.Items.Add("Cultures");
-            MainLB.Items.Add("Decisions");
-            MainLB.Items.Add("Decrees");
-            MainLB.Items.Add("Eras");
-            MainLB.Items.Add("Goods");
-            MainLB.Items.Add("Institutions");
-            MainLB.Items.Add("Law Groups");
-            MainLB.Items.Add("Laws");
-            MainLB.Items.Add("Modifiers");
-            MainLB.Items.Add("Modifier Types");
-            MainLB.Items.Add("Pop Needs");
-            MainLB.Items.Add("Pop Types");
-            MainLB.Items.Add("Production Method Groups");
-            MainLB.Items.Add("Production Methods");
-            MainLB.Items.Add("Religions");
-            MainLB.Items.Add("State Traits");
-            MainLB.Items.Add("Technologies");
+            MainLB.Add("Building Groups");
+            MainLB.Add("Buildings");
+            MainLB.Add("Canals");
+            MainLB.Add("Cultures");
+            MainLB.Add("Decisions");
+            MainLB.Add("Decrees");
+            MainLB.Add("Eras");
+            MainLB.Add("Goods");
+            MainLB.Add("Institutions");
+            MainLB.Add("Law Groups");
+            MainLB.Add("Laws");
+            MainLB.Add("Modifiers");
+            MainLB.Add("Modifier Types");
+            MainLB.Add("Pop Needs");
+            MainLB.Add("Pop Types");
+            MainLB.Add("Production Method Groups");
+            MainLB.Add("Production Methods");
+            MainLB.Add("Religions");
+            MainLB.Add("State Traits");
+            MainLB.Add("Technologies");
         }
 
         private void MainSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
@@ -428,21 +324,21 @@ namespace Victoria_3_Modding_Tool
 
             if (string.IsNullOrEmpty(MainSearchBarTB.Texts) == false)
             {
-                MainLB.Items.Clear();
+                MainLB.Clear();
                 foreach (string entry in MainData)
                 {
                     if (entry.StartsWith(MainSearchBarTB.Texts))
                     {
-                        MainLB.Items.Add(entry);
+                        MainLB.Add(entry);
                     }
                 }
             }
             else if (MainSearchBarTB.Texts == "")
             {
-                MainLB.Items.Clear();
+                MainLB.Clear();
                 foreach (string entry in MainData)
                 {
-                    MainLB.Items.Add(entry);
+                    MainLB.Add(entry);
                 }
             }
         }
@@ -450,23 +346,23 @@ namespace Victoria_3_Modding_Tool
         //*
         private void VickySearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(VickySearchBarTB, VickyLB,BuildingGroupsDataM , BuildingsDataM,CanalsDataM,CulturesDataM,DecisionsDataV,DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV, LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV,  StateTraitsDataV, TechDataV);
+            SearchBarConfigs(VickySearchBarTB, VickyLB, BuildingGroupsDataV, BuildingsDataV, CanalsDataV, CulturesDataV, DecisionsDataV, DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV, LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
         }
 
         //*
         private void ProjSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ProjSearchBarTB, ProjectLB,BuildingGroupsDataP,BuildingsDataP,CanalsDataP,CulturesDataP,DecisionsDataP,DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
+            SearchBarConfigs(ProjSearchBarTB, ProjectLB, BuildingGroupsDataP, BuildingsDataP, CanalsDataP, CulturesDataP, DecisionsDataP, DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
         private void ModSearchBarTB_CustomTextBox_TextChanged(object sender, EventArgs e)
         {
-            SearchBarConfigs(ModSearchBarTB, ModLB,BuildingGroupsDataV,BuildingsDataV,CanalsDataV,CulturesDataV,DecisionsDataM,DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataM, LawGroupsDataM, LawsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM,ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
+            SearchBarConfigs(ModSearchBarTB, ModLB, BuildingGroupsDataM, BuildingsDataM, CanalsDataM, CulturesDataM, DecisionsDataM, DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataM, LawGroupsDataM, LawsDataM, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM, ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         // *
-        private void SearchBarConfigs(CustomTextBox TB, ListBox LB, List<ClassBuildingGroups> BuildingGroupsData, List<ClassBuildings> BuildingsData, List<ClassCanals> CanalsData, List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData,List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData, List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData,List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
+        private void SearchBarConfigs(CustomTextBox TB, CustomListBox LB, List<ClassBuildingGroups> BuildingGroupsData, List<ClassBuildings> BuildingsData, List<ClassCanals> CanalsData, List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData, List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData, List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
             if (mainSelectedIndex == -1) { return; }
 
@@ -494,24 +390,24 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (string.IsNullOrEmpty(TB.Texts) == false)
                         {
-                            LB.Items.Clear();
-                            LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                            LB.Clear();
+                            LB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
 
                             foreach (ClassEras entry in ErasData)
                             {
                                 if (entry.Era.ToString().StartsWith(TB.Texts))
-                                { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+                                { LB.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
                             }
                         }
                         else if (TB.Texts == "")
                         {
-                            LB.Items.Clear();
-                            LB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                            LB.Clear();
+                            LB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
 
                             foreach (ClassEras entry in ErasData)
                             {
                                 if (entry.Era.ToString().StartsWith(TB.Texts))
-                                { LB.Items.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
+                                { LB.Add(string.Format("{0,-20}{1,-20 }", entry.Era, entry.Cost)); }
                             }
                         }
 
@@ -557,12 +453,12 @@ namespace Victoria_3_Modding_Tool
                     Functions.SearchBarSimpleConfig(TechData, TB, LB);
                     break;
                 default:
-                    MainLB.Items.Add("Error");
+                    MainLB.Add("Error");
                     break;
             }
         }
 
- 
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LB data *
@@ -571,7 +467,7 @@ namespace Victoria_3_Modding_Tool
         // *
         private void Mod()
         {
-            ModLB.Items.Clear();
+            ModLB.Clear();
             if (ModPath != null)
             {
                 switch (MainData[mainSelectedIndex].ToString())
@@ -582,7 +478,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\building_groups", BuildingGroupsDataM, new NoParse(), s => new ClassBuildingGroups(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassBuildingGroups entry in BuildingGroupsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassBuildingGroups entry in BuildingGroupsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -593,7 +489,7 @@ namespace Victoria_3_Modding_Tool
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_lens_option", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassBuildings entry in BuildingsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassBuildings entry in BuildingsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -603,7 +499,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\canals", CanalsDataM, new NoParse(), s => new ClassCanals(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassCanals entry in CanalsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassCanals entry in CanalsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -613,7 +509,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\cultures", CulturesDataM, new NoParse(), s => new ClassCultures(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassCultures entry in CulturesDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassCultures entry in CulturesDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -625,7 +521,7 @@ namespace Victoria_3_Modding_Tool
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_tooltip", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassDecisions entry in DecisionsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassDecisions entry in DecisionsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -636,7 +532,7 @@ namespace Victoria_3_Modding_Tool
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassDecrees entry in DecreesDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassDecrees entry in DecreesDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -644,8 +540,8 @@ namespace Victoria_3_Modding_Tool
                         {
                             ErasDataM = new List<ClassEras>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\technology\\eras", ErasDataM, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
-                            ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                            foreach (ClassEras eraEntry in ErasDataM) { ModLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                            ModLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                            foreach (ClassEras eraEntry in ErasDataM) { ModLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                             break;
                         }
@@ -654,7 +550,7 @@ namespace Victoria_3_Modding_Tool
                             GoodsDataM = new List<ClassGoods>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\goods", GoodsDataM, new Parser(), s => new ClassGoods(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassGoods entry in GoodsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassGoods entry in GoodsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -663,7 +559,7 @@ namespace Victoria_3_Modding_Tool
                             InstitutionsDataM = new List<ClassInstitutions>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\institutions", InstitutionsDataM, new Parser(), s => new ClassInstitutions(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassInstitutions entry in InstitutionsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -672,9 +568,9 @@ namespace Victoria_3_Modding_Tool
                             LawGroupsDataM = new List<ClassLawGroups>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\law_groups", LawGroupsDataM, new NoParse(), s => new ClassLawGroups(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
-                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key+"_desc", out x) ? x : string.Empty) : string.Empty
+                                LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassLawGroups entry in LawGroupsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassLawGroups entry in LawGroupsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -685,7 +581,7 @@ namespace Victoria_3_Modding_Tool
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassLaws entry in LawsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassLaws entry in LawsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -695,7 +591,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\modifiers", ModifierDataM, new Parser(), s => new ClassModifiers(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassModifiers entry in ModifierDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassModifiers entry in ModifierDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -703,7 +599,7 @@ namespace Victoria_3_Modding_Tool
                         {
                             ModifierTypeDataM = new List<ClassModifiersType>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\modifier_types", ModifierTypeDataM, new Parser(), s => new ClassModifiersType(s), t => t.Name);
-                            foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassModifiersType entry in ModifierTypeDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -712,7 +608,7 @@ namespace Victoria_3_Modding_Tool
                             PopNeedsDataM = new List<ClassPopNeeds>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\pop_needs", PopNeedsDataM, new Parser(), s => new ClassPopNeeds(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassPopNeeds entry in PopNeedsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -726,7 +622,7 @@ namespace Victoria_3_Modding_Tool
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_no_icon", out x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key.ToUpper() + "_QUALIFICATIONS_DESC", out x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassPopTypes entry in PopTypesDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassPopTypes entry in PopTypesDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -736,7 +632,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\production_method_groups", ProductionMethodGroupsDataM, new Parser(), s => new ClassProductionMethodGroups(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -746,7 +642,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\production_methods", ProductionMethodsDataM, new NoParse(), s => new ClassProductionMethods(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                                 ), t => t.Name);
-                            foreach (ClassProductionMethods entry in ProductionMethodsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassProductionMethods entry in ProductionMethodsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -755,7 +651,7 @@ namespace Victoria_3_Modding_Tool
                             ReligionsDataM = new List<ClassReligions>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\religions", ReligionsDataM, new Parser(), s => new ClassReligions(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassReligions entry in ReligionsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassReligions entry in ReligionsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -764,7 +660,7 @@ namespace Victoria_3_Modding_Tool
                             StateTraitsDataM = new List<ClassStateTraits>();
                             Functions.ReadFilesCommon(ModPath + "\\common\\state_traits", StateTraitsDataM, new Parser(), s => new ClassStateTraits(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassStateTraits entry in StateTraitsDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassStateTraits entry in StateTraitsDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -774,7 +670,7 @@ namespace Victoria_3_Modding_Tool
                             Functions.ReadFilesCommon(ModPath + "\\common\\technology\\technologies", TechDataM, new Parser(), s => new ClassTech(s,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty,
                                 LocalizationDataM != null ? (LocalizationDataM.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty), t => t.Name);
-                            foreach (ClassTech entry in TechDataM) { ModLB.Items.Add(entry.Name); }
+                            foreach (ClassTech entry in TechDataM) { ModLB.Add(entry.Name); }
 
                             break;
                         }
@@ -785,7 +681,7 @@ namespace Victoria_3_Modding_Tool
         }
 
         // *
-        private void MainLB_Click(object sender, EventArgs e)
+        private void MainLB_Click(object sender, string e)
         {
             if (MainLB.SelectedIndex == -1) { return; }
 
@@ -819,9 +715,9 @@ namespace Victoria_3_Modding_Tool
 
             ClearClassData();
 
-            VickyLB.Items.Clear();
-            ProjectLB.Items.Clear();
-            ModLB.Items.Clear();
+            VickyLB.Clear();
+            ProjectLB.Clear();
+            ModLB.Clear();
 
             mainSelectedIndex = MainLB.SelectedIndex;
 
@@ -839,8 +735,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassBuildingGroups Entry in BuildingGroupsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -862,8 +758,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_lens_option", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassBuildings Entry in BuildingsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassBuildings Entry in BuildingsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassBuildings Entry in BuildingsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassBuildings Entry in BuildingsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -883,8 +779,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassCanals Entry in CanalsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassCanals Entry in CanalsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassCanals Entry in CanalsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassCanals Entry in CanalsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -904,8 +800,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassCultures Entry in CulturesDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassCultures Entry in CulturesDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassCultures Entry in CulturesDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassCultures Entry in CulturesDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -929,8 +825,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_tooltip", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassDecisions Entry in DecisionsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassDecisions Entry in DecisionsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassDecisions Entry in DecisionsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassDecisions Entry in DecisionsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -952,8 +848,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassDecrees Entry in DecreesDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassDecrees Entry in DecreesDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassDecrees Entry in DecreesDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassDecrees Entry in DecreesDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -969,10 +865,10 @@ namespace Victoria_3_Modding_Tool
                         Functions.ReadFilesCommon(VickyPath + "\\game\\common\\technology\\eras", ErasDataV, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
                         Functions.ReadFilesCommon(ProjPath + "\\common\\technology\\eras", ErasDataP, new Parser(), s => new ClassEras(s), t => t.Era.ToString());
 
-                        VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                        foreach (ClassEras eraEntry in ErasDataV) { VickyLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
-                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        VickyLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataV) { VickyLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                         if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -993,8 +889,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.TextureMerger(VickyPath + "\\game\\", GoodsDataV);
                         Functions.TextureMerger(ProjPath + "\\", GoodsDataP);
 
-                        foreach (ClassGoods entry in GoodsDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassGoods entry in GoodsDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1023,8 +919,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.BackTextureMerger(VickyPath + "\\game\\", InstitutionsDataV);
                         Functions.BackTextureMerger(ProjPath + "\\", InstitutionsDataP);
 
-                        foreach (ClassInstitutions entry in InstitutionsDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassInstitutions entry in InstitutionsDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1046,8 +942,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassLawGroups Entry in LawGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassLawGroups Entry in LawGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassLawGroups Entry in LawGroupsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassLawGroups Entry in LawGroupsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1069,8 +965,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key + "_desc", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassLaws Entry in LawsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassLaws Entry in LawsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassLaws Entry in LawsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassLaws Entry in LawsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1099,8 +995,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.TextureMerger(VickyPath + "\\game\\", ModifierDataV);
                         Functions.TextureMerger(ProjPath + "\\", ModifierDataP);
 
-                        foreach (ClassModifiers entry in ModifierDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiers entry in ModifierDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1118,8 +1014,8 @@ namespace Victoria_3_Modding_Tool
 
                         //new ExtraFunctions().Modifi(ModifierTypeDataV);
 
-                        foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassModifiersType entry in ModifierTypeDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1145,8 +1041,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.ReadFilesCommon(ProjPath + "\\common\\pop_needs", PopNeedsDataP, new Parser(), s => new ClassPopNeeds(s,
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty), t => t.Name);
 
-                        foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassPopNeeds Entry in PopNeedsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassPopNeeds Entry in PopNeedsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1174,8 +1070,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key.ToUpper() + "_QUALIFICATIONS_DESC", out x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassPopTypes Entry in PopTypesDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassPopTypes Entry in PopTypesDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassPopTypes Entry in PopTypesDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassPopTypes Entry in PopTypesDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1205,8 +1101,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassProductionMethodGroups Entry in ProductionMethodGroupsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1226,8 +1122,8 @@ namespace Victoria_3_Modding_Tool
                             LocalizationDataP != null ? (LocalizationDataP.TryGetValue(s.Key, out string x) ? x : string.Empty) : string.Empty
                             ), t => t.Name);
 
-                        foreach (ClassProductionMethods Entry in ProductionMethodsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassProductionMethods Entry in ProductionMethodsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassProductionMethods Entry in ProductionMethodsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassProductionMethods Entry in ProductionMethodsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1258,8 +1154,8 @@ namespace Victoria_3_Modding_Tool
 
                         TraitsAdder(); // temp
 
-                        foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Items.Add(Entry.Name); }
-                        foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Items.Add(Entry.Name); }
+                        foreach (ClassReligions Entry in ReligionsDataV) { VickyLB.Add(Entry.Name); }
+                        foreach (ClassReligions Entry in ReligionsDataP) { ProjectLB.Add(Entry.Name); }
 
                         if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1294,8 +1190,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.TextureMerger(VickyPath + "\\game\\", StateTraitsDataV);
                         Functions.TextureMerger(ProjPath + "\\", StateTraitsDataP);
 
-                        foreach (ClassStateTraits entry in StateTraitsDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassStateTraits entry in StateTraitsDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1328,8 +1224,8 @@ namespace Victoria_3_Modding_Tool
                         Functions.TextureMerger(VickyPath + "\\game\\", TechDataV);
                         Functions.TextureMerger(ProjPath + "\\", TechDataP);
 
-                        foreach (ClassTech entry in TechDataV) { VickyLB.Items.Add(entry.Name); }
-                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                        foreach (ClassTech entry in TechDataV) { VickyLB.Add(entry.Name); }
+                        foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
 
                         if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -1338,31 +1234,31 @@ namespace Victoria_3_Modding_Tool
                         break;
                     }
                 default:
-                    MainLB.Items.Add("Error");
+                    MainLB.Add("Error");
                     break;
             }
         }
 
         //*
-        private void VickyLB_Click(object sender, EventArgs e)
+        private void VickyLB_Click(object sender, string e)
         {
-            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex,BuildingGroupsDataV,BuildingsDataV,CanalsDataV,CulturesDataV,DecisionsDataV,DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV,LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
+            DoubleClickList(VickyLB, VickyPath, vickySelectedIndex, BuildingGroupsDataV, BuildingsDataV, CanalsDataV, CulturesDataV, DecisionsDataV, DecreesDataV, ErasDataV, GoodsDataV, InstitutionsDataV, LawGroupsDataV, LawsDataV, ModifierDataV, ModifierTypeDataV, PopNeedsDataV, PopTypesDataV, ProductionMethodGroupsDataV, ProductionMethodsDataV, ReligionsDataV, StateTraitsDataV, TechDataV);
         }
 
         //*
-        private void ProjectLB_Click(object sender, EventArgs e)
+        private void ProjectLB_Click(object sender, string e)
         {
-            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, BuildingGroupsDataP, BuildingsDataP, CanalsDataP, CulturesDataP, DecisionsDataP,DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
+            DoubleClickList(ProjectLB, ProjPath, projSelectedIndex, BuildingGroupsDataP, BuildingsDataP, CanalsDataP, CulturesDataP, DecisionsDataP, DecreesDataP, ErasDataP, GoodsDataP, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataP, ModifierTypeDataP, PopNeedsDataP, PopTypesDataP, ProductionMethodGroupsDataP, ProductionMethodsDataP, ReligionsDataP, StateTraitsDataP, TechDataP);
         }
 
         //*
-        private void ModLB_DoubleClick(object sender, EventArgs e)
+        private void ModLB_DoubleClick(object sender, string e)
         {
-            DoubleClickList(ModLB, ModPath, modSelectedIndex, BuildingGroupsDataM, BuildingsDataM, CanalsDataM, CulturesDataM, DecisionsDataM,DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataM, ModifierTypeDataM,  PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM, ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
+            DoubleClickList(ModLB, ModPath, modSelectedIndex, BuildingGroupsDataM, BuildingsDataM, CanalsDataM, CulturesDataM, DecisionsDataM, DecreesDataM, ErasDataM, GoodsDataM, InstitutionsDataP, LawGroupsDataP, LawsDataP, ModifierDataM, ModifierTypeDataM, PopNeedsDataM, PopTypesDataM, ProductionMethodGroupsDataM, ProductionMethodsDataM, ReligionsDataM, StateTraitsDataM, TechDataM);
         }
 
         //*
-        private void DoubleClickList(ListBox ListBox, string path, int selectedIndex,List<ClassBuildingGroups> BuildingGroupsData,List<ClassBuildings> BuildingsData,List<ClassCanals> CanalsData,List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData,List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData,List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
+        private void DoubleClickList(CustomListBox ListBox, string path, int selectedIndex, List<ClassBuildingGroups> BuildingGroupsData, List<ClassBuildings> BuildingsData, List<ClassCanals> CanalsData, List<ClassCultures> CulturesData, List<ClassDecisions> DecisionsData, List<ClassDecrees> DecreesData, List<ClassEras> ErasData, List<ClassGoods> GoodsData, List<ClassInstitutions> InstitutionsData, List<ClassLawGroups> LawGroupsData, List<ClassLaws> LawsData, List<ClassModifiers> ModifierData, List<ClassModifiersType> ModifierTypeData, List<ClassPopNeeds> PopNeedsData, List<ClassPopTypes> PopTypesData, List<ClassProductionMethodGroups> ProductionMethodGroupsData, List<ClassProductionMethods> ProductionMethodsData, List<ClassReligions> ReligionsData, List<ClassStateTraits> StateTraitsData, List<ClassTech> TechData)
         {
             if (mainSelectedIndex == -1) { return; }
             SaveStatus = 2;
@@ -1373,14 +1269,14 @@ namespace Victoria_3_Modding_Tool
                 {
                     case "Building Groups":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (BuildingGroupsForm form = new BuildingGroupsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(BuildingGroupsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(BuildingGroupsData, ListBox[selectedIndex].ToString());
                                 form.BuildingGroupsListP = BuildingGroupsDataP;
                                 form.local = new ClassBuildingGroups(BuildingGroupsData[i]);
                                 form.ShowDialog();
@@ -1395,14 +1291,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         BuildingGroupsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1414,14 +1310,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Buildings":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (BuildingsForm form = new BuildingsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(BuildingsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(BuildingsData, ListBox[selectedIndex].ToString());
                                 form.BuildingsListP = BuildingsDataP;
                                 form.local = new ClassBuildings(BuildingsData[i]);
                                 form.ShowDialog();
@@ -1436,14 +1332,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         BuildingsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1455,14 +1351,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Canals":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (CanalsForm form = new CanalsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(CanalsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(CanalsData, ListBox[selectedIndex].ToString());
                                 form.CanalsListP = CanalsDataP;
                                 form.local = new ClassCanals(CanalsData[i]);
                                 form.ShowDialog();
@@ -1477,14 +1373,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         CanalsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1496,14 +1392,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Cultures":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (CulturesForm form = new CulturesForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(CulturesData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(CulturesData, ListBox[selectedIndex].ToString());
                                 form.CulturesListP = CulturesDataP;
                                 form.local = new ClassCultures(CulturesData[i]);
                                 form.ShowDialog();
@@ -1518,14 +1414,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         CulturesDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1537,14 +1433,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Decisions":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (DecisionsForm form = new DecisionsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(DecisionsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(DecisionsData, ListBox[selectedIndex].ToString());
                                 form.DecisionsListP = DecisionsDataP;
                                 form.local = new ClassDecisions(DecisionsData[i]);
                                 form.ShowDialog();
@@ -1559,14 +1455,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         DecisionsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1578,14 +1474,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Decrees":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (DecreesForm form = new DecreesForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(DecreesData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(DecreesData, ListBox[selectedIndex].ToString());
                                 form.DecreesListP = DecreesDataP;
                                 form.local = new ClassDecrees(DecreesData[i]);
                                 form.ShowDialog();
@@ -1600,14 +1496,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         DecreesDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1621,14 +1517,14 @@ namespace Victoria_3_Modding_Tool
                         {
                             if (ListBox.SelectedIndex == 0) { return; }
 
-                            if (ListBox.Items.Count == 1) { return; }
+                            if (ListBox.Count == 1) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 1; ListBox.SelectedIndex = 1; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (EraForm form = new EraForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ErasData, int.Parse(ListBox.Items[selectedIndex].ToString().Substring(0, 20)).ToString());
+                                i = Functions.hasNameIndex(ErasData, int.Parse(ListBox[selectedIndex].ToString().Substring(0, 20)).ToString());
                                 form.local = new ClassEras(ErasData[i].Era, ErasData[i].Cost);
                                 form.ShowDialog();
                                 ClassEras j = form.ReturnValue();
@@ -1642,16 +1538,16 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Era.CompareTo(t2.Era));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                        ProjectLB.Clear();
+                                        ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                     }
                                     else
                                     {
                                         ErasDataP[i].Cost = j.Cost;
-                                        ProjectLB.Items.Clear();
-                                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                        ProjectLB.Clear();
+                                        ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                     }
                                 }
                             }
@@ -1663,14 +1559,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Goods":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (GoodsForm form = new GoodsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(GoodsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(GoodsData, ListBox[selectedIndex].ToString());
 
                                 form.GoodsDataP = GoodsDataP;
                                 form.local = new ClassGoods(GoodsData[i]);
@@ -1687,14 +1583,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         GoodsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1706,14 +1602,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Institutions":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (InstitutionsForm form = new InstitutionsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(InstitutionsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(InstitutionsData, ListBox[selectedIndex].ToString());
 
                                 form.InstitutionsDataP = InstitutionsDataP;
                                 form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
@@ -1731,14 +1627,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         InstitutionsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1750,14 +1646,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Law Groups":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (LawGroupsForm form = new LawGroupsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(LawGroupsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(LawGroupsData, ListBox[selectedIndex].ToString());
                                 form.LawGroupsListP = LawGroupsDataP;
                                 form.local = new ClassLawGroups(LawGroupsData[i]);
                                 form.ShowDialog();
@@ -1772,14 +1668,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         LawGroupsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1791,14 +1687,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Laws":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (LawsForm form = new LawsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(LawsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(LawsData, ListBox[selectedIndex].ToString());
                                 form.LawsListP = LawsDataP;
                                 form.local = new ClassLaws(LawsData[i]);
                                 form.ShowDialog();
@@ -1813,14 +1709,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         LawsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1832,14 +1728,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Modifiers":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (ModifiersForm form = new ModifiersForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ModifierData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(ModifierData, ListBox[selectedIndex].ToString());
 
                                 form.ModifiersDataP = ModifierDataP;
                                 form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
@@ -1857,14 +1753,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         ModifierDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1876,14 +1772,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Modifier Types":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (ModifiersTypesForm form = new ModifiersTypesForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ModifierTypeData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(ModifierTypeData, ListBox[selectedIndex].ToString());
 
                                 form.ModifiersDataP = ModifierTypeDataP;
                                 form.local = new ClassModifiersType(ModifierTypeData[i]);
@@ -1900,14 +1796,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         ModifierTypeDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1919,14 +1815,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Pop Needs":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (PopNeedsForm form = new PopNeedsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(PopNeedsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(PopNeedsData, ListBox[selectedIndex].ToString());
                                 form.PopNeedsListP = PopNeedsDataP;
                                 form.GoodsList = Functions.MergeClasses(GoodsDataP, GoodsDataV);
                                 form.local = new ClassPopNeeds(PopNeedsData[i]);
@@ -1942,14 +1838,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         PopNeedsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -1961,14 +1857,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Pop Types":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (PopTypesForm form = new PopTypesForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(PopTypesData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(PopTypesData, ListBox[selectedIndex].ToString());
                                 form.PopTypesListP = PopTypesDataP;
                                 form.local = new ClassPopTypes(PopTypesData[i]);
                                 form.ShowDialog();
@@ -1983,14 +1879,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         PopTypesDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2002,14 +1898,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Production Method Groups":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (ProductionMethodGroupsForm form = new ProductionMethodGroupsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ProductionMethodGroupsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(ProductionMethodGroupsData, ListBox[selectedIndex].ToString());
                                 form.ProductionMethodGroupsListP = ProductionMethodGroupsDataP;
                                 form.ProductionMethodsList = Functions.MergeClasses(ProductionMethodsDataP, ProductionMethodsDataV);
                                 form.local = new ClassProductionMethodGroups(ProductionMethodGroupsData[i]);
@@ -2025,14 +1921,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         ProductionMethodGroupsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2044,14 +1940,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Production Methods":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (ProductionMethodsForm form = new ProductionMethodsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ProductionMethodsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(ProductionMethodsData, ListBox[selectedIndex].ToString());
                                 form.ProductionMethodsListP = ProductionMethodsDataP;
                                 form.local = new ClassProductionMethods(ProductionMethodsData[i]);
                                 form.ShowDialog();
@@ -2066,14 +1962,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         ProductionMethodsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2085,14 +1981,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Religions":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (ReligionForm form = new ReligionForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(ReligionsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(ReligionsData, ListBox[selectedIndex].ToString());
                                 form.ReligionDataP = ReligionsDataP;
                                 form.GoodsData = Functions.MergeClasses(GoodsDataP, GoodsDataV);
                                 form.local = new ClassReligions(ReligionsData[i]);
@@ -2109,14 +2005,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         ReligionsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2128,14 +2024,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "State Traits":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (StateTraitsForm form = new StateTraitsForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(StateTraitsData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(StateTraitsData, ListBox[selectedIndex].ToString());
                                 form.StateTraitsDataP = StateTraitsDataP;
                                 form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
                                 form.TechData = Functions.MergeClasses(TechDataP, TechDataV);
@@ -2152,14 +2048,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         StateTraitsDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2171,14 +2067,14 @@ namespace Victoria_3_Modding_Tool
                         }
                     case "Technologies":
                         {
-                            if (ListBox.Items.Count == 0) { return; }
+                            if (ListBox.Count == 0) { return; }
 
                             if (ListBox.SelectedIndex == -1) { selectedIndex = 0; ListBox.SelectedIndex = 0; } else { selectedIndex = ListBox.SelectedIndex; }
 
                             using (TechForm form = new TechForm())
                             {
                                 int i;
-                                i = Functions.hasNameIndex(TechData, ListBox.Items[selectedIndex].ToString());
+                                i = Functions.hasNameIndex(TechData, ListBox[selectedIndex].ToString());
                                 form.TechListP = TechDataP;
                                 form.ModifiersTypes = Functions.MergeClasses(ModifierTypeDataP, ModifierTypeDataV);
                                 form.TechList = Functions.MergeClasses(TechDataP, TechDataV);
@@ -2196,14 +2092,14 @@ namespace Victoria_3_Modding_Tool
                                         {
                                             return (t1.Name.CompareTo(t2.Name));
                                         });
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                     else
                                     {
                                         TechDataP[i] = j;
-                                        ProjectLB.Items.Clear();
-                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                        ProjectLB.Clear();
+                                        foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
                                     }
                                 }
                             }
@@ -2214,7 +2110,7 @@ namespace Victoria_3_Modding_Tool
                             break;
                         }
                     default:
-                        MainLB.Items.Add("Error");
+                        MainLB.Add("Error");
                         break;
                 }
             }
@@ -2266,14 +2162,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     BuildingGroupsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2302,14 +2198,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     BuildingsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2338,14 +2234,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     CanalsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2374,14 +2270,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     CulturesDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2410,14 +2306,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     DecisionsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2446,14 +2342,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     DecreesDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2481,16 +2377,16 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Era.CompareTo(t2.Era));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    ProjectLB.Clear();
+                                    ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                 }
                                 else
                                 {
                                     ErasDataP[i].Cost = j.Cost;
-                                    ProjectLB.Items.Clear();
-                                    ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                                    ProjectLB.Clear();
+                                    ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                                    foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
                                 }
                             }
                         }
@@ -2521,14 +2417,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     GoodsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2560,14 +2456,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     InstitutionsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2596,14 +2492,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     LawGroupsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2632,14 +2528,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     LawsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassLaws entry in LawsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2671,14 +2567,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ModifierDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2709,14 +2605,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ModifierTypeDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2746,14 +2642,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     PopNeedsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2782,14 +2678,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     PopTypesDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2819,14 +2715,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ProductionMethodGroupsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2855,14 +2751,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ProductionMethodsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2879,7 +2775,7 @@ namespace Victoria_3_Modding_Tool
                             int i;
                             form.ReligionDataP = ReligionsDataP;
                             form.GoodsData = Functions.MergeClasses(GoodsDataP, GoodsDataV);
-                             form.Traits = TraitsData;
+                            form.Traits = TraitsData;
                             form.local = null;
                             form.ShowDialog();
                             ClassReligions j = form.ReturnValue();
@@ -2893,14 +2789,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     ReligionsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2931,14 +2827,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     StateTraitsDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2970,14 +2866,14 @@ namespace Victoria_3_Modding_Tool
                                     {
                                         return (t1.Name.CompareTo(t2.Name));
                                     });
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
                                 }
                                 else
                                 {
                                     TechDataP[i] = j;
-                                    ProjectLB.Items.Clear();
-                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                                    ProjectLB.Clear();
+                                    foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
                                 }
                             }
                         }
@@ -2988,7 +2884,7 @@ namespace Victoria_3_Modding_Tool
                         break;
                     }
                 default:
-                    MainLB.Items.Add("Error");
+                    MainLB.Add("Error");
                     break;
             }
         }
@@ -3022,10 +2918,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(BuildingGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(BuildingGroupsDataP, ProjectLB[projSelectedIndex].ToString());
                         BuildingGroupsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassBuildingGroups entry in BuildingGroupsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (BuildingGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3036,10 +2932,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(BuildingsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(BuildingsDataP, ProjectLB[projSelectedIndex].ToString());
                         BuildingsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassBuildings entry in BuildingsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (BuildingsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3050,10 +2946,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(CanalsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(CanalsDataP, ProjectLB[projSelectedIndex].ToString());
                         CanalsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassCanals entry in CanalsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (CanalsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3064,10 +2960,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(CulturesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(CulturesDataP, ProjectLB[projSelectedIndex].ToString());
                         CulturesDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassCultures entry in CulturesDataP) { ProjectLB.Add(entry.Name); }
 
                         if (CulturesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3078,10 +2974,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(DecisionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(DecisionsDataP, ProjectLB[projSelectedIndex].ToString());
                         DecisionsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassDecisions entry in DecisionsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (DecisionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3092,10 +2988,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(DecreesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(DecreesDataP, ProjectLB[projSelectedIndex].ToString());
                         DecreesDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassDecrees entry in DecreesDataP) { ProjectLB.Add(entry.Name); }
 
                         if (DecreesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3108,11 +3004,11 @@ namespace Victoria_3_Modding_Tool
 
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 1; ProjectLB.SelectedIndex = 1; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ErasDataP, ProjectLB.Items[projSelectedIndex].ToString().Substring(0, 20));
+                        i = Functions.hasNameIndex(ErasDataP, ProjectLB[projSelectedIndex].ToString().Substring(0, 20));
                         ErasDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
-                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Items.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
+                        ProjectLB.Clear();
+                        ProjectLB.Add(string.Format("{0,-20}{1,-20 }", "Era", "Cost"));
+                        foreach (ClassEras eraEntry in ErasDataP) { ProjectLB.Add(string.Format("{0,-20}{1,-20 }", eraEntry.Era, eraEntry.Cost)); }
 
                         if (ErasDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3123,10 +3019,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(GoodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(GoodsDataP, ProjectLB[projSelectedIndex].ToString());
                         GoodsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassGoods entry in GoodsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (GoodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3137,10 +3033,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(InstitutionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(InstitutionsDataP, ProjectLB[projSelectedIndex].ToString());
                         InstitutionsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassInstitutions entry in InstitutionsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (InstitutionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3151,10 +3047,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(LawGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(LawGroupsDataP, ProjectLB[projSelectedIndex].ToString());
                         LawGroupsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassLawGroups entry in LawGroupsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (LawGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3165,10 +3061,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(LawsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(LawsDataP, ProjectLB[projSelectedIndex].ToString());
                         LawsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassLaws entry in LawsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (LawsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3179,10 +3075,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ModifierDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(ModifierDataP, ProjectLB[projSelectedIndex].ToString());
                         ModifierDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassModifiers entry in ModifierDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ModifierDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3193,10 +3089,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ModifierTypeDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(ModifierTypeDataP, ProjectLB[projSelectedIndex].ToString());
                         ModifierTypeDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassModifiersType entry in ModifierTypeDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ModifierTypeDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3207,10 +3103,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(PopNeedsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(PopNeedsDataP, ProjectLB[projSelectedIndex].ToString());
                         PopNeedsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassPopNeeds entry in PopNeedsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (PopNeedsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3221,10 +3117,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(PopTypesDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(PopTypesDataP, ProjectLB[projSelectedIndex].ToString());
                         PopTypesDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassPopTypes entry in PopTypesDataP) { ProjectLB.Add(entry.Name); }
 
                         if (PopTypesDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3235,10 +3131,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ProductionMethodGroupsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(ProductionMethodGroupsDataP, ProjectLB[projSelectedIndex].ToString());
                         ProductionMethodGroupsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassProductionMethodGroups entry in ProductionMethodGroupsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ProductionMethodGroupsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3249,10 +3145,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ProductionMethodsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(ProductionMethodsDataP, ProjectLB[projSelectedIndex].ToString());
                         ProductionMethodsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassProductionMethods entry in ProductionMethodsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ProductionMethodsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3263,10 +3159,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(ReligionsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(ReligionsDataP, ProjectLB[projSelectedIndex].ToString());
                         ReligionsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassReligions entry in ReligionsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (ReligionsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3277,10 +3173,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(StateTraitsDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(StateTraitsDataP, ProjectLB[projSelectedIndex].ToString());
                         StateTraitsDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassStateTraits entry in StateTraitsDataP) { ProjectLB.Add(entry.Name); }
 
                         if (StateTraitsDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3291,10 +3187,10 @@ namespace Victoria_3_Modding_Tool
                     {
                         if (ProjectLB.SelectedIndex == -1) { projSelectedIndex = 0; ProjectLB.SelectedIndex = 0; } else { projSelectedIndex = ProjectLB.SelectedIndex; }
 
-                        i = Functions.hasNameIndex(TechDataP, ProjectLB.Items[projSelectedIndex].ToString());
+                        i = Functions.hasNameIndex(TechDataP, ProjectLB[projSelectedIndex].ToString());
                         TechDataP.RemoveAt(i);
-                        ProjectLB.Items.Clear();
-                        foreach (ClassTech entry in TechDataP) { ProjectLB.Items.Add(entry.Name); }
+                        ProjectLB.Clear();
+                        foreach (ClassTech entry in TechDataP) { ProjectLB.Add(entry.Name); }
 
                         if (TechDataP.Count == 0) { DeleteBT.Enabled = false; }
                         else { DeleteBT.Enabled = true; }
@@ -3302,7 +3198,7 @@ namespace Victoria_3_Modding_Tool
                         break;
                     }
                 default:
-                    MainLB.Items.Add("Error");
+                    MainLB.Add("Error");
                     break;
             }
         }
@@ -3630,7 +3526,7 @@ namespace Victoria_3_Modding_Tool
                             sw.NewLine = "\n";
                             foreach (ClassDecisions Entry in DecisionsDataP)
                             {
-                                if (Entry.Code!=string.Empty)
+                                if (Entry.Code != string.Empty)
                                 {
                                     sw.WriteLine(Entry.Code);
                                 }
@@ -3939,7 +3835,7 @@ namespace Victoria_3_Modding_Tool
                         using (StreamWriter sw = new StreamWriter(File.Open(ProjPath + "\\localization\\" + language + "\\" + ProjName.ToLower().Replace(" ", "_") + "_law_groups_l_english.yml", FileMode.Create), new UTF8Encoding(true)))
                         {
                             sw.NewLine = "\n";
-                            sw.WriteLine("l_"+language+":");
+                            sw.WriteLine("l_" + language + ":");
 
                             foreach (ClassLawGroups Entry in LawGroupsDataP)
                             {
@@ -4498,7 +4394,7 @@ namespace Victoria_3_Modding_Tool
                                     }
                                     sw.WriteLine("\t}");
                                 }
-                                
+
                                 sw.WriteLine("}");
                             }
                         }
@@ -4520,7 +4416,7 @@ namespace Victoria_3_Modding_Tool
                             }
                         }
 
-                       
+
                     }
 
                     break;
@@ -4643,5 +4539,6 @@ namespace Victoria_3_Modding_Tool
 
             Directory.Delete(target_dir, false);
         }
+
     }
 }

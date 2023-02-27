@@ -1,19 +1,35 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Data.SqlClient;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Victoria_3_Modding_Tool
 {
-    internal class CustomListBox : UserControl
+    public partial class CustomListBox : UserControl
     {
-        //Fields
-        private Color borderColor = Color.MediumSlateBlue;
 
-        private int borderSize = 1;
+
+        //Fields
+        private Color borderColor = Color.FromArgb(66, 66, 66);
+
+        private Color highlightColor = Color.FromArgb(80, 80, 80);
+
+        private Color lineColor = Color.FromArgb(66, 66, 66);
+
+        private int borderSize = 2;
+        
+        private int lineSize = 2;
+
 
         //Items
         private ListBox Listb;
+
+
+
+
 
         //Properties
         [Category("Custom")]
@@ -23,6 +39,26 @@ namespace Victoria_3_Modding_Tool
             set
             {
                 borderColor = value;
+            }
+        }
+
+        [Category("Custom")]
+        public Color HighlightColor
+        {
+            get { return highlightColor; }
+            set
+            {
+                highlightColor = value;
+            }
+        }
+
+        [Category("Custom")]
+        public Color LineColor
+        {
+            get { return lineColor; }
+            set
+            {
+                lineColor = value;
             }
         }
 
@@ -39,6 +75,16 @@ namespace Victoria_3_Modding_Tool
         }
 
         [Category("Custom")]
+        public int LineSize
+        {
+            get { return lineSize; }
+            set
+            {
+                lineSize = value;
+            }
+        }
+
+        [Category("Custom")]
         public override Color BackColor
         {
             get { return base.BackColor; }
@@ -49,11 +95,32 @@ namespace Victoria_3_Modding_Tool
             }
         }
 
-        public void Add(object item)
+        [Category("Custom")]
+        public new Size Size
         {
-            this.Listb.BeginUpdate();
-            this.Listb.Items.Add(item);
-            this.Listb.EndUpdate();
+            get { return base.Size; }
+            set { base.Size = value; }
+        }
+
+        [Category("Custom")]
+        public new Point Location
+        {
+            get { return base.Location; }
+            set { base.Location = value; }
+        }
+
+        [Category("Custom")]
+        public int Count
+        {
+            get { return Listb.Items.Count; }
+        }
+
+        // Methods
+        public void Add(string item)
+        {
+            Listb.BeginUpdate();
+            Listb.Items.Add(item);
+            Listb.EndUpdate();
         }
 
         public void Clear()
@@ -63,19 +130,50 @@ namespace Victoria_3_Modding_Tool
             this.Listb.EndUpdate();
         }
 
-        public int SelectedIndex()
+        public int SelectedIndex
         {
-            return this.Listb.SelectedIndex;
+            get { return Listb.SelectedIndex; }
+            set { Listb.SelectedIndex = value; }
         }
 
-        public object Item(int index)
+        public object Items(int index)
         {
             return this.Listb.Items[index];
         }
 
+        public object this[int index]
+        {
+            get { return Listb.Items[index]; }
+            set { Listb.Items[index] = value; }
+        }
+
+
+        // Event
+        [Browsable(true)]
+        [Category("Action")]
+        [Description("Invoked when double click")]
+        public event EventHandler<string> ItemDoubleClicked;
+
+        private void Listb_DoubleClick(object sender, EventArgs e)
+        {
+            if (Listb.SelectedItem != null)
+            {
+                OnItemDoubleClicked(Listb.SelectedItem.ToString());
+            }
+        }
+
+        protected virtual void OnItemDoubleClicked(string item)
+        {
+            ItemDoubleClicked?.Invoke(this, item);
+        }
+
+
+
+
         // List Properties
         public CustomListBox()
         {
+            DoubleBuffered = true;
             Listb = new ListBox();
             this.SuspendLayout();
             // ListBox
@@ -86,32 +184,45 @@ namespace Victoria_3_Modding_Tool
             Listb.FormattingEnabled = true;
             Listb.ItemHeight = 24;
             Listb.Location = new Point(0, 0);
-            Listb.Name = "CustomListBox";
+            Listb.Name = "ListBox";
             Listb.Size = new Size(235, 936);
             Listb.DrawItem += new DrawItemEventHandler(Listb_DrawItem);
+            Listb.DoubleClick += new System.EventHandler(Listb_DoubleClick);
             Listb.Dock = DockStyle.Fill;
             Listb.BackColor = BackColor;
+            // Forward the DoubleClick event of the custom control to the ListBox
+
 
             Controls.Add(Listb);
             ResumeLayout();
             AdjustListBoxDimensions();
         }
 
+
         // Highlight event
         private void Listb_DrawItem(object sender, DrawItemEventArgs e)
         {
-            Color backgroundColor = Color.FromArgb(50, 50, 50);
-            Color horizontalColor = Color.FromArgb(100, 100, 100);
 
             if (e.Index >= 0)
             {
-                SolidBrush sb = new SolidBrush(((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? horizontalColor : backgroundColor);
-                e.Graphics.FillRectangle(sb, e.Bounds);
+                // Makes background
+                SolidBrush sb = new SolidBrush(((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? HighlightColor : BackColor);
+                e.Graphics.FillRectangle(sb, e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+
+                // Makes Lines
+                using (Pen penBorder = new Pen(lineColor, lineSize))
+                {
+                    penBorder.Alignment = PenAlignment.Inset;
+                    e.Graphics.DrawRectangle(penBorder, e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+                }
+
+                // Makes text
                 string text = Listb.Items[e.Index].ToString();
                 SolidBrush tb = new SolidBrush(e.ForeColor);
-                e.Graphics.DrawString(text, e.Font, tb, Listb.GetItemRectangle(e.Index).Location);
+                e.Graphics.DrawString(text, e.Font, tb, Listb.GetItemRectangle(e.Index).Location.X + 3F, Listb.GetItemRectangle(e.Index).Location.Y + 3F);
             }
         }
+
 
         //Adjust Dimension (Still in test)
         private void AdjustListBoxDimensions()
@@ -122,6 +233,7 @@ namespace Victoria_3_Modding_Tool
                 Y = Listb.Height
             };
         }
+
 
         // Draws the border
         protected override void OnPaint(PaintEventArgs e)
@@ -135,5 +247,6 @@ namespace Victoria_3_Modding_Tool
                 graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
             }
         }
+
     }
 }

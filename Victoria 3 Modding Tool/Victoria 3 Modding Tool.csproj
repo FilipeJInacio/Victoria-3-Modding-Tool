@@ -60,9 +60,6 @@
     <Compile Update="Custom Controls\CustomContextMenuStrip\DropdownMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Custom Controls\CustomListBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Custom Controls\CustomButton.cs">
       <SubType>Component</SubType>
     </Compile>

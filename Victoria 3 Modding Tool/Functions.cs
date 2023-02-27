@@ -125,25 +125,25 @@ namespace Victoria_3_Modding_Tool
             return;
         }
 
-        static public void SearchBarSimpleConfig<T>(List<T> Data, CustomTextBox TB, ListBox LB) where T : IType
+        static public void SearchBarSimpleConfig<T>(List<T> Data, CustomTextBox TB, CustomListBox LB) where T : IType
         {
             if (string.IsNullOrEmpty(TB.Texts) == false)
             {
-                LB.Items.Clear();
+                LB.Clear();
                 foreach (T str in Data)
                 {
                     if (str.Name.StartsWith(TB.Texts))
                     {
-                        LB.Items.Add(str.Name);
+                        LB.Add(str.Name);
                     }
                 }
             }
             else if (TB.Texts == "")
             {
-                LB.Items.Clear();
+                LB.Clear();
                 foreach (T str in Data)
                 {
-                    LB.Items.Add(str.Name);
+                    LB.Add(str.Name);
                 }
             }
 
@@ -162,7 +162,6 @@ namespace Victoria_3_Modding_Tool
             }
             return -1;
         }
-
 
     }
 
