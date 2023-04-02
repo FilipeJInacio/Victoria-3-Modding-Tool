@@ -137,3 +137,4 @@ Unfortunately the project has been dropped manly because of time concerns. Next 
 * Add more content
 * Improve algorithms
 
+And if you are going to read the code, i'm sorry.
