@@ -127,7 +127,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 [Discord](https://discord.com/invite/jkkMGVmUuz)
 
+<!-- CONTACT -->
+## What's next?
+unfortunately the project has been dropped manly because of time concerns. Next points in work:
 
-
-
+* WPF convertion, because of deformation
+* Simplify code mainly by adding to custom controls the security functions
+* Add guides
+* Add more content
+* Improve algorithms
 
